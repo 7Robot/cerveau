@@ -20,59 +20,57 @@ class ForwardMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos" # repos | forwarding | pausing | waiting
-        self.free_way = True 
+        self.free_way = {"back": True, "front": True} 
         self.abort = False
         
-    def start(self, callback, order, abort=False):
+    def start(self, callback, order, autoabort=False):
         '''C'est moveMission qui va mettre  jour target et nous dire de combien avancer'''
         if self.state == "repos":
-            self.abort = abort
-#            self.abort = False
+            self.autoabort = autoabort
             self.order = int(order)
             self.callback = callback
             self.remaining = self.order
-            self.state = "forwarding"
+            self.state = "run"
             self.can.send("asserv dist %d" % self.remaining)
 
     def pause(self):
-        if self.state == "forwarding":
-            self.state = "pausing"
+        if self.state == "run":
+            if self.autoabort:
+                self.state = "stopping"
+            else:
+                self.state = "pausing"
             self.can.send("asserv stop")
+
+    def abort(self):
+        self.state = "stopping"
+        self.can.send("asserv stop")
         
     def resume(self):
         if self.state == "waiting" and self.free_way:
-            self.state = "forwarding"
+            self.state = "run"
             self.can.send("asserv dist %d" %self.remaining)
         
     def process_event(self, event):
-        if event.name == "captor" \
-                and ((event.pos == "front" and self.dist > 0) \
-                  or (event.pos == "back"  and self.dist < 0)):
-            if event.state == "start":
-                self.free_way = True
-                if not self.abort:
-                    self.resume()
-                else:
-                    self.state = "repos"
-                    self.abort = False
-                    self.send_event(Event("forward", "aborted", self.callback))
-            else:
-                self.free_way = False
-                self.pause()
+        if event.name == "captor":
+            self.free_way[event.pos]  = event.state == "start"
+            if self.state != "repos":
+                if ((event.pos == "front" and self.speed > 0) \
+                        or (event.pos == "back" and self.speed < 0)):
+                    if event.state == "start":
+                        self.resume()
+                    else:
+                        self.pause()
 
         elif event.name == "asserv" and event.type == "done":
-            if self.state == "forwarding" or self.state == "pausing":
+            if self.state != "repos":
                 # on a pu aller on voulait aller
                 self.state = "repos"
                 self.send_event(Event("forward", "done", self.callback))
         elif event.name == "asserv" and event.type == "int_dist":
             if self.state == "pausing":
-                self.state = "waiting"
+                self.state = "paused"
                 self.remaining -= event.value
-                if not self.abort:
-                    self.resume()
-                else:
-                    self.state = "repos"
-                    self.abort = False
-                    self.send_event(Event("forward", "aborted", self.callback))
+            elif self.state == "stopping":
+                self.state = "repos"
+                self.send_event(Event("forward", "aborted", self.callback))
                 
