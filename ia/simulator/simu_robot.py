@@ -7,6 +7,7 @@ from math import cos, sin
 from mathutils.types import Vertex
 from mathutils.geometry import angle, distance
 from threading import Timer
+from robot.robot import Robot
 
 class Asserv:
     def __init__(self, robot):
@@ -49,12 +50,11 @@ class Asserv:
         
             
 
-class Simu_robot():
+class Simu_robot(Robot):
     '''Robot physiquement simulé qui répond aux commandes de l'IA'''
         
-    def __init__(self, pos, theta, max_speed, max_acceleration):
-        self.pos     = pos
-        self.theta   = theta
+    def __init__(self, x, y, theta, max_speed, max_acceleration):
+        super(self.__class__, self).__init__(x, y, theta, 0,0,0,0)
         self.accel   = 0
         self.speed   = 0
         self.mspeed  = max_speed
@@ -136,6 +136,10 @@ class Simu_robot():
             self.turn(self.msteer / 1000 * dd)
         elif abs(dd) > 50:
             self.turn(self.msteer * sign)
+        else:
+            self.asserv.func = None
+            self.asserv.args = None
+            self.send_can("asserv done")
             
 #    def run(self):
 #        if self.action == "go_speed":

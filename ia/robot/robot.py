@@ -47,6 +47,15 @@ class Robot:
             self.msg_can.sender(msg)
         else:
             self.logger.error("Robot : msg_can is None, cannot send %s" % msg)
+    
+    def move_direction(self, dist, direction):
+        '''dist en 10e de mmm
+           direction en 10e de degré'''
+        drot = direction-self.theta
+        if drot < -18000:
+            rot = 36000 + drot
+        if drot > 18000:
+            drot = -36000 + drot
         
     # Retro comptabilité
     def set_position(self, pos):
