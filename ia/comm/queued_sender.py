@@ -1,5 +1,6 @@
 # -*- coding: ascii -*-
 
+import logging
 from queue import Queue
 from threading import Thread, Event
 import socket
@@ -11,6 +12,7 @@ class Queued_sender(Thread):
         self.running= Event( )
         self.queue  = Queue()
         self.socket = socket
+        self.logger = logging.getLogger("queued_sender")
     
     def add_action(self, action):
         '''Inutile, sauf si on change d'implmentation'''

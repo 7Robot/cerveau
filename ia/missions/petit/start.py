@@ -26,7 +26,7 @@ class StartMission(Mission):
                 self.ui.send("ia ready")
 #                self.missions["positioning"].start()
 #                self.missions["bottle"].start()
-#                self.missions["double_chemin"].start(self, 14200)
+#                self.missions["double_chemin"].start(self, 14200, -4900, -9000)
 #                self.missions["calibraterotation"].start()
 #                self.can.send("asserv dist 3000") # Fake recalibration
 #                self.odo.broadcast()
