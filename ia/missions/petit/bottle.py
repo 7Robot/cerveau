@@ -66,7 +66,7 @@ class BottleMission(Mission):
         elif self.state == 8:
             if e.name == "rotate" and e.type == "done":
                 self.state += 1
-                self.missions["double_chemin"].start(self, 14200)
+                self.missions["double_chemin"].start(self, 14200, -4900, -9000)
                 
                 
 #        elif self.state == 9:
