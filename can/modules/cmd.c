@@ -97,6 +97,8 @@ int can_write(int fd, can_t packet)
                 strcpy(bumpname, "BACK");
             } else if (bumpid == 2) {
                 strcpy(bumpname, "FRONT");
+            } else if (bumpid == 3) {
+                strcpy(bumpname, "ALIM");
             } else {
                 sprintf(bumpname, "%d", bumpid);
             }
