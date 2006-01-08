@@ -26,7 +26,6 @@ class StartMission(Mission):
                 self.can.send("ax 2 torque set 800")
                 self.can.send("turret on")
                 self.odo.set(self, **{"x": 0, "y": 0, "rot": 27000})
-                self.missions["forward"].start(self, 10000)
 
         # ODO SET OK
         elif self.state == 2:
