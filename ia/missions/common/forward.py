@@ -46,16 +46,18 @@ class ForwardMission(Mission):
         self.can.send("asserv stop")
         
     def resume(self):
-        if self.state == "waiting" and self.free_way:
-            self.state = "run"
-            self.can.send("asserv dist %d" %self.remaining)
+        if self.state == "paused":
+            if ((self.free_way["front"] and self.order > 0) \
+                    or (self.free_way["back"] and self.order < 0)):
+                self.state = "run"
+                self.can.send("asserv dist %d" %self.remaining)
         
     def process_event(self, event):
         if event.name == "captor":
             self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
-                if ((event.pos == "front" and self.speed > 0) \
-                        or (event.pos == "back" and self.speed < 0)):
+                if ((event.pos == "front" and self.order > 0) \
+                        or (event.pos == "back" and self.order < 0)):
                     if event.state == "start":
                         self.resume()
                     else:
@@ -70,6 +72,7 @@ class ForwardMission(Mission):
             if self.state == "pausing":
                 self.state = "paused"
                 self.remaining -= event.value
+                self.resume()
             elif self.state == "stopping":
                 self.state = "repos"
                 self.send_event(Event("forward", "aborted", self.callback))

@@ -36,7 +36,7 @@ class SpeedMission(Mission):
         if self.state == "repos":
             self.curt = curt
             self.speed = speed
-            callback = callback_autoabort
+            self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
             self.state = "run"
@@ -88,7 +88,7 @@ class SpeedMission(Mission):
 
         elif event.name == "asserv" and event.type == "done":
             if self.state == "pausing":
-                self.state == "paused"
+                self.state = "paused"
             elif self.state == "stopping":
                 self.state = "stopped"
                 self.can.send("asserv ticks request")
