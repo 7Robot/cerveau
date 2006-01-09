@@ -57,6 +57,8 @@ class Totem2Mission(Mission):
         #elif self.state == 7:
         #    if event.name == "timer":
         #        self.state += 1
+                if not self.odo.brd:
+                    self.can.send("odo unmute")
                 self.missions["speedrotate"].start(80, 10)
 
         elif self.state == 8:
@@ -67,6 +69,8 @@ class Totem2Mission(Mission):
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
+                if not self.odo.brd:
+                    self.can.send("odo mute")
                 if self.odo.rot < 18000 and self.odo.rot > 9000:
                     self.state += 3
                     self.move.reach_x(self, -12500)
