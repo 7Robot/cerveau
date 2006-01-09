@@ -18,6 +18,9 @@ class Positioning1Mission(Mission):
     def process_event(self, e):
         if self.state == 1 and e.name == "start":
             self.state += 1
+            self.missions["threshold"].activate(1, False)
+            self.missions["threshold"].activate(2, False)
+            self.missions["threshold"].activate(8, False)
             self.move.speed(-self.robot.pos_speed)
             
         elif self.state == 2:
@@ -80,4 +83,7 @@ class Positioning1Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state = 0
                 self.logger.info("Gros en position !")
+                self.missions["threshold"].activate(1, True)
+                self.missions["threshold"].activate(2, True)
+                self.missions["threshold"].activate(8, True)
                 self.send_event(Event("positioning", "done"))

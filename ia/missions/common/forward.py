@@ -33,8 +33,8 @@ class ForwardMission(Mission):
             self.callback = callback
             self.remaining = self.order
             self.state = "run"
-            self.missions["threshold"].sensivity(1.5)
             self.can.send("asserv dist %d" % self.remaining)
+            self.create_timer(200)
 
     def pause(self):
         if self.state == "run":
@@ -52,12 +52,14 @@ class ForwardMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.order > 0) \
                     or (self.free_way["back"] and self.order < 0)):
-                self.state = "run" # FIXME mode non-fhomologation
-#                self.state = "repos" # FIXME mode homologation
-                self.can.send("asserv dist %d" %self.remaining) # FIXME mode non-homologation
+                self.state = "run"
+                self.can.send("asserv dist %d" %self.remaining)
+                self.create_timer(200)
         
     def process_event(self, event):
-        if event.name == "captor":
+        if event.name == "timer" and self.state == "run":
+            self.missions["threshold"].sensivity(1.5)
+        elif event.name == "captor":
             self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
                 if ((event.pos == "front" and self.order > 0) \
@@ -76,6 +78,7 @@ class ForwardMission(Mission):
         elif event.name == "asserv" and event.type == "int_dist":
             if self.state == "pausing":
                 self.state = "paused"
+                self.missions["threshold"].sensivity(0.6)
                 self.remaining -= event.value
                 self.logger.info("Distance remaining: %d/%d"
                         %(self.remaining, self.order))

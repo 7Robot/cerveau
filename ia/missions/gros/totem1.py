@@ -74,7 +74,7 @@ class Totem1Mission(Mission):
                     self.state += 1
                     self.logger.info("Bad orientation (%d), adjusting ..."
                             %self.odo.rot)
-                    self.move.rotate(self, 15000, True)
+                    self.move.rotate(self, 2000, True)
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
