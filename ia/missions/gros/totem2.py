@@ -72,8 +72,8 @@ class Totem2Mission(Mission):
                 if not self.odo.brd:
                     self.can.send("odo mute")
                 if self.odo.rot < 18000 and self.odo.rot > 9000:
-                    self.state += 3
-                    self.move.reach_x(self, -12500)
+                    self.state += 2
+                    self.move.reach_x(self, -12000)
                 else:
                     self.state += 1
                     self.logger.info("Bad orientation (%d), adjusting ..."
@@ -83,13 +83,14 @@ class Totem2Mission(Mission):
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.reach_x(self, -12500)
+                self.move.reach_x(self, -12000)
 
         elif self.state == 11:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.forward(self, -2000)
-                self.send_event(Event("totem", "done"))
+                self.can.send("ax 1 angle set 1023")
+                create_timer(1000)
+                #self.send_event(Event("totem", "done"))
 
         #elif self.state == 12:
         #    if event.name == "move" and event.type == "done":
