@@ -51,15 +51,15 @@ class Totem1Mission(Mission):
 
         elif self.state == 6:
             if event.name == "move" and event.type == "done":
-        #        self.state += 1
+                self.state += 1
                 self.state += 2
                 self.can.send("ax 2 angle set 0")
-        #        self.create_timer(1000)
+                self.create_timer(200)
                 
-        #elif self.state == 7:
-        #    if event.name == "timer":
-        #        self.state += 1
-                self.missions["speedrotate"].start(0, 80)
+        elif self.state == 7:
+            if event.name == "timer":
+                self.state += 1
+                self.missions["speedrotate"].start(0, 70)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
