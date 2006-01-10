@@ -51,7 +51,7 @@ class StartMission(Mission):
         elif self.state == 5:
             if event.name == "bump" and event.pos == "leash" \
                     and event.state == "open":
-                self.state += 0.5
+                self.state += 1
                 # Set des threshold
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold %d"
@@ -60,18 +60,18 @@ class StartMission(Mission):
                 self.missions["match"].start()
                 self.create_timer(3000)
 
-        elif self.state == 5.5:
+        elif self.state == 6:
             if event.name == "timer":
-                self.state += 0.5
+                self.state += 1
                 self.missions["totem1"].start()
 
-        elif self.state == 6:
-            if event.name == "totem" and event.type == "done":
-                self.state += 1
-                self.missions["positioning2"].start()
+        #elif self.state == 6:
+        #    if event.name == "totem" and event.type == "done":
+        #        self.state += 1
+        #        self.missions["positioning2"].start()
 
         elif self.state == 7:
-            if event.name == "positioning" and event.type == "done":
+            if event.name == "totem" and event.type == "done":
                 self.state += 1
                 self.missions["totem2"].start()
             

@@ -13,17 +13,7 @@ class Totem2Mission(Mission):
     def process_event(self, event):
         if self.state == 0:
             if event.name == "start":
-                self.state += 1
-                self.move.forward(self, 5000) # on sort du depart
-
-        elif self.state == 1:
-            if event.name == "move" and event.type == "done":
-                self.state += 1
-                self.move.rotate(self, 27000, True) # on tourne vers les bouteilles
-
-        elif self.state == 2:
-            if event.name == "move" and event.type == "done":
-                self.state += 1
+                self.state += 3
                 self.move.reach_y(self, -3000)
 
         elif self.state == 3:

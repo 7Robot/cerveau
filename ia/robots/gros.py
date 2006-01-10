@@ -16,9 +16,9 @@ class GrosRobot:
         self.dimensions = { "left": 1500, "right": 1500,
                 "front": 1950, "back": 1050 }
 
-        self._vrille = 350
+        self._vrille = 250
 
-        self.pos_timer = 100
+        self.pos_timer = 10
         self.pos_speed = 25
 
         # position *initial* du robot

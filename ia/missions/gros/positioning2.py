@@ -77,13 +77,6 @@ class Positioning2Mission(Mission):
 
         elif self.state == 10:
             if e.name == "move" and e.type == "done":
-                self.state += 1
-                self.can.send("ax 2 angle set 1023")
-                self.create_timer(2500)
-
-        elif self.state == 11:
-            if e.name == "timer":
                 self.state = 0
-                self.can.send("ax 2 angle set 0")
                 self.logger.info("Gros en position !")
                 self.send_event(Event("positioning", "done"))
