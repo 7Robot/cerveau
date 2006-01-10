@@ -19,6 +19,8 @@ class MoveMission(Mission):
 
         self._fonction = None
 
+        self.dist = 0
+
         self.value = {}
 
     def _set_fonction(self, fonction):
@@ -98,23 +100,27 @@ class MoveMission(Mission):
 
             elif self.fonction == "reach_x":
                 self.mission = "forward"
-                #print("Position actuelle : %s %d" %(self.odo.pos, event.rot))
-                #print("Consigne: x=%d" %self.value["x"])
+                self.logger.info("[reach_x] Position actuelle : %s %d" %(self.odo.pos, event.rot))
+                self.logger.info("[reach_x] Consigne: x=%d" %self.value["x"])
                 dx = self.value["x"] - event.pos.x
                 dtheta = event.rot
                 dist = dx/cos(dtheta/18000*pi)
-                #print("dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
+                self.logger.info("[reach_x] dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
                 self.odo.target_pos += Vertex(dist * cos(event.rot/18000*pi), dist * sin(event.rot/18000*pi))
+                if (dist > 12500):
+                    self.dist = dist / 2
+                    dist = self.dist
+                    self.fonction == "reach_x_2"
                 self.missions["forward"].start(self, dist)
 
             elif self.fonction == "reach_y":
                 self.mission = "forward"
                 self.logger.info("[reach_y] Position actuelle : %s %d" %(event.pos, event.rot))
-                self.logger.info("Consigne: y=%d" %self.value["y"])
+                self.logger.info("[reach_y] Consigne: y=%d" %self.value["y"])
                 dy = self.value["y"] - event.pos.y
                 dtheta = event.rot
                 dist = dy/sin(dtheta/18000*pi)
-                self.logger.info("dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
+                self.logger.info("[reach_y] dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
                 self.odo.target_pos += Vertex(dist * cos(self.odo.rot/18000*pi), dist * sin(self.odo.rot/18000*pi))
                 self.missions["forward"].start(self, dist)
 
@@ -135,9 +141,13 @@ class MoveMission(Mission):
                 self.missions["rotate"].start(self, realangle)
 
         elif event.name == self.mission and event.type == "done":
-            if self.mission == "speed":
-                self.odo.target_pos += Vertex(event.value * cos(self.odo.target_rot/18000*pi), event.value * sin(self.odo.target_rot/18000*pi))
-                self.state = None
-            self.fonction = None
-            self.mission = None
+            if self.fonction == "reach_x_2" and self.dist != 0:
+                self.missions["forward"].start(self, dist)
+                self.fonction = "reach_x"
+            else:
+                if self.mission == "speed":
+                    self.odo.target_pos += Vertex(event.value * cos(self.odo.target_rot/18000*pi), event.value * sin(self.odo.target_rot/18000*pi))
+                    self.state = None
+                self.fonction = None
+                self.mission = None
             self.send_event(Event("move", "done", [self.callback]))

@@ -30,7 +30,7 @@ class Totem1Mission(Mission):
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 0, True) # on tourne vers le totem
+                self.move.rotate(self, -Robot.vrille(), True) # on tourne vers le totem
 
         elif self.state == 4:
             if event.name == "move" and event.type == "done":
