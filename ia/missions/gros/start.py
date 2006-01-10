@@ -19,18 +19,18 @@ class StartMission(Mission):
         elif self.state == 1:
             if event.name == "timer":
                 self.state += 1
-                self.ui.send("ia ready")
-                #self.odo.broadcast()
+                self.can.send("turret on")
                 self.can.send("turret unmute")
                 self.can.send("ax 1 torque set 800")
                 self.can.send("ax 2 torque set 800")
-                self.can.send("turret on")
+                #self.odo.broadcast()
                 self.odo.set(self, **{"x": 0, "y": 0, "rot": 27000})
 
         # ODO SET OK
         elif self.state == 2:
             if event.name == "odo" and event.type == "done":
                 self.state += 1
+                self.ui.send("ia ready")
 
         # Demarrage de la mission positioning 1 sur bump back
         elif self.state == 3:

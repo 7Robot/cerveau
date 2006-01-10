@@ -14,19 +14,18 @@ class StartMission(Mission):
         if self.state == 0:
             self.state +=1
             self.can.send("reset")
-            self.create_timer(3000) # FIXME 30000 !!!!!!!!!!!!!!!
-            
+            self.create_timer(3000)
 
         elif self.state == 1:
             if event.name == "timer":
                 self.state += 0.5
                 self.can.send("turret on")
                 self.can.send("turret unmute")
-                
                 self.ui.send("ia ready")
+                
 #                self.missions["positioning"].start()
 #                self.missions["bottle"].start()
-                self.missions["double_chemin"].start(self, 14200, -4900, -9000)
+#                self.missions["double_chemin"].start(self, 14200, -4900, -9000)
 #                self.missions["calibraterotation"].start()
 #                self.can.send("asserv dist 3000") # Fake recalibration
 #                self.odo.broadcast()
@@ -45,16 +44,12 @@ class StartMission(Mission):
                             % (i, Robot.rangefinder[i]))
                 self.state += 1
                 
-                
-#                self.missions["forward"].start(self, 9000)
-                print("Gooooooooooooooooo")
-#            if event.name == "odo" and event.type == "done":
-#                self.state += 1
-#
         elif self.state == 3:
             if event.name == "bump" and event.state == "open" \
                     and event.pos == "leash":
                 self.state += 1
+                self.logger.info("Beggining of the match !")
+                self.missions["totem"].start()
                 self.missions["match"].start()
                 self.missions["bottle"].start()
                 
