@@ -17,7 +17,7 @@ class MatchMission(Mission):
             if event.name == "start":
                 self.state = "started"
                 self.ui.send("start")
-                self.create_timer(9000)
+                self.create_timer(90000)
         
         elif self.state == "started" and event.name == "timer":
                 self.state = "end"

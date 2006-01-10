@@ -95,10 +95,10 @@ class SpeedRotateMission(Mission):
                 self.state = "paused"
                 self.resume()
             elif self.state == "stopping":
-                self.state = "stopped"
+                self.state = "repos"
                 self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "done", self.callback))
             elif self.state == "aborting":
-                self.state = "aborted"
+                self.state = "repos"
                 self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "aborted", self.callback))
