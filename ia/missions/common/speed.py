@@ -40,8 +40,8 @@ class SpeedMission(Mission):
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
             if ((self.captor.front and speed > 0)
-                self.state = "run"
                     or (self.captor.back and speed < 0)):
+                self.state = "run"
                 if self.speed != 0:
                     sens = abs(self.speed) / 50
                     self.missions["threshold"].sensivity(sens)

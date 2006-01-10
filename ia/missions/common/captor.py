@@ -24,7 +24,7 @@ class CaptorMission(Mission):
         self._front = False
         self._back = False
         # boolean reprsentant la prsence d'obstacle en face d'un capteur
-        self.captor = { 0: False, 1: False, 2: False, 8: False }
+        self.captors = { 0: False, 1: False, 2: False, 8: False }
         self.dist_y = 0 # customisable
         self.largeur = 0
 
@@ -77,7 +77,7 @@ class CaptorMission(Mission):
         else:
             obstacle = False
             for k in [0, 1, 2]:
-                if self.captor[k]:
+                if self.captors[k]:
                     obstacle = True
                     break
             if not obstacle:
@@ -89,22 +89,22 @@ class CaptorMission(Mission):
         if event.name == "rangefinder" \
                 and event.type == "value":
             if event.id in [1, 2]:
-                self.captor[event.id] = (event.pos == "under")
+                self.captors[event.id] = (event.pos == "under")
                 if not self.front and event.pos == "under":
                     self.front = True
                 elif self.front and event.pos == "over":
                     self.resume("front")
             elif event.id == 8:
-                self.captor[event.id] = (event.pos == "under")
+                self.captors[event.id] = (event.pos == "under")
                 if not self.back and event.pos == "under":
                     self.back = True
                 elif self.back and event.pos == "over":
                     self.resume("back")
         elif event.name == "turret" and event.type == "answer":
             hysteresis = 0
-            if self.captor[0]:
+            if self.captors[0]:
                 hysteresis = 1
-            self.captor[0] = False
+            self.captors[0] = False
             for i in range(len(event.angle)):
                 event.dist[i] -= 8
                 obs_x = event.dist[i]*cos(event.angle[i]/180*pi) # les angles de turret sont en degre
@@ -115,8 +115,8 @@ class CaptorMission(Mission):
                     if hysteresis == 0:
                         self.logger.info("Laser STOP !")
                         self.front = True
-                    self.captor[0] = True
+                    self.captors[0] = True
                     break
-            if not self.captor[0] and hysteresis == 1:
+            if not self.captors[0] and hysteresis == 1:
                 self.logger.info("Laser GO !")
                 self.resume("front")
