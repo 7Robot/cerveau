@@ -29,31 +29,38 @@ class SpeedMission(Mission):
             attend le ticks answer (pour envoyer un event speed aborted)
         '''
         self.state = "repos"
-        self.free_way = {"back": True, "front": True} 
 
 
     # s'orienter dans la direction rot_target
     def start(self, speed, curt = False, callback_autoabort = None):
         if self.state == "repos":
-            self.state = "run"
             self.curt = curt
             self.speed = speed
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
-            if self.speed != 0:
-                sens = abs(self.speed) / 50
-                print("mission speed set sens ", sens, " (speed: %d)" %self.speed)
-                self.missions["threshold"].sensivity(sens)
-            if self.curt:
-                self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
+            if ((self.captor.front and speed > 0)
+                self.state = "run"
+                    or (self.captor.back and speed < 0)):
+                if self.speed != 0:
+                    sens = abs(self.speed) / 50
+                    self.missions["threshold"].sensivity(sens)
+                if self.curt:
+                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
+                else:
+                    self.can.send("asserv speed %d %d" %(self.speed, self.speed))
             else:
-                self.can.send("asserv speed %d %d" %(self.speed, self.speed))
+                self.state = "paused"
+                if self.speed != 0:
+                    self.missions["threshold"].sensivity(0.6)
              
     def change(self, speed):
         self.speed = speed
         if self.state == "run":
             self.can.send("asserv speed %d %d curt" %(speed, speed))
+            if self.speed != 0:
+                sens = abs(self.speed) / 50
+                self.missions["threshold"].sensivity(sens)
 
     def stop(self, callback):
         self.callback = callback
@@ -80,6 +87,9 @@ class SpeedMission(Mission):
             if ((self.free_way["front"] and self.speed > 0) \
                     or (self.free_way["back"] and self.speed < 0)):
                 self.state = "run"
+                if self.speed != 0:
+                    sens = abs(self.speed) / 50
+                    self.missions["threshold"].sensivity(sens)
                 if self.curt:
                     self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
                 else:
@@ -99,6 +109,8 @@ class SpeedMission(Mission):
         elif event.name == "asserv" and event.type == "done":
             if self.state == "pausing":
                 self.state = "paused"
+                if self.speed != 0:
+                    self.missions["threshold"].sensivity(0.6)
                 self.resume()
             elif self.state == "stopping":
                 self.state = "stopped"

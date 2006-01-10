@@ -22,7 +22,6 @@ class ForwardMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos" # repos | forwarding | pausing | waiting
-        self.free_way = {"back": True, "front": True} 
         self.abort = False
         
     def start(self, callback, order, autoabort=False):
@@ -32,9 +31,14 @@ class ForwardMission(Mission):
             self.order = int(order)
             self.callback = callback
             self.remaining = self.order
-            self.state = "run"
-            self.can.send("asserv dist %d" % self.remaining)
-            self.create_timer(200)
+            if ((self.captor.front and order > 0 )
+                    or (self.captor.back and order < 0)):
+                self.state = "paused"
+                self.missions["threshold"].sensivity(0.6)
+            else:
+                self.state = "run"
+                self.can.send("asserv dist %d" % self.remaining)
+                self.create_timer(200)
 
     def pause(self):
         if self.state == "run":
@@ -50,8 +54,8 @@ class ForwardMission(Mission):
         
     def resume(self):
         if self.state == "paused":
-            if ((self.free_way["front"] and self.order > 0) \
-                    or (self.free_way["back"] and self.order < 0)):
+            if ((self.captor.front and self.order > 0) \
+                    or (self.captor.back and self.order < 0)):
                 self.state = "run"
                 self.can.send("asserv dist %d" %self.remaining)
                 self.create_timer(200)
@@ -60,7 +64,6 @@ class ForwardMission(Mission):
         if event.name == "timer" and self.state == "run":
             self.missions["threshold"].sensivity(1.5)
         elif event.name == "captor":
-            self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
                 if ((event.pos == "front" and self.order > 0) \
                         or (event.pos == "back" and self.order < 0)):

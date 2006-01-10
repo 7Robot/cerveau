@@ -55,6 +55,12 @@ class Dispatcher(Thread):
         else:
             self.logger.critical("OdoMission not found")
 
+        if "captor" in self.missions:
+            for mission in self.missions:
+                self.missions[mission].captor = self.missions["captor"]
+        else:
+            self.logger.critical("CaptorMission not found")
+
         if "start" in self.missions:
             self.missions["start"].start()
         else:

@@ -29,7 +29,6 @@ class SpeedRotateMission(Mission):
             attend le ticks answer (pour envoyer un event speed aborted)
         '''
         self.state = "repos"
-        self.free_way = {"back": True, "front": True} 
 
 
     # s'orienter dans la direction rot_target
@@ -39,10 +38,14 @@ class SpeedRotateMission(Mission):
             self.right = right
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
-            self.state = "run"
-            if self.left + self.right != 0:
+            if ((self.captor.front and (self.left+self.right) > 0)
+                    or (self.captor.back and (self.left+self.right) < 0)):
+                self.state = "paused"
+                self.missions["threshold"].sensivity(0.6)
+            else:
+                self.state = "run"
                 self.missions["threshold"].sensivity(abs(self.left+self.right) / 100.0)
-            self.can.send("asserv speed %d %d" %(self.left, self.right))
+                self.can.send("asserv speed %d %d" %(self.left, self.right))
              
     def change(self, speed):
         if self.state != "repos":
@@ -69,6 +72,7 @@ class SpeedRotateMission(Mission):
             else:
                 self.state = "pausing"
             self.can.send("asserv stop")
+            self.missions["threshold"].sensivity(0.6)
 
     def resume(self):
         # FIXME il est peut-être possible de redémarrer sans attendre le asserv done
@@ -76,12 +80,11 @@ class SpeedRotateMission(Mission):
             if ((self.free_way["front"] and abs(self.left+self.right) > 0) \
                     or (self.free_way["back"] and abs(self.left+self.right) < 0)):
                 self.state = "run"
-#                self.state = "repos" #FIXME a enlever
                 self.can.send("asserv speed %d %d" %(self.left, self.right))
+                self.missions["threshold"].sensivity(abs(self.left+self.right) / 100)
                 
     def process_event(self, event):
         if event.name == "captor":
-            self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
                 if ((event.pos == "front" and abs(self.left+self.right) > 0) \
                         or (event.pos == "back" and abs(self.left+self.right) < 0)):
