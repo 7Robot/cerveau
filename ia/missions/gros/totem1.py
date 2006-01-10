@@ -25,7 +25,7 @@ class Totem1Mission(Mission):
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 #self.move.forward(self, 4700) # on avance vers le totem
-                self.move.reach_y(self, 3000)
+                self.move.reach_y(self, 2950)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
@@ -67,7 +67,9 @@ class Totem1Mission(Mission):
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
-                if self.odo.rot < 20800 and self.odo.rot > 19000:
+                if not self.odo.brd:
+                    self.can.send("odo mute")
+                if self.odo.rot < 20100 and self.odo.rot > 19900:
                     self.state += 2
                     self.move.reach_x(self, -12000)
                 else:
