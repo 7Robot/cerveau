@@ -41,6 +41,10 @@ class SpeedMission(Mission):
             self.can.send("asserv ticks reset")
             if ((self.captor.front and speed > 0)
                     or (self.captor.back and speed < 0)):
+                self.state = "paused"
+                if self.speed != 0:
+                    self.missions["threshold"].sensivity(0.6)
+            else:
                 self.state = "run"
                 if self.speed != 0:
                     sens = abs(self.speed) / 50
@@ -49,10 +53,6 @@ class SpeedMission(Mission):
                     self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
                 else:
                     self.can.send("asserv speed %d %d" %(self.speed, self.speed))
-            else:
-                self.state = "paused"
-                if self.speed != 0:
-                    self.missions["threshold"].sensivity(0.6)
              
     def change(self, speed):
         self.speed = speed
