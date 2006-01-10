@@ -84,8 +84,8 @@ class SpeedMission(Mission):
     def resume(self):
         # FIXME il est peut-être possible de redémarrer sans attendre le asserv done
         if self.state == "paused":
-            if ((self.free_way["front"] and self.speed > 0) \
-                    or (self.free_way["back"] and self.speed < 0)):
+            if ((not self.captor.front and self.speed > 0) \
+                    or (not self.captor.back and self.speed < 0)):
                 self.state = "run"
                 if self.speed != 0:
                     sens = abs(self.speed) / 50
@@ -97,7 +97,6 @@ class SpeedMission(Mission):
 
     def process_event(self, event):
         if event.name == "captor":
-            self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
                 if ((event.pos == "front" and self.speed > 0) \
                         or (event.pos == "back" and self.speed < 0)):

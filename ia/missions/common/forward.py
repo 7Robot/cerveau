@@ -54,8 +54,8 @@ class ForwardMission(Mission):
         
     def resume(self):
         if self.state == "paused":
-            if ((self.captor.front and self.order > 0) \
-                    or (self.captor.back and self.order < 0)):
+            if ((not self.captor.front and self.order > 0) \
+                    or (not self.captor.back and self.order < 0)):
                 self.state = "run"
                 self.can.send("asserv dist %d" %self.remaining)
                 self.create_timer(200)

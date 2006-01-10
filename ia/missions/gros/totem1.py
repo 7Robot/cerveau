@@ -83,7 +83,14 @@ class Totem1Mission(Mission):
 
         elif self.state == 11:
             if event.name == "move" and event.type == "done":
-                self.state += 1
+                self.state += 0.5
+                self.can.send("ax 2 angle set 1023")
+                self.create_timer(2500)
+
+        elif self.state == 11.5
+            if event.name == "timer":
+                self.state += 0.5
+                self.can.send("ax 2 angle set 0")
                 self.move.forward(self, -2000)
 
         elif self.state == 12:

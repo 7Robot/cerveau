@@ -77,8 +77,8 @@ class SpeedRotateMission(Mission):
     def resume(self):
         # FIXME il est peut-être possible de redémarrer sans attendre le asserv done
         if self.state == "paused":
-            if ((self.free_way["front"] and abs(self.left+self.right) > 0) \
-                    or (self.free_way["back"] and abs(self.left+self.right) < 0)):
+            if ((not self.captor.front and abs(self.left+self.right) > 0) \
+                    or (not self.captor.back and abs(self.left+self.right) < 0)):
                 self.state = "run"
                 self.can.send("asserv speed %d %d" %(self.left, self.right))
                 self.missions["threshold"].sensivity(abs(self.left+self.right) / 100)
