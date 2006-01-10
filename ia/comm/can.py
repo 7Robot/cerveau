@@ -27,7 +27,6 @@ class Can(Comm):
                     cmds[2] = cmds[3]
                     cmds[3] = left # old left = new right
             elif cmds[0] == "rangefinder":
-                print("rangefinder : ", message)
                 if len(cmds) > 1:
                     if cmds[1] == "1":
                         cmds[1] = "2"

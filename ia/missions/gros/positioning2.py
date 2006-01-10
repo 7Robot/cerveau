@@ -79,7 +79,7 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 1
                 self.can.send("ax 2 angle set 1023")
-                self.create_timer(3000)
+                self.create_timer(2500)
 
         elif self.state == 11:
             if e.name == "timer":

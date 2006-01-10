@@ -96,17 +96,9 @@ class SpeedRotateMission(Mission):
                 self.resume()
             elif self.state == "stopping":
                 self.state = "stopped"
-                self.can.send("asserv ticks request")
-            elif self.state == "aborting":
-                self.state = "aborted"
-                self.can.send("asserv ticks request")
-
-        if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
-            if self.state == "stopped":
-                self.state = "repos"
                 self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "done", self.callback, **{"value": event.value}))
-            elif self.state == "aborted":
-                self.state = "repos"
+            elif self.state == "aborting":
+                self.state = "aborted"
                 self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "aborted", self.callback, **{"value": event.value}))

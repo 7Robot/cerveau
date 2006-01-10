@@ -18,8 +18,8 @@ class MatchMission(Mission):
                 self.state = "started"
                 self.ui.send("start")
                 self.create_timer(89000)
-        if self.state == "started":
-            if event.name == "timer":
+        
+        elif self.state == "started" and event.name == "timer":
                 self.state = "end"
                 self.can.send("asserv stop")
                 self.can.send("ax 1 torque set 0")
@@ -27,4 +27,7 @@ class MatchMission(Mission):
                 self.can.send("ax 2 torque set 0")
                 self.ui.send("stop")
                 self.send_event(Event("match", "end"))
+                self.create_timer(1000)
+
+        elif self.state == "end" and event.name == "timer":
                 os.execlp("killall", "killall", "-9", "python3")
