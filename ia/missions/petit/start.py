@@ -49,7 +49,6 @@ class StartMission(Mission):
                     and event.pos == "leash":
                 self.state += 1
                 self.logger.info("Beggining of the match !")
-                self.missions["totem"].start()
                 self.missions["match"].start()
                 self.missions["bottle"].start()
                 

@@ -11,6 +11,9 @@ class PositioningMission(Mission):
     def start(self):
         if self.state == -1:
             self.create_timer(500)
+            self.missions["threshold"].activate(1, False)
+            self.missions["threshold"].activate(2, False)
+            self.missions["threshold"].activate(8, False)
             self.state += 1
 
     def process_event(self, e):
@@ -75,5 +78,8 @@ class PositioningMission(Mission):
         elif self.state == 12:
             if e.name == "forward" and e.type == "done":
                 self.state = 0
+                self.missions["threshold"].activate(1, True)
+                self.missions["threshold"].activate(2, True)
+                self.missions["threshold"].activate(8, True)
                 self.logger.info("Petit en position !")
                 self.send_event(Event("positioning", "done"))
