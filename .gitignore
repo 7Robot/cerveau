@@ -9,3 +9,5 @@ ia/.project
 ia/.settings
 *.tar
 .settings
+ia/ia.out
+ia/ia.err
