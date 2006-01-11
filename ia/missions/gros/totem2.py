@@ -13,14 +13,45 @@ class Totem2Mission(Mission):
     def process_event(self, event):
         if self.state == 0:
             if event.name == "start":
-                self.state += 3
-                self.move.reach_y(self, -3000)
+                self.state += 1
+                self.move.reach_x(self, 8000)
 
-        elif self.state == 3:
+        elif self.state == 1:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 0, True) # on tourne vers le totem
+                self.move.rotate(self, 27000, True) # on tourne vers le totem
 
+        elif self.state == 2:
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.speed(-15)
+
+        elif self.state == 3:
+            if event.name == "bump" and event.status == "close":
+                self.state += 0.1
+                self.create_timer(self.robot.pos_timer)
+
+        elif self.state == 3.1:
+            if event.name == "timer":
+                self.state += 0.1
+                self.move.stop(self)
+
+        elif self.state == 3.2:
+            if event.name == "move" and event.type == "done":
+                self.state += 0.1
+                self.can.send("asserv off")
+                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + Robot.vrille()})
+
+        elif self.state == 3.3:
+            if event.name == "odo" and event.type == "done":
+                self.state += 0.1
+                self.can.send("asserv on")
+                self.move.reach_y(self, 3000)
+
+        elif self.state == 3.4:
+            if event.name == "move" and event.type == "done":
+                self.state = 4
+                self.move.rotate(self, 18000-Robot.vrille(), True)
         elif self.state == 4:
             if event.name == "move" and event.type == "done":
                 self.state += 1
@@ -39,73 +70,27 @@ class Totem2Mission(Mission):
 
         elif self.state == 6:
             if event.name == "move" and event.type == "done":
-        #        self.state += 1
-                self.state += 2
+                self.state += 1
                 self.can.send("ax 1 angle set 0")
-        #        self.create_timer(1000)
-                
-        #elif self.state == 7:
-        #    if event.name == "timer":
-        #        self.state += 1
-                if not self.odo.brd:
-                    self.can.send("odo unmute")
-                self.missions["speedrotate"].start(80, 10)
+                self.move.rotate(self, 4500, True)
+
+        elif self.state == 7:
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.reach_y(self, 6500)
 
         elif self.state == 8:
-            if event.name == "odo" and event.type == "pos":
-                if event.rot > 18000 and event.rot > 9000:
-                    self.state += 1
-                    self.missions["speedrotate"].stop(self)
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.rotate(self, 18000, True)
 
         elif self.state == 9:
-            if event.name == "speedrotate" and event.type == "done":
-                if not self.odo.brd:
-                    self.can.send("odo mute")
-                if self.odo.rot < 18000 and self.odo.rot > 9000:
-                    self.state += 2
-                    self.move.reach_x(self, -12000)
-                else:
-                    self.state += 1
-                    self.logger.info("Bad orientation (%d), adjusting ..."
-                            %self.odo.rot)
-                    self.move.rotate(self, 13000, True)
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.reach_x(self, -8800, True)
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.reach_x(self, -12000)
-
-        elif self.state == 11:
-            if event.name == "move" and event.type == "done":
-                self.state += 1
-                self.can.send("ax 1 angle set 1023")
-                create_timer(1000)
-                #self.send_event(Event("totem", "done"))
-
-        #elif self.state == 12:
-        #    if event.name == "move" and event.type == "done":
-        #        self.state += 1
-        #        self.missions["speedrotate"].start(-50, -25)
-
-        #elif self.state == 13:
-        #    if event.name == "odo" and event.type == "pos":
-        #        if event.rot < 20000:
-        #            self.state += 1
-        #            self.missions["speedrotate"].stop(self)
-
-        #elif self.state == 14:
-        #    if event.name == "speedrotate" and event.type == "done":
-        #        if not self.odo.brd:
-        #            self.can.send("odo mute")
-        #        if self.odo.rot < 17000 and self.odo.rot > 19000:
-        #            self.send_event(Event("totem", "done"))
-        #            self.state = 0
-        #        else:
-        #            self.state += 1
-        #            self.logger.info("Bad orientation (%d), adjusting ..."
-        #                    %self.odo.rot)
-        #            self.move.rotate(self, 18000, True)
-
-        #elif self.state == 15:
-        #    if event.name == "move" and event.type:
-        #        self.send_event(Event("totem", "done"))
+                self.ui.send("C'est la panic !")
+                self.send_event(Event("totem", "done"))

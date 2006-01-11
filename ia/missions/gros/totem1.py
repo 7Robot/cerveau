@@ -64,7 +64,7 @@ class Totem1Mission(Mission):
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 15000 and event.rot < 32000:
+                if event.rot > 17000 and event.rot < 32000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
@@ -105,7 +105,7 @@ class Totem1Mission(Mission):
 
         elif self.state == 13:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 25500:
+                if event.rot < 25000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
@@ -152,7 +152,7 @@ class Totem1Mission(Mission):
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 self.can.send("asserv off")
-                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + Robot.vrille() })
+                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": Robot.vrille() })
 
         elif self.state == 19:
             if event.name == "odo" and event.type == "done":
