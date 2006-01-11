@@ -89,17 +89,19 @@ class CaptorMission(Mission):
         if event.name == "rangefinder" \
                 and event.type == "value":
             if event.id in [1, 2]:
-                self.captors[event.id] = (event.pos == "under")
-                if not self.front and event.pos == "under":
-                    self.front = True
-                elif self.front and event.pos == "over":
-                    self.resume("front")
+                if event.value <= self.missions["threshold"].threshold[event.id]:
+                    self.captors[event.id] = (event.pos == "under")
+                    if not self.front and event.pos == "under":
+                        self.front = True
+                    elif self.front and event.pos == "over":
+                        self.resume("front")
             elif event.id == 8:
-                self.captors[event.id] = (event.pos == "under")
-                if not self.back and event.pos == "under":
-                    self.back = True
-                elif self.back and event.pos == "over":
-                    self.resume("back")
+                if event.value <= self.missions["threshold"].threshold[event.id]:
+                    self.captors[event.id] = (event.pos == "under")
+                    if not self.back and event.pos == "under":
+                        self.back = True
+                    elif self.back and event.pos == "over":
+                        self.resume("back")
         elif event.name == "turret" and event.type == "answer":
             hysteresis = 0
             if self.captors[0]:
