@@ -60,7 +60,7 @@ class Totem1Mission(Mission):
         elif self.state == 7:
             if event.name == "timer":
                 self.state += 1
-                self.missions["speedrotate"].start(0, 70)
+                self.missions["speedrotate"].start(0, 50)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
@@ -101,15 +101,16 @@ class Totem1Mission(Mission):
 
         elif self.state == 13:
             if event.name == "move" and event.type == "done":
-                self.state += 0.05
+                self.state = 13.05
                 self.move.reach_y(self, 8000)
 
         elif self.state == 13.05:
             if event.name == "move" and event.type == "done":
-                self.state += 0.05
+                self.state = 13.1
                 self.move.speed(-15)
 
         elif self.state == 13.1:
+            self.logger.info("event", event)
             if event.name == "bump" and event.state == "close":
                 self.state += 0.1
                 self.create_timer(self.robot.pos_timer)

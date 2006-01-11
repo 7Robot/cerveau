@@ -68,7 +68,7 @@ class Dispatcher(Thread):
         
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
-            self.logger.debug("Process event : %s", event.__str__())
+            #self.logger.debug("Process event : %s", event.__str__())
             if event.dests != []:
                 # Routage de l'event aux destinataires
                 for dest in event.dests:
@@ -76,4 +76,5 @@ class Dispatcher(Thread):
             else:
                 # On dispatch l'event  toutes les missions
                 for missions in self.missions.values():
+                    #self.logger.debug("Send event to %s" %missions.name)
                     missions.process_event(event)
