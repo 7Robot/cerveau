@@ -26,7 +26,7 @@ class Totem1Mission(Mission):
                 self.state += 1
                 #self.move.forward(self, 4700) # on avance vers le totem
                 if Robot.side == 'violet':
-                    self.move.reach_y(self, 3200) # NIM: c’était 2950 33/240
+                    self.move.reach_y(self, 3150) # NIM: c’était 2950 33/240
                 else:
                     self.move.reach_y(self, 2900) # NIM: c’était 2950
 
@@ -71,15 +71,11 @@ class Totem1Mission(Mission):
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
                 if not self.odo.brd:
-                    self.can.send("odo mute")
-                if self.odo.rot < 20100 and self.odo.rot > 19900:
-                    self.state += 2
-                    self.move.reach_x(self, -12000)
-                else:
                     self.state += 1
+                    self.can.send("odo mute")
                     self.logger.info("Bad orientation (%d), adjusting ..."
                             %self.odo.rot)
-                    self.move.rotate(self, 20000, True)
+                    self.move.rotate(self, 20100, True)
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
@@ -95,43 +91,55 @@ class Totem1Mission(Mission):
         elif self.state == 11.5:
             if event.name == "timer":
                 self.state += 0.5
-                self.can.send("ax 2 angle set 0")
-                self.move.forward(self, -2000)
+                self.move.forward(self, -4000)
 
         elif self.state == 12:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.missions["speedrotate"].start(-50, -20)
+                self.can.send("ax 2 angle set 0")
+                self.move.rotate(self, 27000, True)
 
         elif self.state == 13:
-            if event.name == "odo" and event.type == "pos":
-                if event.rot < 25000:
-                    self.state += 1
-                    self.missions["speedrotate"].stop(self)
+            if event.name == "move" and event.type == "done":
+                self.state += 0.05
+                self.move.reach_y(self, 8000)
+
+        elif self.state == 13.05:
+            if event.name == "move" and event.type == "done":
+                self.state += 0.05
+                self.move.speed(-15)
+
+        elif self.state == 13.1:
+            if event.name == "bump" and event.state == "close":
+                self.state += 0.1
+                self.create_timer(self.robot.pos_timer)
+
+        elif self.state == 13.2:
+            if event.name == "timer":
+                self.state += 0.1
+                self.move.stop(self)
+
+        elif self.state == 13.3:
+            if e.name == "move" and e.type == "done":
+                self.state = 0.1
+                self.can.send("asserv off")
+                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + Robot.vrille()})
+
+        elif self.state == 13.4:
+            if e.name == "odo" and e.type == "done":
+                self.state = 14
+                self.can.send("asserv on")
+                self.move.forward(self, 1300)
 
         elif self.state == 14:
-            if event.name == "speedrotate" and event.type == "done":
-                if not self.odo.brd:
-                    self.can.send("odo mute")
-                if self.odo.rot < 26900 or self.odo.rot > 27100:
-                    self.state += 1
-                    self.logger.info("Bad orientation (%d), adjusting ..."
-                            %self.odo.rot)
-                    self.move.rotate(self, 27000, True)
-                else:
-                    #self.state += 1.5
-                    #self.move.reach_x(self, 8000)
-                    self.state += 2
-                    #self.move.speed(-self.robot.pos_speed)
-                    self.move.speed(-15)
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.rotate(self, 0, True)
 
         elif self.state == 15:
             if event.name == "move" and event.type == "done":
-                self.state += 1
-                self.move.speed(-15)
-
-                #self.state += 0.5
-                #self.move.reach_x(self, 8000)
+                self.state += 0.5
+                self.move.reach_x(self, -13000)
 
         elif self.state == 15.5:
             if event.name == "move" and event.type == "done":
