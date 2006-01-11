@@ -23,7 +23,7 @@ class BottleMission(Mission):
             if e.name == "forward" and e.type == "done":
                 self.state += 1
                 if Robot.side == "violet":
-                    self.missions["rotate"].start(self, -9400) # -9200
+                    self.missions["rotate"].start(self, -9300) # -9200
                 else:
                     self.missions["rotate"].start(self, -8900)
                                     
@@ -39,12 +39,12 @@ class BottleMission(Mission):
                 self.state += 0.5
                 for i in [1,2]: self.missions["threshold"].activate(i, False)
                 self.missions["speed"].start(50)
-                self.create_timer(10000)
+                self.create_timer(5000) # si on bump pas
                     
         elif self.state == 4:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
                 self.state += 0.5
-                self.create_timer(2000, timername="recalage")
+                self.create_timer(1500, timername="recalage")
                 
                 
         elif self.state == 4.5:
@@ -94,13 +94,13 @@ class BottleMission(Mission):
                 self.state += 1
                 for i in [1,2]: self.missions["threshold"].activate(i, False)
                 self.missions["speed"].start(50)
-                self.create_timer(10000)
+                self.create_timer(6000) # si on bump pas
 
                 
         elif self.state == 10:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
                 self.state += 0.5
-                self.create_timer(1000, timername="recalage")
+                self.create_timer(1500, timername="recalage")
         
         elif self.state == 10.5:
             if e.name == "timer":        
