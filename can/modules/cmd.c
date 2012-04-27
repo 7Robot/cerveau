@@ -45,7 +45,7 @@ int can_write(int fd, can_t packet)
 
 	if (carte == 0) { // ARM & SUIVEUR ---------------------------------
 		if (id == 127) { // reset
-			sprintf(output, "ASSERV RESET\n");
+			sprintf(output, "RESET\n");
 		} else {
 			send = 0;
 		}
@@ -55,14 +55,14 @@ int can_write(int fd, can_t packet)
         if ((id & 64) == 64) { // rangefinder
             if ((id & 32) == 32) { // value
                 sprintf(output, "RANGEFINDER %d VALUE %hu %s %s\n",
-                        (id & 7), ((uint16_t*)packet.b)[0],
+                        (id & 7) + 1, ((uint16_t*)packet.b)[0],
                         ((id & 16) == 16)?"UNDER":"OVER",
                         ((id & 8) == 8)?"EDGE":"");
             } else if ((id & 16) == 16) { // broadcast
-                sprintf(output, "RANGEFINDER %d %s\n", (id & 7),
+                sprintf(output, "RANGEFINDER %d %s\n", (id & 7) + 1,
                         ((id & 8) == 8)?"UNMUTE":"MUTE");
             } else if ((id & 8) == 8) { // threshold
-                sprintf(output, "RANGEFINDER %d THRESHOLD %hu\n", (id & 7),
+                sprintf(output, "RANGEFINDER %d THRESHOLD %hu\n", (id & 7) + 1,
                         ((uint16_t*)packet.b)[0]);
             } else { // request
                 sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7));
@@ -70,7 +70,7 @@ int can_write(int fd, can_t packet)
         } else if ((id & 60) == 0) { //bump
             sprintf(output, "BUMP %s %s\n",
                     (id&2)==2?"FRONT":"BACK",
-                    (id&1)==1?"ON":"OFF");
+                    (id&1)==1?"CLOSE":"OPEN");
         } else {
             send = 0;
         }
@@ -100,8 +100,11 @@ int can_write(int fd, can_t packet)
                     (id&1==1)?"CURT":"");
 		} else if ((id & 126) == 4) {
 			sprintf(output, "ASSERV %s\n", (id&1==1)?"ON":"OFF");
-		} else if (id == 16) {
-			sprintf(output, "ASSERV DONE %hd\n", ((int16_t*)packet.b)[1]);
+		} else if ((id & 126) == 16) {
+			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", 
+                    (id&1==1)?"rotate":"forward");
+			sprintf(output, "ASSERV DONE %s %hd\n",
+                    (id&1==1)?"ROT":"DIST", distance);
         } else if (id = 127) {
             sprintf(output, "ASSERV STOP\n");
 		} else {
@@ -181,54 +184,69 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 printf("Warning: « asserv » needs at least one argument\n");
                 send = 0;
             } else if (!strcasecmp(buffer, "on")) {
-                packet.id = 1028;
-            } else if (!strcasecmp(buffer, "off")) {
                 packet.id = 1029;
+            } else if (!strcasecmp(buffer, "off")) {
+                packet.id = 1028;
             } else if (!strcasecmp(buffer, "stop")) {
                 packet.id = 1151;
             } else if (!strcasecmp(buffer, "dist")) {
                 int16_t dist;
                 if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « odo dist »\n");
+                    printf("Warning: bag arguments for « asserv dist »\n");
                     send = 0;
                 }
-                dist = atoi(buffer);
+                dist = atoi(buffer) * getValue("asserv", "forward");
                 packet.length = 2;
                 packet.b[0] = ((char*)&dist)[0];
-                packet.b[0] = ((char*)&dist)[1];
+                packet.b[1] = ((char*)&dist)[1];
                 packet.id = 1025;
             } else if (!strcasecmp(buffer, "done")) {
                 int16_t dist;
                 if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « odo done »\n");
+                    printf("Warning: bag arguments for « asserv done »\n");
                     send = 0;
+                } else {
+                    if (!strcasecmp(buffer, "dist")) {
+                        packet.id = 1040;
+                    } else if (!strcasecmp(buffer, "rot")) {
+                        packet.id = 1041;
+                    } else {
+                        printf("Warning: bag arguments for « asserv done »\n");
+                        send = 0;
+                    }
+                    if (send) {
+                        if (!strword(buffer, line, &pos)) {
+                            printf("Warning: bag arguments for « asserv done »\n");
+                            send = 0;
+                        }
+                        dist = atoi(buffer) * getValue("asserv",
+                                (packet.id&1==1)?"rotate":"forward");
+                        packet.length = 2;
+                        packet.b[0] = ((char*)&dist)[0];
+                        packet.b[1] = ((char*)&dist)[1];
+                    }
                 }
-                dist = atoi(buffer);
-                packet.length = 2;
-                packet.b[0] = ((char*)&dist)[0];
-                packet.b[0] = ((char*)&dist)[1];
-                packet.id = 1040;
             } else if (!strcasecmp(buffer, "rot")) {
                 int16_t angle;
                 if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « odo rot »\n");
+                    printf("Warning: bag arguments for « asserv rot »\n");
                     send = 0;
                 }
-                angle = atoi(buffer);
+                angle = atoi(buffer) * getValue("asserv", "rotate");
                 packet.length = 2;
                 packet.b[0] = ((char*)&angle)[0];
-                packet.b[0] = ((char*)&angle)[1];
+                packet.b[1] = ((char*)&angle)[1];
                 packet.id = 1026;
             } else if (!strcasecmp(buffer, "speed")) {
                 int8_t vg, vd;
                 if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « odo speed »\n");
+                    printf("Warning: bag arguments for « asserv speed »\n");
                     send = 0;
                 }
                 vg = atoi(buffer);
                 packet.length = 2;
                 if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « odo speed »\n");
+                    printf("Warning: bag arguments for « asserv speed »\n");
                     send = 0;
                 }
                 vd = atoi(buffer);
@@ -244,7 +262,66 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 send = 0;
             }
         } else if (!strcasecmp(buffer, "rangefinder")) {
+            packet.id = 320;
+            int rfid;
+            char * errmsg = "Warning: « rangefinder » must be followed by an integer between 1 and 8, then « value », « request », « mute », « unmute » or « threshold »\n";
+            if (!strword(buffer, line, &pos) || !(rfid = atoi(buffer)) || !strword(buffer, line, &pos)) {
+                printf(errmsg);
+                send = 0;
+            } else {
+                packet.id += rfid - 1;
+                if (!strcasecmp(buffer, "value")) {
+                    packet.id += 32;
+                    errmsg = "Warning: « rangefinder %d value » must be followed by a distance value, then « under » or « other », then optionally « edge »\n";
+                    if (!strword(buffer, line, &pos)) {
+                        printf(errmsg, rfid);
+                        send = 0;
+                    } else {
+                        int16_t value = atoi(buffer);
+                        packet.b[0] = ((int8_t*)&value)[0];
+                        packet.b[1] = ((int8_t*)&value)[1];
+                        packet.length = 2;
+                        int under;
+                        if (!strword(buffer, line, &pos)
+                                || ((under = strcasecmp(buffer, "over")) && strcasecmp(buffer, "under"))) {
+                            printf(errmsg, rfid);
+                            send = 0;
+                        } else {
+                            if (strword(buffer, line, &pos) && !strcasecmp(buffer, "edge")) {
+                                packet.id += 8;
+                            }
+                        }
+                    }
+                } else if (!strcasecmp(buffer, "threshold")) {
+                    packet.id += 8;
+                    if (!strword(buffer, line, &pos)) {
+                        printf("Warning: « rangefinder %d threshold » must be followed by a distance value\n", rfid);
+                        send = 0;
+                    } else {
+                        int16_t value = atoi(buffer);
+                        packet.b[0] = ((int8_t*)&value)[0];
+                        packet.b[1] = ((int8_t*)&value)[1];
+                        packet.length = 2;
+                    }
+                } else if (!strcasecmp(buffer, "mute")) {
+                    packet.id += 16;
+                } else if (!strcasecmp(buffer, "unmute")) {
+                    packet.id += 24;
+                } else if (strcasecmp(buffer, "request")) {
+                    printf(errmsg);
+                    send = 0;
+                }
+            }
         } else if (!strcasecmp(buffer, "bump")) {
+            int front, close;
+            if (!strword(buffer, line, &pos) || ((front = strcasecmp(buffer, "back")) && strcasecmp(buffer, "front"))
+                    || !strword(buffer, line, &pos) || ((close = strcasecmp(buffer, "open")) && strcasecmp(buffer, "close"))) {
+                printf("Warning: « bump » must be followed by « back » or « front », then, « open » or « close »\n");
+                send = 0;
+            }
+            packet.id = 256;
+            if (front) packet.id += 2;
+            if (close) packet.id += 1;
         } else {
             send = 0;
         }
