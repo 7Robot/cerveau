@@ -1,13 +1,20 @@
 #-*- coding: utf-8 -*-
 
+'''
+On charge ici toutes les classes de mission
+
+/ ! \ SI on change le nom de ce module actuellement appelé "missions", 
+changer event_dispatcher._load_all_missions() ... 
+'''
+
+from class_manager import *
 import os, sys
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-for py in [f[:-3] for f in os.listdir(path) if f.endswith('.py') and f != '__init__.py']:
-    mod = __import__('.'.join([__name__, py]), fromlist=[py])
-    classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
-    for cls in classes:
-        setattr(sys.modules[__name__], cls.__name__, cls)
 
 
+
+classes = class_loader(path)
+for cls in classes:
+    setattr(sys.modules[__name__], cls.__name__, cls)
