@@ -79,7 +79,7 @@ int can_write(int fd, can_t packet)
 			sprintf(output, "ODO REQUEST\n");
         } else if ((id & 126) == 2) {
 			sprintf(output, "ODO %s\n", (id&1)==1?"UNMUTE":"MUTE");
-        } else if ((id & 123) == 4) {
+        } else if ((id & 126) == 4) {
 			sprintf(output, "ODO %s %+hd %+hd %+hu\n", (id&1)==1?"SET":"POS",
                     ((int16_t*)packet.b)[0],
                     ((int16_t*)packet.b)[1],
@@ -166,14 +166,14 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     }
                     coord[i] = atoi(buffer);
                 }
-                if (i == 3) {
+                if (send) {
                     packet.length = 6;
                     packet.b[0] = ((char*)&coord[0])[0];
-                    packet.b[0] = ((char*)&coord[0])[1];
-                    packet.b[1] = ((char*)&coord[1])[0];
-                    packet.b[1] = ((char*)&coord[1])[1];
-                    packet.b[2] = ((char*)&coord[2])[0];
-                    packet.b[2] = ((char*)&coord[2])[1];
+                    packet.b[1] = ((char*)&coord[0])[1];
+                    packet.b[2] = ((char*)&coord[1])[0];
+                    packet.b[3] = ((char*)&coord[1])[1];
+                    packet.b[4] = ((char*)&coord[2])[0];
+                    packet.b[5] = ((char*)&coord[2])[1];
                 }
             } else {
                 printf("Warning: « odo » can't be followed by « %s »\n", buffer);
@@ -287,9 +287,9 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                             printf(errmsg, rfid);
                             send = 0;
                         } else {
-                            if (strword(buffer, line, &pos) && !strcasecmp(buffer, "edge")) {
+                            if (under) packet.id += 16;
+                            if (strword(buffer, line, &pos) && !strcasecmp(buffer, "edge"))
                                 packet.id += 8;
-                            }
                         }
                     }
                 } else if (!strcasecmp(buffer, "threshold")) {
