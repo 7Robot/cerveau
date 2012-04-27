@@ -1,19 +1,36 @@
 # -*- coding: utf-8 -*-
-import os
-from os.path import  join
+import os, threading
 from class_manager import *
+from events.internal import Start 
+
 
 class Event_dispatcher:
-    def __init__(self):
-        # instancier toutes les missions
+    '''Dispatch les events et la lance la 1e missions
+    du coup faudrait peut être revoir son nom'''
+    def __init__(self, missions_prefix):
+        # instancier toutes les missions 
         self.missions = {}
-        self._load_all_missions()
+        self._load_all_missions(missions_prefix)
+        if "startMission" in self.missions:
+            self.missions["Start"].processEvent(Start())
+        else:
+            print("startMission not found") #FIXME: utiliser un logger.fatal()
+            
         
-    def _load_all_missions(self):
-        path = os.path.dirname(join(os.getcwd(),"missions"))
-        classes = class_loader(path)       
+    def _load_all_missions(self, missions_prefix):
+        '''Charge toutes les instances de toutes les missions'''
+        assert(missions_prefix in ["petit", "gros"])
+        self.missions    = {}
+        path             = os.path.dirname(os.path.join(os.getcwd(),"missions", missions_prefix))
+        classes_missions = class_loader(path)
+        for classe_mission in classes_missions:
+            mission = classe_mission()
+            mission.missions = self.missions 
+            self.missions[mission.name] = mission      
                 
     
     def listener(self, event):
         # Contrairement à notre discussion on devrait pas avoir besoin de verrous
-        pass
+        for missions in self.missions.values():
+            missions.process_event(event)
+    

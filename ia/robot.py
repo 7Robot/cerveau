@@ -34,6 +34,6 @@ class Robot:
 
 
     def __str__(self):
-        return "x= %.3fm, y= .3fm, theta=%.2f" % (self.x/1000, self.y/1000, self.theta/100)
+        return "x= %.3fm, y= .3fm, theta=%.2f" % (self.x/10000, self.y/10000, self.theta/100)
 
 

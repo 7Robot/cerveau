@@ -7,13 +7,11 @@ On charge ici toutes les classes de mission
 changer event_dispatcher._load_all_missions() ... 
 '''
 
-from class_manager import *
 import os, sys
+from class_manager import *
+
 
 path = os.path.dirname(os.path.abspath(__file__))
-
-
-
 
 classes = class_loader(path)
 for cls in classes:
