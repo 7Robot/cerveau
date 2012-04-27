@@ -5,6 +5,7 @@ from events.event import CmdError
 
 class OdoEvent(Event):
 	def __init__(self, cmd):
+		super(self.__class__,self).__init__()
 		self.type = cmd[1]
 		if self.type == "pos" or self.type == "set":
 			if len(cmd) == 5:

@@ -5,6 +5,7 @@ from events.event import CmdError
 
 class SonarEvent(Event):
 	def __init__(self, cmd):
+		super(self.__class__,self).__init__()
 		if len(cmd) == 3 or len(cmd) == 4:
 			try:
 				self.id = int(cmd[1])
