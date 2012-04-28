@@ -1,0 +1,27 @@
+reset
+odo request
+odo mute
+odo unmute
+odo pos 5 7 65
+odo set 23 25 12
+asserv dist 123
+asserv rot 458
+asserv speed 23 65
+asserv speed 45 89 curt
+asserv off
+asserv on
+asserv done dist 546
+asserv done rot 254
+asserv stop
+rangefinder 1 value 456 under
+rangefinder 2 value 236 over
+rangefinder 3 value 487 under edge
+rangefinder 4 value 9856 over edge
+rangefinder 5 request
+rangefinder 6 mute
+rangefinder 7 unmute
+rangefinder 8 threshold 7856
+bump back close
+bump back open
+bump front close
+bump front open
