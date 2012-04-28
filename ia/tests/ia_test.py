@@ -14,16 +14,18 @@ class Server_test1(Server_test):
         
     def tests(self):
         self.send_cmd("bump back close")
-        self.running.wait(0.1)
+        #self.running.wait(0.1)
         self.send_cmd("odo pos 3000 0 0")
-        self.running.wait(0.3)
+        #self.running.wait(0.3)
         self.send_cmd("bump back close")
-        self.running.wait(0.1)
+        #self.running.wait(0.1)
         self.send_cmd("odo pos 0 3000 -900")
         self.running.wait(0.1)
         self.stop()
 
 port = random.randint(7700, 7800)
+print ("Serveur de test sur le port %d" % port)
+#a=input("")
         
 test_server = Server_test1('127.0.0.1',port)
 test_server.start()
