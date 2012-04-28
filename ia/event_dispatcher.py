@@ -2,6 +2,7 @@
 import os, threading
 from class_manager import *
 from events.internal import Start 
+from missions.mission import Mission 
 
 
 class Event_dispatcher:
@@ -11,8 +12,8 @@ class Event_dispatcher:
         # instancier toutes les missions 
         self.missions = {}
         self._load_all_missions(missions_prefix)
-        if "startMission" in self.missions:
-            self.missions["Start"].processEvent(Start())
+        if "StartMission" in self.missions:
+            self.missions["StartMission"].process_event(Start())
         else:
             print("startMission not found") #FIXME: utiliser un logger.fatal()
             
@@ -23,10 +24,12 @@ class Event_dispatcher:
         self.missions    = {}
         path             = os.path.dirname(os.path.join(os.getcwd(),"missions", missions_prefix))
         classes_missions = class_loader(path)
-        for classe_mission in classes_missions:
-            mission = classe_mission()
-            mission.missions = self.missions 
-            self.missions[mission.name] = mission      
+        for classe_mission in set(classes_missions):
+            if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
+                print ("starting the mission %s" % classe_mission.__name__)
+                mission = classe_mission()
+                mission.missions = self.missions 
+                self.missions[mission.name] = mission      
                 
     
     def listener(self, event):

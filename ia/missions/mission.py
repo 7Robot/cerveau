@@ -9,10 +9,10 @@ class Mission:
 		'''
 		self.state = 0
 		self.name = name
-	def processEvent(self, event):
+	def process_event(self, event):
 		pass
-	def createTimer(self, duration):
+	def create_timer(self, duration):
 		'''Créé un timer qui va envoyer un évènement
 		duration'''
-		t = threading.Timer(duration/1000, self.processEvent, [Timer_end()])
+		t = threading.Timer(duration/1000, self.process_event, [Timer_end()])
 		t.start()

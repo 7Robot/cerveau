@@ -1,4 +1,6 @@
-# -*-
+# -*- coding: utf8 -*-
+
+from mathutils.types import Segment
 
 class Scene:
     '''Définit la scène, ses obstacles, robots ...'''
@@ -52,16 +54,12 @@ class Scene:
 
 class Wall:
     def __init__(self, x1, y1, x2, y2):
-        self.x1 = x1 # 10e de mm
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
+        self.segment = Segment(x1, y1, x2, y2)
+        # unités en 10e de mm
+
     def adjust(self, dx, dy, scaling):
-        self.x1 = self.x1*scaling + dx
-        self.x2 = self.x2*scaling + dx
-        self.y1 = self.y1*scaling + dy
-        self.y2 = self.y2*scaling + dy 
-        
+        self.segment *= scaling
+        self.segment.translate(dx, dy)        
 
 
 class Obstacle:
