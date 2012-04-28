@@ -6,13 +6,13 @@ Created on 27 avr. 2012
 from missions.mission import Mission
 from events.internal import Start
 
-class MissionRecalibration(Mission):
+class MissionStart(Mission):
 
     def __init__(self):
-        super(self.__class__,self).__init__(self, "Start")
+        super(self.__class__,self).__init__("StartMission")
         self.state = 1
 
-    def processEvent(self, event):
+    def process_event(self, event):
         if self.state==1:
             self.missions["Recalibration"].process_event(Start())
             self.state +=1

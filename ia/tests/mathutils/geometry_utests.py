@@ -4,7 +4,7 @@ Created on 28 avr. 2012
 '''
 import unittest
 from mathutils.types import Vertex, Vector, Segment
-from mathutils.geometry import inSector, dot_product, orientation, is_segment_intersection
+from mathutils.geometry import inSector, dot_product, orientation, is_segment_intersection, segment_intersection
 
 class Test_geometry(unittest.TestCase):
     
@@ -27,6 +27,7 @@ class Test_geometry(unittest.TestCase):
         s1 = Segment(Vertex(0, 0), Vertex(2, 0))
         s2 = Segment(Vertex(2, 1), Vertex(0, -1))
         self.assertEqual(is_segment_intersection(s1, s2), True)
+        self.assertEqual(segment_intersection(s1, s2), Vertex(1,0))
         
     def test_intersect2(self):
         print("intersect2")

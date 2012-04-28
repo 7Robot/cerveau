@@ -9,10 +9,15 @@ changer event_dispatcher._load_all_missions() ...
 
 import os, sys
 from class_manager import *
+from missions.mission import Mission
 
 
 path = os.path.dirname(os.path.abspath(__file__))
 
 classes = class_loader(path)
 for cls in classes:
-    setattr(sys.modules[__name__], cls.__name__, cls)
+    # Ce if est obligtoire car l'introspection donne aussi les classes 
+    # importées par les modules de missions
+    if issubclass(cls, Mission):
+        #print ("cls", cls.__name__)
+        setattr(sys.modules[__name__], cls.__name__, cls)

@@ -3,7 +3,7 @@
 class Event:
     def name(self):
         '''Raccourci de nommage pour récupérer le type d'un event'''
-        return self.__class__.__name
+        return self.__class__.__name__
     def __str__(self):
         s = ""
         for i in self.__dict__:

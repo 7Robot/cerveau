@@ -3,13 +3,13 @@
 Created on 28 avr. 2012
 '''
 
-from mathutils.types import Vertex, Vector, Segment, SegmentEq
+from mathutils.types import Vertex, Vector, Segment
 
 def dot_product(v1,  v2):
     return v1.x*v2.x + v1.y*v2.y
     
 def det(v1,  v2):
-    '''v1 /\ v2'''
+    '''Déterminant'''
     return v1.x*v2.y-v1.y*v2.x
 
 def distance2(v1, v2):
@@ -46,6 +46,8 @@ def inSector(ab, ad, at):
 
 def segment_intersection(seg1, seg2):
     '''Retourne le point d'intersection de 2 segments'''
+    if isinstance(seg1,Segment) and isinstance(seg2,Segment):
+        seg1, seg2 = seg1.to_eq(), seg2.to_eq() 
     det = seg1.ax * (-seg2.ay) + seg1.ay * seg2.ax
     if det != 0:
         t = (seg1.ax * (seg2.by - seg1.by) - seg1.ay * (seg2.bx - seg1.bx))/det

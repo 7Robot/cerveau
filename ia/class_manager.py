@@ -21,4 +21,4 @@ def class_loader(path):
         elif os.path.isdir(file_path):
             classes.extend(class_loader(file_path))
 
-    return set(classes)
+    return classes
