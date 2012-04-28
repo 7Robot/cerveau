@@ -8,7 +8,8 @@ from missions.mission import Mission
 class Event_dispatcher:
     '''Dispatch les events et la lance la 1e missions
     du coup faudrait peut être revoir son nom'''
-    def __init__(self, missions_prefix):
+    def __init__(self, missions_prefix, robot):
+        self.robot = robot
         # instancier toutes les missions 
         self.missions = {}
         self._load_all_missions(missions_prefix)
@@ -27,7 +28,7 @@ class Event_dispatcher:
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
                 print ("starting the mission %s" % classe_mission.__name__)
-                mission = classe_mission()
+                mission = classe_mission(self.robot)
                 mission.missions = self.missions 
                 self.missions[mission.name] = mission      
                 

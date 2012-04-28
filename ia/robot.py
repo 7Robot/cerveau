@@ -3,7 +3,7 @@
 from mathutils.types import Vertex 
 
 class Robot:
-    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b):
+    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, can):
         self.pos = Vertex(x, y) # 10e de mm
         self.theta = theta # centidegree
 
@@ -17,18 +17,24 @@ class Robot:
         self.dim_r = dim_r
         self.dim_b = dim_b
         self.dim_t = dim_t
+        
+        self.can = can
 
 
-
+    def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
+        curt_str = ""
+        if curt:
+            curt_str = " curt" # l'espace est important
+        self.can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
     
     def forward(self, dist):
-        pass
+        self.can.sender("asserv dist %d", dist)
 
     def rotate(self, dtheta):
-        pass
+        self.can.sender("asserv rot %d", dtheta)
 
     def stop(self):
-        pass
+        self.can.sender("asserv stop")
 
     def fix_forward(self, dist):
         '''Après un stop, on corrige notre position'''

@@ -8,8 +8,8 @@ from events.internal import Start
 
 class MissionStart(Mission):
 
-    def __init__(self):
-        super(self.__class__,self).__init__("StartMission")
+    def __init__(self, robot):
+        super(self.__class__,self).__init__("StartMission", robot)
         self.state = 1
 
     def process_event(self, event):

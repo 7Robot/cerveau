@@ -14,6 +14,7 @@ import socket
 
 
 from can import Can
+from robot import Robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
@@ -24,16 +25,18 @@ class IA:
 		self.port = port
 		self.sock = None
 		self.connect()
-		self.dispatcher = Event_dispatcher(self.mission_prefix)
 		self.can  = Can(self.sock)
+		self.robot = Robot(3000, 3000, 0, None, None, None, None, self.can)
+		self.dispatcher = Event_dispatcher(self.mission_prefix, self.robot)
+		
 		
 	def connect(self):
 		try:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			self.sock.settimeout(0.5)
 			self.sock.connect((self.ip, self.port))
 		except socket.error as message:
-			if self.socket: 
+			if self.socket:
+				self.socket.shutdown(socket.SHUT_WR) 
 				self.socket.close()
 			self.socket = None # On est sûr de tout arréter 
 			# logger.fatal
@@ -54,6 +57,7 @@ class IA:
 			if event == None:
 				print("[main] Command not parsed")
 			elif event == "stop": # utiliser éventuellement une exception
+				self.stop()
 				break
 			else:
 				print(event)
@@ -61,6 +65,7 @@ class IA:
 				
 
 	def stop(self):
+		self.socket.shutdown(socket.SHUT_WR) 
 		self.sock.close()
 
 #m.process_event("plop")
