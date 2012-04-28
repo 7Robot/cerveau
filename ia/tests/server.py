@@ -10,6 +10,7 @@ import socket, threading
 class Server_test(threading.Thread):
     def __init__(self, ip='127.0.0.1', port=7773):
         threading.Thread.__init__(self)
+        self.running   = threading.Event( )
         self.ip = ip
         self.port = port
         self.s = socket.socket()
@@ -44,6 +45,7 @@ class Server_test(threading.Thread):
             print ("send_cmd : timout", message) #TODO: logger.fatal
         
     def stop(self):
+        self.running.set( )
         if self.conn != None:
             self.conn.shutdown(socket.SHUT_WR)
             self.conn.close()

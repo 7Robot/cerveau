@@ -65,7 +65,7 @@ class IA:
 				
 
 	def stop(self):
-		self.socket.shutdown(socket.SHUT_WR) 
+		self.sock.shutdown(socket.SHUT_WR) 
 		self.sock.close()
 
 #m.process_event("plop")
