@@ -34,9 +34,10 @@ class AsservEvent(Event):
                 raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
         elif self.type == "done":
-            if len(cmd) == 3:
+            if len(cmd) == 4:
+                self.type += " "+cmd[2]
                 try:
-                    self.value = int(cmd[2])
+                    self.value = int(cmd[3])
                 except ValueError as e:
                     raise CmdError(e.__str__())
             else:

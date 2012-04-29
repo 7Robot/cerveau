@@ -7,22 +7,12 @@ import socket
 class Can:
 	def __init__(self, socket):
 		self.socket = socket
-
-	def receiver(self):
-		try:
-			cmd = self.socket.makefile(buffering=1, errors='replace').readline()
-		except socket.timeout as message:
-			print ("Receiver : timout", message) #TODO: logger.fatal
-			return None
-		except socket.error as message:
-			print ("Receiver : socket error", message) #TODO: logger.fatal
-			return "stop"
 		
+	def cmd_to_event(self, cmd):
 		if cmd == "":
 			# EOF
 			return "stop"
 		words = cmd.lower().split()
-		print("Split « %s » as "%cmd.strip(), words)
 		if len(words) < 2:
 			print("All command requiere at least 2 arguments")
 			return None
@@ -37,6 +27,18 @@ class Can:
 			print("Module « %s » failed to parse « %s »" %(w, cmd.strip()))
 			print("\tMessage: %s" %e)
 		return event
+
+	def receiver(self):
+		try:
+			cmd = self.socket.makefile(buffering=1, errors='replace').readline()
+		except socket.timeout as message:
+			print ("Receiver : timout", message) #TODO: logger.fatal
+			return None
+		except socket.error as message:
+			print ("Receiver : socket error", message) #TODO: logger.fatal
+			return "stop"
+		
+		return self.cmd_to_event(cmd)
 
 	def sender(self, message):
 		try:
