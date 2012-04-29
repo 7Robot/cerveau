@@ -1,9 +1,9 @@
 # -*-coding:UTF-8 -*
 
-from mathutils.types import Vertex 
+from mathutils.types import Vertex
 
 class Robot:
-    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, can):
+    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b):
         self.pos = Vertex(x, y) # 10e de mm
         self.theta = theta # centidegree
 
@@ -18,7 +18,7 @@ class Robot:
         self.dim_b = dim_b
         self.dim_t = dim_t
         
-        self.can = can
+        self.can = None
 
 
     def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
@@ -41,6 +41,9 @@ class Robot:
 
 
     def __str__(self):
-        return "x= %.2f cm, y= .2f cm, theta=%.2f°" % (self.pos.x/100, self.pos.y/100, self.theta/100)
+        return "x=%.2f cm, y=%.2f cm, theta=%.2f°" % (self.pos.x/100, self.pos.y/100, self.theta/100)
 
 
+    def test(self):
+        self.x = 42
+        print("test")

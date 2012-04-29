@@ -19,6 +19,12 @@ class Vertex(object):
     def translate(self, dx, dy):
         self.x += dx
         self.y += dy
+        
+    def copy(self):
+        return Vertex(self.x, self.y)
+        
+    def __mul__(self, c):
+        return Vertex(self.x*c, self.y*c)
                     
         
     def __eq__(self, v): 
@@ -59,7 +65,7 @@ class Vector(Vertex):
     
     def __mul__(self, c):
         if isinstance(c,Vector):
-            return self.x*c.x+self.y*c.y
+            return Vertex(self.x*c.x, self.y*c.y)
         else:
             Vector(c*self.x, c*self.y)
     

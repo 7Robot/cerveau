@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from mathutils.types import Segment
+from mathutils.types import Segment, Vertex
 
 class Scene:
     '''Définit la scène, ses obstacles, robots ...'''
@@ -10,72 +10,61 @@ class Scene:
         Toutes les coordonnées sont en 10ème de mm'''
         
         # Ceci facilitera les changements d'échelle et d'origine
-        dx = -15000
-        dy = -10000
-        s  = 1
-        self.plateau = Plateau(Wall(0,0,15000,0), 
-                               Wall(0,0,0,20000),
-                               Wall(0,20000,30000,20000),            
-                               Wall(30000,0,30000,20000))
-        self.plateau.adjust(dx, dy, s)
-
-
-        # coffre/câle du capitaine
-        box_l = Obstacle(Wall(0,0,6400,0),
-                         Wall(0,0,0,7500,0),
-                         Wall(0,7500,6400,7500),
-                         Wall(6400,0,6400,7500))
-        box_r= Obstacle(Wall(26400,0,30000,0),
-                        Wall(26400,0,26400,7500,0),
-                        Wall(26400,7500,30000,7500),
-                        Wall(30000,0,30000,7500))
+        self.dx = -15000
+        self.dy = -10000
+        self.s  = 1
+        self.plateau = Plateau(Vertex(0,0), Vertex(30000,20000))
+        self.plateau.adjust(self.dx, self.dy, self.s)
 
 
         # Totem gauche de centre de gravité en 11000,10000
         tgx=11000
         tgy=10000
-        totem_l = Obstacle(Wall(tgx-125,tgy-125,tgx+125,tgy-125),
-                           Wall(tgx-125,tgy-125,tgx-125,tgy+125),
-                           Wall(tgx-125,tgy+125,tgx+125,tgy+125),
-                           Wall(tgx+125,tgy-125,tgx+125,tgy+125))
+        totem_l = Box(Vertex(tgx-1250,tgy-1250), Vertex(tgx+1250,tgy+1250))
         # Totem droit de centre de gravité ...
         tgx=19000
         tgy=10000
-        totem_r = Obstacle(Wall(tgx-125,tgy-125,tgx+125,tgy-125),
-                           Wall(tgx-125,tgy-125,tgx-125,tgy+125),
-                           Wall(tgx-125,tgy+125,tgx+125,tgy+125),
-                           Wall(tgx+125,tgy-125,tgx+125,tgy+125))
-        
+        totem_r = Box(Vertex(tgx-1250,tgy-1250), Vertex(tgx+1250,tgy+1250))
 
 
-        self.obstacles = [box_l, box_r, totem_l, totem_r]
-        for obstacle in self.obstacles:
-            obstacle.adjust(dx, dy, s)
+        self.obstacles = {"totem_left" : totem_l, 
+                          "totem_right" : totem_r}
+        for obstacle in self.obstacles.values():
+            obstacle.adjust(self.dx, self.dy, self.s)
+            
 
 class Wall:
     def __init__(self, x1, y1, x2, y2):
-        self.segment = Segment(x1, y1, x2, y2)
+        segment = Segment(x1, y1, x2, y2)
         # unités en 10e de mm
 
     def adjust(self, dx, dy, scaling):
-        self.segment *= scaling
-        self.segment.translate(dx, dy)        
+        segment *= scaling
+        segment.translate(dx, dy)   
+        
 
 
-class Obstacle:
-    def __init__(self, bottom, left, top, right):
-        self.bottom = bottom
-        self.left = left
-        self.top = top
-        self.right = right
+class Box:
+    def __init__(self, corner1=Vertex(), corner2=Vertex()):
+        self.corner1 = corner1
+        self.corner2 = corner2
+
     def adjust(self, dx, dy, scaling):
-        for att in ["bottom","left", "top", "right"]:
-            # Cette façon (__dict__) nuit-elle aux performances ? 
-            self.__dict__[att].adjust(dx, dy, scaling)
+        self.corner1 *= scaling 
+        self.corner1.translate(dx, dy)
+        self.corner2 *= scaling 
+        self.corner2.translate(dx, dy)
+        
+        
+    def copy(self):
+        return Box(self.corner1.copy(), self.corner2.copy())
+        
+    def __str__(self):
+        return "corner1: %s, corner2: %s" % (self.corner1, self.corner2)
 
 
-class Plateau(Obstacle):
+class Plateau(Box):
     '''Plateau du jeu'''
-    def __init__(self, bottom, left, top, right):
-        super(self.__class__,self).__init__(bottom, left, top, right)
+    def __init__(self, corner1, corner2):
+        super(self.__class__,self).__init__(corner1, corner2)
 
