@@ -25,7 +25,7 @@ class Vertex(object):
         return v!=None and (self.x==v.x) and (self.y==v.y)
         
     def __str__(self):
-        return "Vertex: x=%.1%, y=%.1%", self.x, self.y
+        return "Vertex: x=%.1f, y=%.1f" % (self.x, self.y)
     
 class Vector(Vertex):        
     def __init__(self, x=0, y=0):
@@ -71,7 +71,7 @@ class Vector(Vertex):
     
     
     def __str__(self):
-        return "Vector: x=%.1%, y=%.1%", self.x, self.y
+        return "Vector: x=%.1f, y=%.1f" % (self.x, self.y)
         
         
         
@@ -90,14 +90,19 @@ class Segment:
         bx = self.vert1.x
         by = self.vert1.y
         return SegmentEq(ax, bx, ay, by)
+    
+    def to_vector(self):
+        v = Vector()
+        v.vert2vert(self.vert1, self.vert2)
+        return v
         
     def translate(self, dx, dy):
         self.vert1.translate(dx, dy)
         self.vert2.translate(dx, dy)
         
     def __str__(self):
-        return ("Segment: v1: (x=%.1f, y=%.1f), v2: (x=%.1f, y=%.1f)" 
-              % (self.vert1.x, self.vert1.y, self.vert2.x, self.vert2.y))
+        return "Segment: v1: (x=%.1f, y=%.1f), v2: (x=%.1f, y=%.1f)" \
+              % (self.vert1.x, self.vert1.y, self.vert2.x, self.vert2.y)
         
     
 class SegmentEq:
@@ -113,6 +118,6 @@ class SegmentEq:
         self.by = by
         
     def __str__(self):
-        return ("SegmentEq: ax=%.1f, bx=%.1f, ay=%.1f, by=%.1f" 
-              % (self.ax, self.bx, self.ay, self.by))
+        return "SegmentEq: ax=%.1f, bx=%.1f, ay=%.1f, by=%.1f" \
+              % (self.ax, self.bx, self.ay, self.by)
 

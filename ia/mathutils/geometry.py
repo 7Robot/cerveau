@@ -12,7 +12,7 @@ def det(v1,  v2):
     '''Déterminant'''
     return v1.x*v2.y-v1.y*v2.x
 
-def distance2(v1, v2):
+def distance(v1, v2):
     '''Distance euclidienne entre 2 points'''
     return (v2-v1).norm()
 
@@ -67,3 +67,21 @@ def is_segment_intersection(seg1, seg2):
         return (orientation(a,b,c)!=orientation(a,b,t)) and (orientation(b,a,t)>0) and (orientation(b,c,t)>0)
     else:
         return (orientation(a, b, c) != orientation(a, b, t)) and (orientation(b, a, t) <= 0) and (orientation(b, c, t) <= 0)
+    
+def distance2_vertex_segment(vert, seg):
+    ''' Retourne la distance AU CARRÉ entre vert et seg
+    Segment [a,b], vert=v'''
+    av = Vector()
+    bv = Vector()
+    ab = seg.to_vector()
+    av.vert2vert(seg.vert1, vert)
+    bv.vert2vert(seg.vert2, vert)
+    abav = ab * av
+    abbv = ab * bv
+    if abav*abbv >= 0:
+        # Projection de v sur (a,b) n'appartient pas à [a,b]
+        return min(av*av, bv*bv)
+    else:
+        return av*av - abav**2/(ab*ab) 
+        
+    

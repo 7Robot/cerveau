@@ -4,7 +4,8 @@ Created on 28 avr. 2012
 '''
 import unittest
 from mathutils.types import Vertex, Vector, Segment
-from mathutils.geometry import inSector, dot_product, orientation, is_segment_intersection, segment_intersection
+from mathutils.geometry import (inSector, dot_product, orientation, 
+      is_segment_intersection, segment_intersection, distance2_vertex_segment)
 
 class Test_geometry(unittest.TestCase):
     
@@ -61,6 +62,12 @@ class Test_geometry(unittest.TestCase):
         v1 = Vector(0, 1)
         v2 = Vector(1, -1)
         self.assertEqual(inSector(v0, v1, v2), True)
+        
+    def test_distance2_vertex_segment1(self):
+        print("distance2_vertex_segment1")
+        seg = Segment(Vector(0,0), Vector(2, 0))
+        self.assertEqual(distance2_vertex_segment(Vector(4,0), seg), 4)
+        self.assertEqual(distance2_vertex_segment(Vector(1,2), seg), 4)
         
 if __name__ == '__main__':
     unittest.main()
