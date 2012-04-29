@@ -1,9 +1,29 @@
 # -*- coding: iso-8859-1 -*- 
 
+from ia import IA
 from mathutils.types import Vertex
 from scene import Scene, Box
-from robot import Robot
+from robot.small_robot import Small_robot
+from robot.simu_robot import Simu_robot
 from tkinter import Frame, Canvas
+import threading
+from time import sleep
+
+class RobotD:
+    def __init__(self, canvas, robot):
+        self.canvas = canvas
+        self.robot  = robot  
+        self.robotd = canvas.create_rectangle(0.01*robot.pos.x-10, 
+                                              0.01*robot.pos.y-10, 
+                                              0.01*robot.pos.x+10, 
+                                              0.01*robot.pos.y+10,
+                                              width =1, fill="gray")
+        
+    def draw(self):
+        print(0.01*self.robot.pos.x-5, 0.01*self.robot.pos.y-5, 
+                           0.01*self.robot.pos.x+5, 0.01*self.robot.pos.y+5)
+        self.canvas.coords(self.robotd, 0.01*self.robot.pos.x-10, 0.01*self.robot.pos.y-10, 
+                           0.01*self.robot.pos.x+10, 0.01*self.robot.pos.y+10)
 
       
 class SceneD:
@@ -71,17 +91,23 @@ class Controller:
         self.view = None
         
     def update(self, event):
-        pass
+        print("simu", event)
+        if self.view != None:
+            sleep(0.1)
+            self.view.redraw_robot()
     
 class View(Frame):
     '''MVC pattern'''
     def __init__(self, robot, scene, controller):
         Frame.__init__(self)
-        self.robot = robot
+        
         self.controller = controller
 
         self.canvas = Canvas(self, width=602, height=402, bg='white')
         self.scene = SceneD(self.canvas, scene)
+        self.robot = RobotD(self.canvas, robot)
+        
+    def init(self):
         
         self.canvas.pack(padx =5, pady =3)
         self.canvas.bind("<Button-1>", self.mouseDown)
@@ -90,7 +116,10 @@ class View(Frame):
         self.pack()
         
         self.scene.draw()
-      
+        self.robot.draw()
+        
+    def redraw_robot(self):
+        self.robot.draw()
    
             
     def mouseDown(self, event):
@@ -106,12 +135,18 @@ class View(Frame):
 class Simu:
     def __init__(self, robot, scene):
         self.controller = Controller()
+        Simu_robot.add_observer(self.controller)
         self.view = View(robot, scene, self.controller)
         self.controller.view = self.view
+        self.view.init()
         
     def main(self):
         self.view.mainloop()
         
 if __name__ == '__main__':
-    simu = Simu(Robot(0, 0, 0, 0, 0, 0, 0), Scene())
+    robot = Simu_robot(Small_robot())
+    ia = IA(Small_robot(), "r2d2")
+    ia_thread = threading.Thread(None, ia.main, None, (), {})
+    ia_thread.start()
+    simu = Simu(robot, Scene())
     simu.main()

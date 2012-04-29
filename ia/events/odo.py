@@ -2,6 +2,7 @@
 
 from events.event import Event
 from events.event import CmdError
+from mathutils.types import Vertex
 
 class OdoEvent(Event):
 	def __init__(self, cmd):
@@ -10,7 +11,8 @@ class OdoEvent(Event):
 		if self.type == "pos" or self.type == "set":
 			if len(cmd) == 5:
 				try:
-					self.value = list(map(int,cmd[2:]))
+					l = list(map(int,cmd[2:]))
+					self.value = Vertex(l[0], l[1])
 				except ValueError as e:
 					raise CmdError(e.__str__())
 			else:

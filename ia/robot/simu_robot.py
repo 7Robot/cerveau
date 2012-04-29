@@ -19,6 +19,7 @@ class Simu_robot(object):
     
     @classmethod
     def add_observer(self, observer):
+        print("observer added")
         self.__observers.append(observer)
     
     @classmethod
@@ -28,12 +29,14 @@ class Simu_robot(object):
 
     def __getattribute__(self, name):
         res = getattr(object.__getattribute__(self, "_obj"), name)
-        Simu_robot.notify(name)
+        if name not in ["pos"]:
+            Simu_robot.notify(name)
         return res
 
     
     def __delattr__(self, name):
         delattr(object.__getattribute__(self, "_obj"), name)
+        
     def __setattr__(self, name, value):
         setattr(object.__getattribute__(self, "_obj"), name, value)
         Simu_robot.notify(name)

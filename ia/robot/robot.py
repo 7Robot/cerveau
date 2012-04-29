@@ -28,11 +28,16 @@ class Robot:
         self.can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
     
     def forward(self, dist):
-        self.can.sender("asserv dist %d", dist)
+        self.can.sender("asserv dist %d" % dist)
 
     def rotate(self, dtheta):
-        self.can.sender("asserv rot %d", dtheta)
-
+        self.can.sender("asserv rot %d" % dtheta)
+        
+    def set_position(self, pos):
+        self.pos = pos
+        print ("updated pos", pos)
+        
+    
     def stop(self):
         self.can.sender("asserv stop")
 

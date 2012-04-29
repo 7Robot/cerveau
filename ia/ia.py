@@ -28,11 +28,12 @@ class IA:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.sock.connect((self.ip, self.port))
 		except socket.error as message:
-			if self.socket:
-				self.socket.shutdown(socket.SHUT_WR) 
-				self.socket.close()
-			self.socket = None # On est sûr de tout arréter 
+			if self.sock:
+				self.sock.shutdown(socket.SHUT_WR) 
+				self.sock.close()
+			self.sock = None # On est sûr de tout arréter 
 			# logger.fatal
+			print (self.ip, self.port)
 			print ("Impossible d'otenir une connection : ", message)
 			self.keep_on = False
 		else:
