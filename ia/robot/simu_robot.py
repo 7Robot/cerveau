@@ -5,33 +5,50 @@ Created on 29 avr. 2012
 snippet de http://code.activestate.com/recipes/496741-object-proxying/
 '''
 
+class Spy:
+    '''Classe qui notifie les observateurs et espionne les paramètres
+    des appels de fonction via le proxy'''
+    __observers = [] # patron observateur, pour notifier le simulateur
+    def __init__(self, fun):
+        self.fun = fun
+        
+        
+    def func(self, *args):
+        print("done", args)
+        self.notify_get(self.fun, args)
+        self.fun(args)
+        
+    @classmethod
+    def add_observer(self, observer):
+        print("observer added")
+        self.__observers.append(observer)
+        
+    def notify_get(self, event, args):
+        for observer in self.__observers:
+            observer.update(event, args)
+            
+    @classmethod       
+    def notify_set(self, event, args):
+        for observer in self.__observers:
+            observer.update(event, args)
+
 
 class Simu_robot(object):
     '''Classe proxy, redirige tous les appels de méthodes vers Robot, 
     puis notifie les observateurs'''
     __slots__ = ["_obj", "__weakref__"]
-    __observers = [] # patron observateur, pour notifier le simulateur
+    
     
     def __init__(self, obj):
         object.__setattr__(self, "_obj", obj)
     
-    
-    
-    @classmethod
-    def add_observer(self, observer):
-        print("observer added")
-        self.__observers.append(observer)
-    
-    @classmethod
-    def notify(self, event):
-        for observer in self.__observers:
-            observer.update(event)
 
     def __getattribute__(self, name):
-        res = getattr(object.__getattribute__(self, "_obj"), name)
         if name not in ["pos", "theta"]:
-            Simu_robot.notify(name)
-        return res
+            res = Spy(getattr(object.__getattribute__(self, "_obj"), name))
+            return res.func
+        else:
+            return getattr(object.__getattribute__(self, "_obj"), name)
 
     
     def __delattr__(self, name):
@@ -39,7 +56,7 @@ class Simu_robot(object):
         
     def __setattr__(self, name, value):
         setattr(object.__getattribute__(self, "_obj"), name, value)
-        Simu_robot.notify(name)
+        Spy.notify_set( name, value)
     
     def __nonzero__(self):
         return bool(object.__getattribute__(self, "_obj"))
@@ -51,7 +68,7 @@ class Simu_robot(object):
     _special_names = [
         '__abs__', '__add__', '__and__', '__call__', '__cmp__', '__coerce__', 
         '__contains__', '__delitem__', '__delslice__', '__div__', '__divmod__', 
-        '__eq__', '__float__', '__floordiv__', '__ge__', '__getitem__', 
+        '__eq__', '__float__', '__rfloorfiv__', '__ge__', '__getitem__', 
         '__getslice__', '__gt__', '__hash__', '__hex__', '__iadd__', '__iand__',
         '__idiv__', '__idivmod__', '__ifloordiv__', '__ilshift__', '__imod__', 
         '__imul__', '__int__', '__invert__', '__ior__', '__ipow__', '__irshift__', 
@@ -62,7 +79,7 @@ class Simu_robot(object):
         '__repr__', '__reversed__', '__rfloorfiv__', '__rlshift__', '__rmod__', 
         '__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', 
         '__rtruediv__', '__rxor__', '__setitem__', '__setslice__', '__sub__', 
-        '__truediv__', '__xor__', 'next',
+        '__truediv__', '__xor__', 'next',  
     ]
     
     @classmethod
@@ -76,7 +93,7 @@ class Simu_robot(object):
         
         namespace = {}
         for name in cls._special_names:
-            if hasattr(theclass, name):
+            if hasattr(theclass, name) and not hasattr(cls, name):
                 namespace[name] = make_method(name)
         return type("%s(%s)" % (cls.__name__, theclass.__name__), (cls,), namespace)
     
@@ -97,6 +114,5 @@ class Simu_robot(object):
         except KeyError:
             cache[obj.__class__] = theclass = cls._create_class_proxy(obj.__class__)
         ins = object.__new__(theclass)
-        theclass.__init__(ins, obj, *args, **kwargs)
+        #theclass.__init__(ins, obj, *args, **kwargs)
         return ins
- 
