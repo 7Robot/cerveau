@@ -4,10 +4,11 @@ from ia import IA
 from mathutils.types import Vertex
 from scene import Scene, Box
 from robot.small_robot import Small_robot
-from robot.simu_robot import Simu_robot
+from robot.simu_robot import Simu_robot, Spy
 from tkinter import Frame, Canvas
+from simulator.real_robot import Real_robot, Regulator
 import threading
-from time import sleep
+
 
 class Board:
     '''Là où on dessine'''
@@ -79,14 +80,14 @@ class Drawing:
     
 
 class RobotD(Drawing):
-    def __init__(self, board, robot):
+    def __init__(self, board, robot, color="gray"):
         super(self.__class__, self).__init__(board, True)
         self.robot  = robot  
         self.robotd = self.board.create_rectangle(robot.pos.x-1000, 
                                                robot.pos.y-1000, 
                                                robot.pos.x+1000, 
                                                robot.pos.y+1000,
-                                              width =1, fill="gray")
+                                              width =1, fill=color)
         self.board.add_drawing(self, self.robotd)
         
     def draw(self):
@@ -141,23 +142,31 @@ class BoxD(Drawing):
 
 class Controller:
     '''MVC pattern + Observer pattern'''
-    def __init__(self):            
+    def __init__(self, real_robot):
+        self.real_robot = Regulator(real_robot)            
         self.view = None
+
+
         
-    def update(self, event):
+    def update(self, type, event, *args):
         print("simu", event)
         if self.view != None:
+            if type == "get":
+                if event.__name__ == "asserv":
+                    self.real_robot.asserv_speed(args[0])
             self.view.redraw_robot()
     
 class View(Frame):
     '''MVC pattern'''
-    def __init__(self, robot, scene, controller):
+    def __init__(self, real_robot, robot, scene, controller):
         Frame.__init__(self)
+        
         
         self.controller = controller
 
         self.board = Board(Canvas(self, width=602, height=402, bg='white'))
         self.scene = SceneD(self.board, scene)
+        self.real_robot = RobotD(self.board, real_robot, "black")
         self.robot = RobotD(self.board, robot)
         self.item = None
         
@@ -171,9 +180,17 @@ class View(Frame):
         
         self.scene.draw()
         self.robot.draw()
+        self.redraw_real_robot()
+        
         
     def redraw_robot(self):
         self.robot.draw()
+        
+    def redraw_real_robot(self):
+        self.controller.real_robot.run()
+        self.real_robot.draw()
+        self.after(50, self.redraw_real_robot)
+
    
             
     def mouseDown(self, event):
@@ -194,9 +211,10 @@ class View(Frame):
     
 class Simu:
     def __init__(self, robot, scene):
-        self.controller = Controller()
-        Simu_robot.add_observer(self.controller)
-        self.view = View(robot, scene, self.controller)
+        self.real_robot = Real_robot(robot, 200, 60)
+        self.controller = Controller(self.real_robot)
+        Spy.add_observer(self.controller)
+        self.view = View(self.real_robot, robot, scene, self.controller)
         self.controller.view = self.view
         self.view.init()
         

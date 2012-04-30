@@ -25,13 +25,20 @@ class Robot:
         curt_str = ""
         if curt:
             curt_str = " curt" # l'espace est important
-        self.can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
+        if self.can != None:
+            self.can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
+        #FIXME: else logger.fatal
     
     def forward(self, dist):
-        self.can.sender("asserv dist %d" % dist)
+        print("forward")
+        if self.can != None:
+            self.can.sender("asserv dist %d" % dist)
+        #FIXME: else logger.fatal
 
     def rotate(self, dtheta):
-        self.can.sender("asserv rot %d" % dtheta)
+        
+            self.can.sender("asserv rot %d" % dtheta)
+        #FIXME: else logger.fatal
         
     def set_position(self, pos):
         self.pos = pos
@@ -39,7 +46,9 @@ class Robot:
         
     
     def stop(self):
-        self.can.sender("asserv stop")
+        if self.can != None:
+            self.can.sender("asserv stop")
+        #FIXME: else logger.fatal
 
     def fix_forward(self, dist):
         '''Après un stop, on corrige notre position'''

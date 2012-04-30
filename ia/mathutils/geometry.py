@@ -3,7 +3,17 @@
 Created on 28 avr. 2012
 '''
 
+from math import atan2
 from mathutils.types import Vertex, Vector, Segment
+
+
+def angle(v1, v2):
+    '''Retourne l'angle en radian entre v1 et v2'''
+    dv = v2 - v1
+    angle = atan2(dv.y, dv.x)
+    if angle < 0:
+        angle += 6.28319
+    return angle
 
 def dot_product(v1,  v2):
     return v1.x*v2.x + v1.y*v2.y

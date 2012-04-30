@@ -14,23 +14,21 @@ class Spy:
         
         
     def func(self, *args):
-        print("done", args)
-        self.notify_get(self.fun, args)
-        self.fun(args)
+        self.notify_get(self.fun, *args)
+        self.fun(*args)
         
     @classmethod
     def add_observer(self, observer):
-        print("observer added")
         self.__observers.append(observer)
         
-    def notify_get(self, event, args):
+    def notify_get(self, event, *args):
         for observer in self.__observers:
-            observer.update(event, args)
+            observer.update("get", event, *args)
             
     @classmethod       
-    def notify_set(self, event, args):
+    def notify_set(self, event, *args):
         for observer in self.__observers:
-            observer.update(event, args)
+            observer.update("set", event, args)
 
 
 class Simu_robot(object):
@@ -44,7 +42,7 @@ class Simu_robot(object):
     
 
     def __getattribute__(self, name):
-        if name not in ["pos", "theta"]:
+        if name not in ["pos", "theta", "__class__"]:
             res = Spy(getattr(object.__getattribute__(self, "_obj"), name))
             return res.func
         else:

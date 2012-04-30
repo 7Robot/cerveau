@@ -22,10 +22,21 @@ class Vertex(object):
         
     def copy(self):
         return Vertex(self.x, self.y)
+    
+    def norm(self):
+        return math.hypot(self.x, self.y)
+    
+    def __add__(self, v):  
+        return Vertex(self.x+v.x, self.y+v.y)
         
     def __mul__(self, c):
         return Vertex(self.x*c, self.y*c)
-                    
+    
+    def __neg__(self): 
+        return Vertex(-self.x, -self.y)     
+    
+    def __sub__(self, v): 
+        return Vertex(self.x-v.x, self.y-v.y)               
         
     def __eq__(self, v): 
         return v!=None and (self.x==v.x) and (self.y==v.y)
@@ -53,9 +64,7 @@ class Vector(Vertex):
             self.x=0
             self.y=0
                 
-    def norm(self):
-        return math.hypot(self.x, self.y)
-    
+   
     
     def __abs__(self):
         return self.norm()
@@ -65,12 +74,12 @@ class Vector(Vertex):
     
     def __mul__(self, c):
         if isinstance(c,Vector):
-            return Vertex(self.x*c.x, self.y*c.y)
+            return Vector(self.x*c.x, self.y*c.y)
         else:
             Vector(c*self.x, c*self.y)
     
     def __neg__(self): 
-        return Vertex(-self.x, -self.y)
+        return Vector(-self.x, -self.y)
     
     def __sub__(self, v): 
         return Vector(self.x-v.x, self.y-v.y)
