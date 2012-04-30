@@ -32,17 +32,7 @@ class Scene:
         for obstacle in self.obstacles.values():
             obstacle.adjust(self.dx, self.dy, self.s)
             
-
-class Wall:
-    def __init__(self, x1, y1, x2, y2):
-        segment = Segment(x1, y1, x2, y2)
-        # unités en 10e de mm
-
-    def adjust(self, dx, dy, scaling):
-        segment *= scaling
-        segment.translate(dx, dy)   
-        
-
+      
 
 class Box:
     def __init__(self, corner1=Vertex(), corner2=Vertex()):
@@ -53,11 +43,16 @@ class Box:
         self.corner1 *= scaling 
         self.corner1.translate(dx, dy)
         self.corner2 *= scaling 
-        self.corner2.translate(dx, dy)
-        
+        self.corner2.translate(dx, dy)        
         
     def copy(self):
         return Box(self.corner1.copy(), self.corner2.copy())
+    
+    def to_segments(self):
+        return [Segment(self.corner1, Vertex(self.corner2.x, self.corner1.y)),
+                Segment(self.corner1, Vertex(self.corner1.x, self.corner2.y)),
+                Segment(Vertex(self.corner1.x, self.corner2.y), self.corner2),
+                Segment(Vertex(self.corner2.x, self.corner1.y), self.corner2),]
         
     def __str__(self):
         return "corner1: %s, corner2: %s" % (self.corner1, self.corner2)

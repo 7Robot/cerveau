@@ -158,11 +158,12 @@ class Controller:
     
 class View(Frame):
     '''MVC pattern'''
-    def __init__(self, real_robot, robot, scene, controller):
+    def __init__(self, real_robot, robot, scene, controller, phys_sim):
         Frame.__init__(self)
         
         
         self.controller = controller
+        self.phys_sim   = phys_sim
 
         self.board = Board(Canvas(self, width=602, height=402, bg='white'))
         self.scene = SceneD(self.board, scene)
@@ -180,16 +181,18 @@ class View(Frame):
         
         self.scene.draw()
         self.robot.draw()
-        self.redraw_real_robot()
+        if self.phys_sim:
+            self.redraw_real_robot()
         
         
     def redraw_robot(self):
         self.robot.draw()
         
     def redraw_real_robot(self):
-        self.controller.real_robot.run()
-        self.real_robot.draw()
-        self.after(50, self.redraw_real_robot)
+        if self.phys_sim:
+            self.controller.real_robot.run()
+            self.real_robot.draw()
+            self.after(50, self.redraw_real_robot)
 
    
             
@@ -210,11 +213,11 @@ class View(Frame):
             self.item.unselect()
     
 class Simu:
-    def __init__(self, robot, scene):
+    def __init__(self, robot, scene, phys_sim=False):
         self.real_robot = Real_robot(robot, 200, 60)
         self.controller = Controller(self.real_robot)
         Spy.add_observer(self.controller)
-        self.view = View(self.real_robot, robot, scene, self.controller)
+        self.view = View(self.real_robot, robot, scene, self.controller, phys_sim)
         self.controller.view = self.view
         self.view.init()
         
