@@ -29,7 +29,7 @@ class Simu_robot(object):
 
     def __getattribute__(self, name):
         res = getattr(object.__getattribute__(self, "_obj"), name)
-        if name not in ["pos"]:
+        if name not in ["pos", "theta"]:
             Simu_robot.notify(name)
         return res
 
