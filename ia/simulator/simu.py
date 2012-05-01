@@ -8,6 +8,7 @@ from robot.proxy_robot import Proxy_robot, Spy
 from tkinter import Frame, Canvas
 #from simulator.real_robot import Real_robot, Regulator
 import threading
+from math import cos, sin, pi
 
 
 class Board:
@@ -53,6 +54,12 @@ class Board:
     def create_rectangle(self, x1, y1, x2, y2, **kargs):
         return self.canvas.create_rectangle(self.cx(x1), self.cy(y1),
                                      self.cx(x2), self.cy(y2), kargs)
+        
+    def create_poly4(self, x1, y1, x2, y2, x3, y3, x4, y4, **kargs):
+        return self.canvas.create_polygon(self.cx(x1), self.cy(y1),
+                                     self.cx(x2), self.cy(y2), 
+                                     self.cx(x3), self.cy(y3), 
+                                     self.cx(x4), self.cy(y4), kargs)
             
     
         
@@ -93,16 +100,20 @@ class RobotD(Drawing):
     def __init__(self, board, robot, color="gray"):
         super(self.__class__, self).__init__(board, True)
         self.robot  = robot  
-        self.robotd = self.board.create_rectangle(robot.pos.x-1000, 
-                                               robot.pos.y-1000, 
-                                               robot.pos.x+1000, 
-                                               robot.pos.y+1000,
+        self.robotd = self.board.create_poly4(self.robot.pos.x+1414*cos(robot.theta+pi/4), self.robot.pos.y+1414*cos(robot.theta+pi/4),
+                          self.robot.pos.x+1414*cos(robot.theta+3*pi/4), self.robot.pos.y+1414*cos(robot.theta+3*pi/4),
+                          self.robot.pos.x+1414*cos(robot.theta+5*pi/4), self.robot.pos.y+1414*cos(robot.theta+5*pi/4),
+                          self.robot.pos.x+1414*cos(robot.theta+7*pi/4), self.robot.pos.y+1414*cos(robot.theta+7*pi/4),
                                               width =1, fill=color)
         self.board.add_drawing(self, self.robotd)
         
     def draw(self):
-        self.board.coords(self.robotd, self.robot.pos.x-1000, self.robot.pos.y-1000, 
-                           self.robot.pos.x+1000, self.robot.pos.y+1000)
+        
+        self.board.coords(self.robotd, self.robot.pos.x+1414*cos(self.robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+pi/4),
+                                       self.robot.pos.x+1414*cos(self.robot.get_theta()+3*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+3*pi/4),
+                                       self.robot.pos.x+1414*cos(self.robot.get_theta()+5*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+5*pi/4),
+                                       self.robot.pos.x+1414*cos(self.robot.get_theta()+7*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+7*pi/4))
+                           
         
     def move(self, dx, dy):
         self.board.canvas.move(self.robotd, dx, dy)
@@ -182,7 +193,6 @@ class Controller:
 
         
     def update(self, type, event, *args):
-        print("simu", event)
         if self.view != None:
 #            if type == "get":
 #                if event.__name__ == "asserv":

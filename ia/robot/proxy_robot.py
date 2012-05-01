@@ -42,7 +42,7 @@ class Proxy_robot(object):
     
 
     def __getattribute__(self, name):
-        if name not in ["pos", "theta", "regulator", "__class__", "__dict__"]:
+        if name not in ["pos", "theta", "regulator", "get_theta", "__class__", "__dict__"]:
             res = Spy(getattr(object.__getattribute__(self, "_obj"), name))
             return res.func
         else:

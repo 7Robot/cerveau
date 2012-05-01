@@ -36,9 +36,12 @@ class Robot:
         #FIXME: else logger.fatal
 
     def rotate(self, dtheta):
-        
             self.can.sender("asserv rot %d" % dtheta)
         #FIXME: else logger.fatal
+        
+    def get_theta(self):
+        '''Retourne la direction en radian'''
+        return self.theta/3600*6.28319
         
     def set_position(self, pos):
         self.pos = pos

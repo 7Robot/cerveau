@@ -28,15 +28,17 @@ class Server_test1(Server_test):
         super(self.__class__, self).__init__(ip, port)
         
     def tests(self):
-        self.send_cmd("asserv speed -20 -20")
-        self.running.wait(5)
-        self.send_cmd("asserv dist 20")
-        self.running.wait(5)
-        self.send_cmd("asserv rot 3600")
-        self.running.wait(5)
-        self.send_cmd("asserv speed -20 -20")
-        self.running.wait(5)
-        self.send_cmd("asserv dist 20")
+        self.send_cmd("asserv speed -30 -30")
+        self.running.wait(2)
+        self.send_cmd("asserv dist 3000")
+        self.running.wait(1)
+        print("rot!!!!!!!!!!")
+        self.send_cmd("asserv rot -900")
+        self.running.wait(0.5)
+        print("rec!!!!!!!!!!")
+        self.send_cmd("asserv speed -42 -42")
+        self.running.wait(0.7)
+        self.send_cmd("asserv dist 3000")
         self.stop()
 
 if __name__ == '__main__':

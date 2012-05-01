@@ -10,15 +10,25 @@ class Asserv_listener(Mission):
         
     def process_event(self, event):
         if self.state == 0:
+            self.state +=1
+            self.create_timer(50)
+        elif self.state == 1:
             if event.name() == "AsservEvent":
                 if event.type == "speed":
                     self.robot.asserv_speed(event.value[0], event.curt)
                     self.robot.run()
-                    self.create_timer(0.05)
+                    self.create_timer(50)
+                elif event.type == "dist":
+                    self.robot.asserv_dist(event.value)
+                    #self.create_timer(50)
+                elif event.type == "rot":
+                    self.robot.asserv_rot(event.value)
+                    #self.create_timer(50)
+                    
                     
             elif event.name() == "Timer_end":
                 self.robot.run()
-                self.create_timer(1)
+                self.create_timer(50)
                 
             
                     

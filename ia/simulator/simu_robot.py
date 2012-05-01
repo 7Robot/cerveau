@@ -22,15 +22,18 @@ class Simu_robot():
         self.mspeed = max_speed
         self.maccel = max_acceleration
         self.daccel = max_acceleration/10
-        self.msteer = 0.5;
+        self.msteer = 50;
         self.action = None
         #self.regulator = Regulator(self)
+        
+    def get_theta(self):
+        '''Retourne la direction en radian'''
+        return self.theta/3600*6.28319
         
     def accelerate(self,  accel): #rate between -100 and 100
         self.speed = min(accel+self.speed,self.mspeed)
 
     def go_speed(self, speed, curt=False):
-        print ("go speed", speed)
         self.wanted_speed = speed
         self.curt = curt
         self.prev_action = "go_speed"
@@ -50,33 +53,34 @@ class Simu_robot():
         self.accelerate(sign * self.accel)
             
     def move(self):
-        dx = self.speed * cos(self.theta)
-        dy = self.speed * sin(self.theta)
+        dx = self.speed * cos(self.get_theta())
+        dy = self.speed * sin(self.get_theta())
         self.pos.translate(dx, dy)
-        print(self.pos)
-        print(self.speed)
-        print(self.accel)
+#        print(self.pos)
+#        print(self.speed)
+#        print(self.accel)
         
     def turn(self, steer):
         self.theta += steer
         if self.theta < 0:
-            self.theta += 6.28319
-        if self.theta > 6.28319:
-            self.theta -= 6.28319
+            self.theta += 3600
+        if self.theta > 3600:
+            self.theta -= 3600
+        #print("theta", self.theta)
 
     def turn_direction(self, d):
         dd = d - self.theta
-        if dd < -3.14159:
-            dd = 6.28319 + dd
-        if dd > 3.14159:
-            dd = -6.28319 + dd
+        if dd < -1800:
+            dd = 3600 + dd
+        if dd > 1800:
+            dd = -3600 + dd
 
         sign = 1
         if dd < 0:
             sign = -1
         # trop la flemme pour un PID
-        if abs(dd) < 0.785: #10 deg
-            self.turn(self.msteer / 0.785 * dd)
+        if abs(dd) < 100: #10 deg
+            self.turn(self.msteer / 100 * dd)
         else:
             self.turn(self.msteer * sign)
             
@@ -120,10 +124,14 @@ class Simu_regulator(Simu_robot):
         self.fun  = None
         self.args = None
     def asserv_dist(self, dist):
+        print("pos", self.pos)
         self.fun  = self.reach_vertex
-        self.args = (Vertex(dist*cos(self.theta), 
-                           dist*sin(self.theta)) \
+        self.args = (Vertex(dist*cos(self.get_theta()), 
+                           dist*sin(self.get_theta())) \
                     + self.pos,)
+        print ("target", Vertex(dist*cos(self.get_theta()), 
+                           dist*sin(self.get_theta())) \
+                    + self.pos)
         timer = Timer(0.05, self.run, [])
         timer.start()
         self.run()
