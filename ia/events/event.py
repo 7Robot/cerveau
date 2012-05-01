@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
 class Event:
-    def name(self):
+    def __init__(self):
         '''Raccourci de nommage pour récupérer le type d'un event'''
-        return self.__class__.__name__
+        name = self.__class__.__name__
+        if name[-5:] == "Event":
+            self.name = name[:-5].lower()
+        else:
+            print("Waring: convention de nommage non respecter pour %s" %name)
+            self.name = name.lower()
     def __str__(self):
         s = ""
         for i in self.__dict__:

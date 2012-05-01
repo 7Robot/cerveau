@@ -13,8 +13,8 @@ class Event_dispatcher:
         # instancier toutes les missions 
         self.missions = {}
         self._load_all_missions(missions_prefix)
-        if "StartMission" in self.missions:
-            self.missions["StartMission"].process_event(Start())
+        if "start" in self.missions:
+            self.missions["start"].process_event(Start())
         else:
             print("startMission not found") #FIXME: utiliser un logger.fatal()
             
@@ -26,7 +26,7 @@ class Event_dispatcher:
         classes_missions = class_loader(path)
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
-                print ("starting the mission %s" % classe_mission.__name__)
+                print ("Loading « %s »" % classe_mission.__name__)
                 mission = classe_mission(self.robot)
                 mission.missions = self.missions 
                 self.missions[mission.name] = mission      

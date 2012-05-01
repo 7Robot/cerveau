@@ -10,11 +10,8 @@ car sinon on a des import automatiques de missions qui ont le même nom
 
 from missions.mission import Mission
 
-class MissionOdo(Mission):
-
-    def __init__(self, robot):
-        super(self.__class__,self).__init__("OdoMission", robot)
-
+class OdoMission(Mission):
+    
     def process_event(self, event):
         if self.state == 0:
             if event.name() == "OdoEvent":

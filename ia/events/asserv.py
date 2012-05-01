@@ -38,14 +38,15 @@ class AsservEvent(Event):
                 raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
         elif self.type == "done":
-            if len(cmd) == 4:
+            if len(cmd) == 5:
                 self.type += " "+cmd[2]
                 try:
                     self.value = int(cmd[3])
                 except ValueError as e:
                     raise CmdError(e.__str__())
             else:
-                raise CmdError("« %s %s » take a integer argument"
+                raise CmdError("« %s %s » must be followed by « dist » or"
+                        + "« rot », then by a integer"
                         %(cmd[0], cmd[1]))
         elif len(cmd) != 2:
             raise CmdError("« %s %s » takes no argument"

@@ -8,9 +8,9 @@ from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
-	def __init__(self, robot, ip="r2d2", port=7773):
+	def __init__(self, robot, ip="localhost", port=7773):
 		self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
-		print("On lance %s" % self.mission_prefix)
+		print("Starting « %s » robot" % self.mission_prefix)
 		# On ne peut pas avoir "simu" car la class proxy renvoie le __class__.__name__ de l'objet proxié
 		assert(self.mission_prefix in ["small", "big", "simu"])
 		self.ip   = ip
@@ -63,5 +63,5 @@ class IA:
 		self.sock.close()
 
 if __name__ == "__main__":
-	ia = IA(Small_robot(), "r2d2")
+	ia = IA(Small_robot())
 	ia.main()

@@ -6,13 +6,9 @@ Created on 27 avr. 2012
 from missions.mission import Mission
 from events.internal import Start
 
-class MissionStart(Mission):
-
-    def __init__(self, robot):
-        super(self.__class__,self).__init__("StartMission", robot)
-        self.state = 1
+class StartMission(Mission):
 
     def process_event(self, event):
-        if self.state==1:
-            self.missions["Recalibration"].process_event(Start())
+        if self.state == 0:
+            self.missions["positioning"].process_event(Start())
             self.state +=1
