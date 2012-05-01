@@ -7,13 +7,13 @@ from mathutils.types import Segment, Vertex, Vector
 from mathutils.geometry import is_segment_intersection
 
 class Bump_sensor:
-    def __init__(self, label, position, direction, real_robot, scene, sensitivity=50):
+    def __init__(self, label, position, direction, simu_robot, scene, sensitivity=50):
         '''sensitivity=50 : precision de 5mm'''
         self.state      = "open" # No contact
         self.label      = label
         self.position   = position
         self.direction  = direction
-        self.real_robot = real_robot
+        self.simu_robot = simu_robot
         self.scene      = scene
         self.direction.normalize()
         self.direction *= sensitivity
@@ -21,7 +21,7 @@ class Bump_sensor:
         
     def generate_sensor(self):        
         self.sensor     = Segment(Vertex(), self.direction)
-        self.sensor.translate(self.position.x+self.real_robot.x, self.position.y+self.real_robot.y)
+        self.sensor.translate(self.position.x+self.simu_robot.x, self.position.y+self.simu_robot.y)
         
     def sense(self):
         for segment in self.scene.to_segements():

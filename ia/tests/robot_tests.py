@@ -6,7 +6,7 @@ Created on 29 avr. 2012
 
 from mathutils.types import Vertex
 from robot.small_robot import Small_robot
-from robot.simu_robot import Simu_robot, Spy
+from robot.proxy_robot import Proxy_robot, Spy
 
 class Observer:
     def update(self, type, event, *args):
@@ -15,7 +15,7 @@ class Observer:
 obs = Observer()
 
 robot      = Small_robot()
-robot_simu = Simu_robot(robot)
+robot_simu = Proxy_robot(robot)
 Spy.add_observer(obs)
 
 #robot_simu.test()

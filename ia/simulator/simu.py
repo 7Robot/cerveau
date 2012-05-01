@@ -4,9 +4,9 @@ from ia import IA
 from mathutils.types import Vertex
 from scene import Scene, Box
 from robot.small_robot import Small_robot
-from robot.simu_robot import Simu_robot, Spy
+from robot.proxy_robot import Proxy_robot, Spy
 from tkinter import Frame, Canvas
-from simulator.real_robot import Real_robot, Regulator
+#from simulator.real_robot import Real_robot, Regulator
 import threading
 
 
@@ -42,9 +42,19 @@ class Board:
         '''Retourne une ordonnée convertie dans le repère de l'ia'''
         return -50 * (y + 1 + 100*2 - int(self.canvas.cget("height")))
         
+    def create_arc(self, x1, y1, x2, y2, **kargs):
+        return self.canvas.create_arc(self.cx(x1), self.cy(y1),
+                                     self.cx(x2), self.cy(y2), kargs)
+        
+    def create_circle(self, x1, y1, x2, y2, **kargs):
+        return self.canvas.create_circle(self.cx(x1), self.cy(y1),
+                                     self.cx(x2), self.cy(y2), kargs)
+    
     def create_rectangle(self, x1, y1, x2, y2, **kargs):
         return self.canvas.create_rectangle(self.cx(x1), self.cy(y1),
                                      self.cx(x2), self.cy(y2), kargs)
+            
+    
         
     def coords(self, item, *args):
         nargs = []
@@ -121,11 +131,34 @@ class SceneD(Drawing):
         right_room.adjust(scene.dx, scene.dy, scene.s)
         self.objects.append(BoxD(board, right_room, "red"))
         
+        # L'île avec la carte en haut
+        top_island_y = Box(Vertex(11000, 24000), Vertex(19000, 16000))
+        top_island_y.adjust(scene.dx, scene.dy, scene.s)
+        self.objects.append(ArcD(board, top_island_y, 180, 180, "yellow"))
+        
+        top_island_y = Box(Vertex(12000, 23000), Vertex(18000, 17000))
+        top_island_y.adjust(scene.dx, scene.dy, scene.s)
+        self.objects.append(ArcD(board, top_island_y, 180, 180, "green"))
+        
     def draw(self):
         self.plateau.draw()
         for obj in self.objects:
             obj.draw()
       
+class ArcD(Drawing):
+    def __init__(self, board, box, start, extent, color="blue"):
+        super(self.__class__, self).__init__(board)
+        self.box  = box
+        self.arc = self.board.create_arc(self.box.corner1.x, self.box.corner1.y, 
+                                              self.box.corner2.x, self.box.corner2.y,
+                                              start=start, extent=extent,
+                                              width =1, fill=color)
+        self.board.add_drawing(self, self.arc)
+        
+
+    def draw(self):
+        self.board.coords(self.arc, self.box.corner1.x, self.box.corner1.y, self.box.corner2.x, self.box.corner2.y)
+
 class BoxD(Drawing):
     def __init__(self, board, box, color="blue"):
         super(self.__class__, self).__init__(board)
@@ -142,8 +175,8 @@ class BoxD(Drawing):
 
 class Controller:
     '''MVC pattern + Observer pattern'''
-    def __init__(self, real_robot):
-        self.real_robot = Regulator(real_robot)            
+    def __init__(self):
+#        self.simu_robot = Regulator(simu_robot)            
         self.view = None
 
 
@@ -151,23 +184,23 @@ class Controller:
     def update(self, type, event, *args):
         print("simu", event)
         if self.view != None:
-            if type == "get":
-                if event.__name__ == "asserv":
-                    self.real_robot.asserv_speed(args[0])
+#            if type == "get":
+#                if event.__name__ == "asserv":
+#                    self.simu_robot.asserv_speed(args[0])
             self.view.redraw_robot()
     
 class View(Frame):
     '''MVC pattern'''
-    def __init__(self, real_robot, robot, scene, controller, phys_sim):
+    def __init__(self, robot, scene, controller):
         Frame.__init__(self)
         
         
         self.controller = controller
-        self.phys_sim   = phys_sim
+#        self.phys_sim   = phys_sim
 
         self.board = Board(Canvas(self, width=602, height=402, bg='white'))
         self.scene = SceneD(self.board, scene)
-        self.real_robot = RobotD(self.board, real_robot, "black")
+#        self.simu_robot = RobotD(self.board, simu_robot, "black")
         self.robot = RobotD(self.board, robot)
         self.item = None
         
@@ -181,18 +214,18 @@ class View(Frame):
         
         self.scene.draw()
         self.robot.draw()
-        if self.phys_sim:
-            self.redraw_real_robot()
+#        if self.phys_sim:
+#            self.redraw_real_robot()
         
         
     def redraw_robot(self):
         self.robot.draw()
         
-    def redraw_real_robot(self):
-        if self.phys_sim:
-            self.controller.real_robot.run()
-            self.real_robot.draw()
-            self.after(50, self.redraw_real_robot)
+#    def redraw_real_robot(self):
+#        if self.phys_sim:
+#            self.controller.simu_robot.run()
+#            self.simu_robot.draw()
+#            self.after(50, self.redraw_real_robot)
 
    
             
@@ -213,11 +246,11 @@ class View(Frame):
             self.item.unselect()
     
 class Simu:
-    def __init__(self, robot, scene, phys_sim=False):
-        self.real_robot = Real_robot(robot, 200, 60)
-        self.controller = Controller(self.real_robot)
+    def __init__(self, robot, scene):
+#        self.simu_robot = Real_robot(robot, 200, 60)
+        self.controller = Controller()
         Spy.add_observer(self.controller)
-        self.view = View(self.real_robot, robot, scene, self.controller, phys_sim)
+        self.view = View(robot, scene, self.controller)
         self.controller.view = self.view
         self.view.init()
         
@@ -225,7 +258,7 @@ class Simu:
         self.view.mainloop()
         
 if __name__ == '__main__':
-    robot = Simu_robot(Small_robot())
+    robot = Proxy_robot(Small_robot())
     ia = IA(Small_robot(), "r2d2")
     ia_thread = threading.Thread(None, ia.main, None, (), {})
     ia_thread.start()

@@ -31,7 +31,7 @@ class Spy:
             observer.update("set", event, args)
 
 
-class Simu_robot(object):
+class Proxy_robot(object):
     '''Classe proxy, redirige tous les appels de méthodes vers Robot, 
     puis notifie les observateurs'''
     __slots__ = ["_obj", "__weakref__"]
@@ -42,7 +42,7 @@ class Simu_robot(object):
     
 
     def __getattribute__(self, name):
-        if name not in ["pos", "theta", "__class__"]:
+        if name not in ["pos", "theta", "regulator", "__class__", "__dict__"]:
             res = Spy(getattr(object.__getattribute__(self, "_obj"), name))
             return res.func
         else:

@@ -12,7 +12,7 @@ class IA:
 		self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
 		print("On lance %s" % self.mission_prefix)
 		# On ne peut pas avoir "simu" car la class proxy renvoie le __class__.__name__ de l'objet proxié
-		assert(self.mission_prefix in ["small", "big"])
+		assert(self.mission_prefix in ["small", "big", "simu"])
 		self.ip   = ip
 		self.port = port
 		self.sock = None

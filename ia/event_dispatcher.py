@@ -21,9 +21,8 @@ class Event_dispatcher:
         
     def _load_all_missions(self, missions_prefix):
         '''Charge toutes les instances de toutes les missions'''
-        assert(missions_prefix in ["small", "big"])
         self.missions    = {}
-        path             = os.path.dirname(os.path.join(os.getcwd(),"missions", missions_prefix))
+        path             = os.path.join(os.getcwd(),"missions", missions_prefix)
         classes_missions = class_loader(path)
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):

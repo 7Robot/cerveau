@@ -7,6 +7,8 @@ class AsservEvent(Event):
     def __init__(self, cmd):
         super(self.__class__,self).__init__()
         self.type = cmd[1]
+        
+        # asserv dist/rot
         if self.type == "dist" or self.type == "rot":
             if len(cmd) == 3:
                 self.value = cmd[2]
@@ -17,6 +19,8 @@ class AsservEvent(Event):
                 self.value = int(self.value)
             except ValueError as e:
                 raise CmdError(e.__str__())
+        
+        # asserv speed
         elif self.type == "speed":
             if len(cmd) == 4 or len(cmd) == 5:
                 try:

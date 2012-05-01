@@ -6,41 +6,17 @@ Created on 30 avr. 2012
 from math import cos, sin
 from mathutils.types import Vertex
 from mathutils.geometry import angle, distance
+from threading import Timer
 
-class Regulator:
-    def __init__(self, real_robot):
-        self.real_robot = real_robot
-        self.fun  = None
-        self.args = None
-    def asserv_dist(self, dist):
-        self.fun  = self.real_robot.reach_vertex
-        self.args = (Vertex(dist*cos(self.real_robot.theta), 
-                           dist*sin(self.real_robot.theta)) \
-                    + self.real_robot.pos,)
-        self.run()
-         
-    def asserv_rot(self, theta):
-        self.fun = self.real_robot.turn_direction
-        self.args=(theta,)
-        self.run()
-        
-    def asserv_speed(self, speed, curt=False):
-        self.fun  = self.real_robot.go_speed
-        self.args = (speed, curt,)
-        self.run()
-    
-    def run(self):
-        if self.fun != None and self.args != None:
-            self.fun(*self.args)
-            self.real_robot.move()
+
             
 
-class Real_robot():
-    '''Robot physiquement simulé qui répon aux commandes de l'IA'''
+class Simu_robot():
+    '''Robot physiquement simulé qui répond aux commandes de l'IA'''
         
-    def __init__(self, robot, max_speed, max_acceleration):
-        self.pos    = Vertex(robot.pos.x, robot.pos.y)
-        self.theta = robot.theta/36000*6.28319
+    def __init__(self, pos, theta, max_speed, max_acceleration):
+        self.pos    = pos
+        self.theta  = theta
         self.accel  = 0
         self.speed  = 0
         self.mspeed = max_speed
@@ -48,6 +24,7 @@ class Real_robot():
         self.daccel = max_acceleration/10
         self.msteer = 0.5;
         self.action = None
+        #self.regulator = Regulator(self)
         
     def accelerate(self,  accel): #rate between -100 and 100
         self.speed = min(accel+self.speed,self.mspeed)
@@ -103,10 +80,10 @@ class Real_robot():
         else:
             self.turn(self.msteer * sign)
             
-    def run(self):
-        if self.action == "go_speed":
-            self.go_speed(self.wanted_speed, self.curt)
-        self.move()
+#    def run(self):
+#        if self.action == "go_speed":
+#            self.go_speed(self.wanted_speed, self.curt)
+#        self.move()
             
     def reach_vertex(self, goal):
         d = distance(goal, self.pos)
@@ -134,3 +111,39 @@ class Real_robot():
             else:
                 self.go_speed(0)
 
+class Simu_regulator(Simu_robot):
+    '''Pattern decorator, peut assigner autant de "cartes d'extension" 
+    à un robot, il restera un robot'''
+    def __init__(self, robot):
+        self.__dict__ = robot.__dict__.copy()
+        #self.simu_robot = simu_robot
+        self.fun  = None
+        self.args = None
+    def asserv_dist(self, dist):
+        self.fun  = self.reach_vertex
+        self.args = (Vertex(dist*cos(self.theta), 
+                           dist*sin(self.theta)) \
+                    + self.pos,)
+        timer = Timer(0.05, self.run, [])
+        timer.start()
+        self.run()
+         
+    def asserv_rot(self, theta):
+        self.fun = self.turn_direction
+        self.args=(theta,)
+        timer = Timer(0.05, self.run, [])
+        timer.start()
+        
+    def asserv_speed(self, speed, curt=False):
+        self.fun  = self.go_speed
+        self.args = (speed, curt,)
+#        timer = Timer(0.05, self.run, [])
+#        timer.start()
+        self.run()
+    
+    def run(self):
+        if self.fun != None and self.args != None:
+            self.fun(*self.args)
+            self.move()
+#            timer = Timer(0.05, self.run, [])
+#            timer.start()
