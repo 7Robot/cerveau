@@ -11,6 +11,7 @@ class Mission:
         name = self.__class__.__name__
         if name[-7:] == "Mission":
             self.name = name[0:-7].lower()
+            print("Mission « %s » loaded" %self.name)
         else:
             print("Waring: convention de nommage non respecter pour %s" %name)
             self.name = name.lower()
