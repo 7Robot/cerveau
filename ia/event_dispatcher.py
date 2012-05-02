@@ -31,7 +31,6 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         classes_missions = class_loader(path)
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
-                print ("Loading « %s »" % classe_mission.__name__)
                 mission = classe_mission(self.robot)
                 mission.missions = self.missions 
                 self.missions[mission.name] = mission      
@@ -39,13 +38,10 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
     
     def add_event(self, event):
         '''Inutile, sauf si on change d'implémentation'''
-        print("add", event)
         self.queue.put(event, True, None) # block=True, timeout=None
     
     def run(self):
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
-            print("dispatch", event)
-            if event != None:
-                for missions in self.missions.values():
-                    missions.process_event(event)
+            for missions in self.missions.values():
+                missions.process_event(event)

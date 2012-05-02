@@ -5,6 +5,7 @@ from events.event import CmdError
 from events import *
 import socket
 
+
 class Can(Thread):
 	def __init__(self, socket, event_manager):
 		Thread.__init__(self)
@@ -16,21 +17,17 @@ class Can(Thread):
 	def cmd_to_event(self, cmd):
 		if cmd == "":
 			# EOF
-			return "stop" # TODO exception
+			return None
 		words = cmd.lower().split()
 		if len(words) < 2:
-			print("All command requiere at least 2 arguments")
-			return None
+			raise CmdError("All command require at least 2 arguments")
 		w = words[0].capitalize()+"Event"
 		event = None
 		try:
 			m = __import__("events."+words[0])
 			event = getattr(m, w)(words)
 		except ImportError:
-			print("No module called « %s » found" %w)
-		except CmdError as e:
-			print("Module « %s » failed to parse « %s »" %(w, cmd.strip()))
-			print("\tMessage: %s" %e)
+			raise CmdError("No module called « %s » found" %w)
 		return event
 
 					
@@ -49,10 +46,16 @@ class Can(Thread):
 				print ("Receiver : socket error", message) #TODO: logger.fatal
 				break
 			else:
-				event = self.cmd_to_event(cmd)
-				if event=="stop":
-					break
-				self.event_manager.add_event(event)
+				try:
+					event = self.cmd_to_event(cmd)
+				except CmdError as e:
+					print("Failed to parse « %s »" %(cmd.strip()))
+					print("\tMessage: %s" %e)
+				else:
+					if event == None:
+						break
+					else:
+						self.event_manager.add_event(event)
 			
 
 	def sender(self, message):
