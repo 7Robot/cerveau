@@ -6,8 +6,8 @@ Created on 28 avr. 2012
 from ia import IA
 from time import sleep
 import random
-from tests.ia_test import Server_test1
-from tests.server import Server_test 
+from tests.server import Server_test
+from tests.ia_test import Server_test_robot
 from simulator.simu import Simu
 from robot.small_robot import Small_robot 
 from robot.proxy_robot import Proxy_robot
@@ -45,12 +45,15 @@ if __name__ == '__main__':
     test_server = Server_test1('127.0.0.1',port)
     test_server.start()
     
+    test_server_robot = Server_test_robot('127.0.0.1',port+1)
+    test_server_robot.start()
+    
     sleep(0.5)
     
     
     robot = Proxy_robot(Small_robot())
     simu = Simu(robot, Scene())
-    ia = IA(robot, "127.0.0.1", port)
+    ia = IA(robot, "127.0.0.1", port,"127.0.0.1", port+1)
     ia_thread = threading.Thread(None, ia.main, None, (), {})
     ia_thread.start()
     simu.main()

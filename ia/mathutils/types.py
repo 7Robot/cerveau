@@ -74,7 +74,7 @@ class Vector(Vertex):
     
     def __mul__(self, c):
         if isinstance(c,Vector):
-            return Vector(self.x*c.x, self.y*c.y)
+            return self.x*c.x + self.y*c.y
         else:
             return Vector(c*self.x, c*self.y)
     
