@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
+from threading import Thread
 from events.event import CmdError
 from events import *
 import socket
 
-class Can:
-	def __init__(self, socket):
-		self.socket = socket
-        self.bufsock = self.socket.makefile(buffering=1,
+class Can(Thread):
+	def __init__(self, socket, event_manager):
+		Thread.__init__(self)
+		self.socket    = socket
+		self.event_manager = event_manager
+		self.bufsock   = self.socket.makefile(buffering=1,
                 errors='replace')
 		
 	def cmd_to_event(self, cmd):
 		if cmd == "":
 			# EOF
-            return "stop" # TODO exception
+			return "stop" # TODO exception
 		words = cmd.lower().split()
 		if len(words) < 2:
 			print("All command requiere at least 2 arguments")
@@ -30,17 +33,27 @@ class Can:
 			print("\tMessage: %s" %e)
 		return event
 
-	def receiver(self):
-		try:
-			cmd = self.bufsock.readline()
-		except socket.timeout as message:
-			print ("Receiver : timout", message) #TODO: logger.fatal
-			return None
-		except socket.error as message:
-			print ("Receiver : socket error", message) #TODO: logger.fatal
-			return "stop"
-		
-		return self.cmd_to_event(cmd)
+					
+		event = self.cmd_to_event(cmd)
+		if event != None:
+			self.event_manager.add_event(event)
+	
+	def run(self):
+		while True:
+			try:
+				cmd = self.bufsock.readline()
+			except socket.timeout as message:
+				print ("Receiver : timout", message) #TODO: logger.fatal
+				#return None
+			except socket.error as message:
+				print ("Receiver : socket error", message) #TODO: logger.fatal
+				break
+			else:
+				event = self.cmd_to_event(cmd)
+				if event=="stop":
+					break
+				self.event_manager.add_event(event)
+			
 
 	def sender(self, message):
 		try:

@@ -47,7 +47,12 @@ class AsservEvent(Event):
                 raise CmdError("« %s %s » must be followed by « dist » or"
                         + " « rot », then by a integer"
                         %(cmd[0], cmd[1]))
-        elif self.type in ["stop", "done", "on", "off"]:
+                
+        elif self.type == "done":
+            self.type += "_"+cmd[2]
+            self.value = cmd[3]
+                
+        elif self.type in ["stop", "on", "off"]:
             if len(cmd) != 2:
                 raise CmdError("« %s %s » takes no argument"
                          %(cmd[0], cmd[1]))

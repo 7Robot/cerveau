@@ -18,24 +18,26 @@ class Robot:
         self.dim_b = dim_b
         self.dim_t = dim_t
         
-        self.can = None
+        self.msg_can   = None
+        self.msg_robot = None
 
 
     def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
         curt_str = ""
         if curt:
             curt_str = " curt" # l'espace est important
-        if self.can != None:
-            self.can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
+        if self.msg_can != None:
+            self.msg_can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
         #FIXME: else logger.fatal
     
     def forward(self, dist):
-        if self.can != None:
-            self.can.sender("asserv dist %d" % dist)
+        if self.msg_can != None:
+            self.msg_can.sender("asserv dist %d" % dist)
         #FIXME: else logger.fatal
 
     def rotate(self, dtheta):
-            self.can.sender("asserv rot %d" % dtheta)
+        if self.msg_can != None:
+            self.msg_can.sender("asserv rot %d" % dtheta)
         #FIXME: else logger.fatal
         
     def get_theta(self):
@@ -48,8 +50,8 @@ class Robot:
         
     
     def stop(self):
-        if self.can != None:
-            self.can.sender("asserv stop")
+        if self.msg_can != None:
+            self.msg_can.sender("asserv stop")
         #FIXME: else logger.fatal
 
     def fix_forward(self, dist):
