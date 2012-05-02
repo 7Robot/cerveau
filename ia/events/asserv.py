@@ -45,9 +45,9 @@ class AsservEvent(Event):
                 except ValueError as e:
                     raise CmdError(e.__str__())
             else:
-                raise CmdError("« %s %s » must be followed by « dist » or"
+                raise CmdError("« %s » must be followed by « dist » or"
                         + "« rot », then by a integer"
-                        %(cmd[0], cmd[1]))
+                        %(cmd))
         elif len(cmd) != 2:
             raise CmdError("« %s %s » takes no argument"
                      %(cmd[0], cmd[1]))

@@ -4,15 +4,15 @@ Created on 27 avr. 2012
 '''
 
 from missions.mission import Mission
-from events.internal import Start
+from events.internal import StartEvent
 
-class MissionStart(Mission):
+class StartMission(Mission):
 
     def __init__(self, robot):
-        super(self.__class__,self).__init__("StartMission", robot)
+        super(self.__class__,self).__init__(robot)
         self.state = 1
 
     def process_event(self, event):
         if self.state==1:
-            self.missions["Asserv"].process_event(Start())
+            self.missions["asserv"].process_event(StartEvent())
             self.state +=1

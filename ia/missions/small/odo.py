@@ -14,7 +14,7 @@ class OdoMission(Mission):
     
     def process_event(self, event):
         if self.state == 0:
-            if event.name() == "OdoEvent":
+            if event.name == "odo":
                 if event.type == "pos":
                     self.robot.set_position(event.value)
                     

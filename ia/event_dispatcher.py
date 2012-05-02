@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, threading
 from class_manager import *
-from events.internal import Start 
+from events.internal import StartEvent 
 from missions.mission import Mission 
 
 
@@ -14,7 +14,7 @@ class Event_dispatcher:
         self.missions = {}
         self._load_all_missions(missions_prefix)
         if "start" in self.missions:
-            self.missions["start"].process_event(Start())
+            self.missions["start"].process_event(StartEvent())
         else:
             print("startMission not found") #FIXME: utiliser un logger.fatal()
             
