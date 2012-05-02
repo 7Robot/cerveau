@@ -9,7 +9,7 @@ from events import *
 
 class Test_can(unittest.TestCase):
     def setUp(self):
-        self.can = Can(None)
+        self.can = Can(None, None)
         
     def test_asserv(self):
         self.assertIs(type(self.can.cmd_to_event("asserv done dist 2645\n")), AsservEvent)

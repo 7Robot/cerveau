@@ -11,8 +11,6 @@ class Can(Thread):
 		Thread.__init__(self)
 		self.socket    = socket
 		self.event_manager = event_manager
-		self.bufsock   = self.socket.makefile(buffering=1,
-                errors='replace')
 		
 	def cmd_to_event(self, cmd):
 		if cmd == "":
@@ -36,6 +34,8 @@ class Can(Thread):
 			self.event_manager.add_event(event)
 	
 	def run(self):
+		self.bufsock   = self.socket.makefile(buffering=1,
+                errors='replace')
 		while True:
 			try:
 				cmd = self.bufsock.readline()
