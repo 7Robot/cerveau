@@ -7,7 +7,7 @@ class Event:
         if name[-5:] == "Event":
             self.name = name[:-5].lower()
         else:
-            print("Waring: convention de nommage non respecter pour %s" %name)
+            print("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()
     def __str__(self):
         s = ""

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, threading
 from class_manager import *
-from events.internal import StartEvent 
+from events.internal import StartEvent
 from missions.mission import Mission 
 
 

@@ -1,7 +1,7 @@
 # -*-coding:UTF-8 -*
 
 import threading
-from events.internal import TimerOutEvent
+from events.internal import TimerEvent
 
 class Mission:
     def __init__(self, robot):
@@ -13,7 +13,7 @@ class Mission:
             self.name = name[0:-7].lower()
             print("Mission « %s » loaded" %self.name)
         else:
-            print("Warning: convention de nommage non respectée pour %s" % self.__class__.__name__)
+            print("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()
         
     def process_event(self, event):
@@ -21,5 +21,5 @@ class Mission:
 
     def create_timer(self, duration):
         '''Créé un timer qui va envoyer un évènement Timer_end à la fin'''
-        t = threading.Timer(duration/1000, self.process_event, [TimerOutEvent()])
+        t = threading.Timer(duration/1000, self.process_event, [TimerEvent()])
         t.start()

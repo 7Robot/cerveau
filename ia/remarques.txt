@@ -1,0 +1,6 @@
+− timer avec arguments
+
+
+Secondaire:
+− event stop ? → raise
+− sender → send, receiver → receive

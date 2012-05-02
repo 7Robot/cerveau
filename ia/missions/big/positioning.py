@@ -42,27 +42,35 @@ class PositioningMission(Mission):
                     
         elif self.state == 7:
             if e.name == "timer":
-                self.create_timer(20000) # FIXME à mesurer
-                self.robot.forward(5000)
+                self.robot.forward(1000)
+                # TODO envoit message à petit
                 self.state += 1
-                print("Petit en attente de positionnement de gros")
+                print("Gro en position !")
+        
+ #       if self.state == 3:
+ #           if event.name == "asserv":
+ #               if event.type == "done_dist":
+ #                   self.state += 1
+ #                   self.robot.asserv(-20, -20)
+ #                   
+ #       if self.state == 4:
+ #           if event.name == "asserv":
+ #               if event.type == "done_rot":
+ #                   self.state += 1
+ #                   self.robot.rotate(900)
+ #       
+ #       if self.state == 5:
+ #           if event.name == "bump":
+ #               if event.state == "close":
+ #                   # set odo = ...
+ #                   self.state += 1
+ #                   
+ #                   
+ #       if self.state == 6:
+ #           if event.name == "odo":
+ #               if event.type == "pos":
+ #                   self.state += 1
+ #                   print ("Recalibration terminée !")
+ #
 
-        elif self.state == 8:
-            if e.name == "robot":
-                self.robot.asserv(-20, -20)
-                self.state += 1
-            elif e.name == "timer":
-                print("Pas de réponse de gros !")
-                self.robot.asserv(-20, -20)
-                self.state += 1
 
-        elif self.state == 9:
-            if e.name == "bump" and e.state == "close":
-                self.create_timer(700)
-                self.state += 1
-
-        elif self.state == 10:
-            if e.name == "asserv" and e.state == "done":
-                self.robot.forward(2000)
-                self.state += 1
-                print("Petit en position !")

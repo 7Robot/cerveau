@@ -30,7 +30,6 @@ class Robot:
         #FIXME: else logger.fatal
     
     def forward(self, dist):
-        print("forward")
         if self.can != None:
             self.can.sender("asserv dist %d" % dist)
         #FIXME: else logger.fatal
