@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
-import os, threading
+
+from queue import Queue
+from threading import Thread, Lock
 from class_manager import *
 from events.internal import StartEvent 
 from missions.mission import Mission 
 
 
-class Event_dispatcher:
+class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
     '''Dispatch les events et la lance la 1e missions
     du coup faudrait peut être revoir son nom'''
     def __init__(self, missions_prefix, robot):
         self.robot = robot
         # instancier toutes les missions 
         self.missions = {}
+        self.queue    = Queue()
         self._load_all_missions(missions_prefix)
+        self.lock     = Lock()
         if "start" in self.missions:
             self.missions["start"].process_event(StartEvent())
         else:
@@ -32,8 +36,11 @@ class Event_dispatcher:
                 self.missions[mission.name] = mission      
                 
     
-    def listener(self, event):
-        # Contrairement à notre discussion on devrait pas avoir besoin de verrous
+    def add_event(self, event):
+        '''Inutile, sauf si on change d'implémentation'''
+        self.queue.put(event, True, None) # block=True, timeout=None
+    
+    def run(self):
+        event = self.queue.get(True, None) # block=True, timeout=None
         for missions in self.missions.values():
             missions.process_event(event)
-    
