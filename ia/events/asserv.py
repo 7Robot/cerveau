@@ -37,18 +37,20 @@ class AsservEvent(Event):
             else:
                 raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
-        elif self.type == "done":
-            if len(cmd) == 5:
-                self.type += " "+cmd[2]
+        elif self.type == "pos":
+            if len(cmd) == 3:
                 try:
-                    self.value = int(cmd[3])
+                    self.value = int(cmd[2])
                 except ValueError as e:
                     raise CmdError(e.__str__())
             else:
-                raise CmdError("« %s » must be followed by « dist » or"
-                        + "« rot », then by a integer"
-                        %(cmd))
-        elif len(cmd) != 2:
-            raise CmdError("« %s %s » takes no argument"
-                     %(cmd[0], cmd[1]))
-
+                raise CmdError("« %s %s » must be followed by « dist » or"
+                        + " « rot », then by a integer"
+                        %(cmd[0], cmd[1]))
+        elif self.type in ["stop", "done", "on", "off"]:
+            if len(cmd) != 2:
+                raise CmdError("« %s %s » takes no argument"
+                         %(cmd[0], cmd[1]))
+        else:
+            raise CmdError("« %s » can't be followed by « %s »"
+                    %(cmd[0], cmd[1]))

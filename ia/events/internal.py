@@ -10,7 +10,7 @@ class StartEvent(Event):
     def __init__(self):
         super(self.__class__,self).__init__()
         
-class TimerOutEvent(Event):
+class TimerEvent(Event):
     '''
     Event interne, survient en fin d'éxecution d'un Timer
     '''

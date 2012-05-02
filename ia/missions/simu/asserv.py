@@ -26,7 +26,7 @@ class AsservMission(Mission):
                     #self.create_timer(50)
                     
                     
-            elif event.name == "timerout":
+            elif event.name == "timer":
                 self.robot.run()
                 self.create_timer(50)
                 

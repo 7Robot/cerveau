@@ -3,7 +3,7 @@
 from queue import Queue
 from threading import Thread, Lock
 from class_manager import *
-from events.internal import StartEvent 
+from events.internal import StartEvent
 from missions.mission import Mission 
 
 
