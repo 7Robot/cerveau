@@ -76,7 +76,7 @@ class Vector(Vertex):
         if isinstance(c,Vector):
             return Vector(self.x*c.x, self.y*c.y)
         else:
-            Vector(c*self.x, c*self.y)
+            return Vector(c*self.x, c*self.y)
     
     def __neg__(self): 
         return Vector(-self.x, -self.y)

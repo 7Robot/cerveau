@@ -13,7 +13,7 @@ class AsservMission(Mission):
             self.state +=1
             self.create_timer(50)
         elif self.state == 1:
-            if event.name == "asservt":
+            if event.name == "asserv":
                 if event.type == "speed":
                     self.robot.asserv_speed(event.value[0], event.curt)
                     self.robot.run()

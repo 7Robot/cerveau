@@ -14,10 +14,11 @@ from time import sleep
 import threading
 
 from ia import IA
-from mathutils.types import Vertex
+from mathutils.types import Vertex, Vector
 from robot.proxy_robot import Proxy_robot
 from simulator.simu import Simu
 from simulator.simu_robot import Simu_robot, Simu_regulator
+from simulator.sensors import Simu_bump_sensor
 from scene import Scene
 from tests.ia_test import Server_test1
 from tests.server import Server_test
@@ -29,7 +30,7 @@ class Server_test1(Server_test):
         
     def tests(self):
         self.send_cmd("asserv speed -30 -30")
-        self.running.wait(2)
+        self.running.wait(2.2)
         self.send_cmd("asserv dist 3000")
         self.running.wait(1)
         print("rot!!!!!!!!!!")
@@ -50,11 +51,15 @@ if __name__ == '__main__':
     
     sleep(0.5)
     
+    scene = Scene()
     
-    robot = Proxy_robot(Simu_regulator(Simu_robot(Vertex(3000-15000, -3000+10000), 0, 200, 60)))
+
+    bump_sensors = Simu_bump_sensor(scene, "back", Vertex(-300, 50), Vector(-1, 0))
+    robot = Simu_robot(Vertex(3000-15000, -3000+10000),0, 200, 60, [bump_sensors])
+    robot = Proxy_robot(Simu_regulator(robot))
     
     #robot.regulator.asserv_speed(20, False)
-    simu = Simu(robot, Scene())
+    simu = Simu(robot, scene)
     ia = IA(robot, "127.0.0.1", port)
     ia_thread = threading.Thread(None, ia.main, None, (), {})
     ia_thread.start()

@@ -14,16 +14,23 @@ from threading import Timer
 class Simu_robot():
     '''Robot physiquement simulé qui répond aux commandes de l'IA'''
         
-    def __init__(self, pos, theta, max_speed, max_acceleration):
-        self.pos    = pos
-        self.theta  = theta
-        self.accel  = 0
-        self.speed  = 0
-        self.mspeed = max_speed
-        self.maccel = max_acceleration
-        self.daccel = max_acceleration/10
-        self.msteer = 50;
-        self.action = None
+    def __init__(self, pos, theta, max_speed, max_acceleration, sensors=None):
+        self.pos     = pos
+        self.theta   = theta
+        self.accel   = 0
+        self.speed   = 0
+        self.mspeed  = max_speed
+        self.maccel  = max_acceleration
+        self.daccel  = max_acceleration/10
+        self.msteer  = 50;
+        self.action  = None
+        self.can     = None
+        self.sensors = sensors
+        if sensors == None:
+            self.sensors = []
+        for sensor in self.sensors:
+            sensor.robot = self
+            sensor.init()
         #self.regulator = Regulator(self)
         
     def get_theta(self):
@@ -114,13 +121,17 @@ class Simu_robot():
                 self.turn_direction(ang)
             else:
                 self.go_speed(0)
+                
+    def run(self):
+        for sensor in self.sensors:
+            sensor.run()
 
 class Simu_regulator(Simu_robot):
     '''Pattern decorator, peut assigner autant de "cartes d'extension" 
     à un robot, il restera un robot'''
     def __init__(self, robot):
         self.__dict__ = robot.__dict__.copy()
-        #self.simu_robot = simu_robot
+        self.robot = robot
         self.fun  = None
         self.args = None
     def asserv_dist(self, dist):
@@ -150,8 +161,10 @@ class Simu_regulator(Simu_robot):
         self.run()
     
     def run(self):
+        self.robot.run()
         if self.fun != None and self.args != None:
             self.fun(*self.args)
             self.move()
 #            timer = Timer(0.05, self.run, [])
 #            timer.start()
+        
