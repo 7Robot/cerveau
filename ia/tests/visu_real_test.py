@@ -18,7 +18,7 @@ if __name__ == '__main__':
     
     robot = Proxy_robot(Small_robot())
     simu = Simu(robot, Scene())
-    ia = IA(robot, "r2d2", 7773, "r2d2", 7775)
+    ia = IA(robot, "localhost", 7773, "localhost", 7769)
     ia_thread = threading.Thread(None, ia.main, None, (), {})
     ia_thread.start()
     simu.main()

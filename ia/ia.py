@@ -8,7 +8,7 @@ from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
-    def __init__(self, robot, ip_can="r2d2", port_can=7773, ip_robot="r2d2", port_robot=7775):
+    def __init__(self, robot, ip_can="localhost", port_can=7773, ip_robot="localhost", port_robot=7769):
         self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
         print("Starting « %s » robot" % self.mission_prefix)
         # On ne peut pas avoir "simu" car la class proxy renvoie le __class__.__name__ de l'objet proxié

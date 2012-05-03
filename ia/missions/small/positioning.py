@@ -16,7 +16,9 @@ class PositioningMission(Mission):
                 self.state += 1
                                     
         elif self.state == 2:
+            print(2)
             if e.name == "bump" and e.state == "close":
+                print(2.5)
                 self.create_timer(700)
                 self.state += 1
                     
