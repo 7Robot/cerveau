@@ -42,7 +42,7 @@ class Robot:
         
     def get_theta(self):
         '''Retourne la direction en radian'''
-        return self.theta/3600*6.28319
+        return self.theta/36000*6.28319
         
     def set_position(self, pos):
         self.pos = pos
