@@ -49,16 +49,8 @@ void update_pos(int _x, int _y)
         exit(1);
     }
 
-    left = y;
-    right = y; + x * (y-80) / 160;
-
-    if (x > 0) {
-        left -= x * (y-80) / 160;
-        right -= x * (y+80) / 160;
-    } else {
-        left += x * (y+80) / 160;
-        right += x * (y-80) / 160;
-    }
+    left = - (80 * (y + x)) / (80 + abs(x));
+    right = - (80 * (y - x)) / (80 + abs(x));
 
     if (pthread_mutex_unlock(&mtx) < 0) {
         perror("pthread_mutex_unlock");
@@ -80,15 +72,19 @@ void update(int axisc, int * axis, int buttonc, char * button)
     if (button[0] && !b[0]) {
         b[0] = 1;
         fprintf(can, "asserv speed 0 0\n");
+        fflush(can);
     } else if (button[1] && !b[1]) {
         b[1] = 1;
-        fprintf(can, "asserv speed 18000\n");
+        fprintf(can, "asserv rot 18000\n");
+        fflush(can);
     } else if (button[2] && !b[2]) {
         b[2] = 1;
         fprintf(can, "asserv rot -9000\n");
+        fflush(can);
     } else if (button[3] && !b[3]) {
         b[3] = 1;
         fprintf(can, "asserv rot 9000\n");
+        fflush(can);
     } else {
         int i;
         for (i = 0; i < 4 ; i++) {
