@@ -5,10 +5,11 @@ from mathutils.types import Vertex
 from scene import Scene, Box
 from robot.small_robot import Small_robot
 from robot.proxy_robot import Proxy_robot, Spy
-from tkinter import Frame, Canvas
+from tkinter import Frame, Canvas, PhotoImage, NW
 #from simulator.real_robot import Real_robot, Regulator
 import threading
 from math import cos, sin, pi
+
 
 
 class Board:
@@ -104,7 +105,10 @@ class RobotD(Drawing):
     def __init__(self, board, robot, color="gray"):
         super(self.__class__, self).__init__(board, True)
         self.robot  = robot  
-        self.robotd = self.board.create_poly4(self.robot.pos.x+1414*cos(robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+pi/4),
+        self.robotd = self.board.create_poly4(self.robot.pos.x+1414*cos(robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(robot.get_theta()
+                                                                                                                           
+                                                                                                                           
+                                                                                                                           +pi/4),
                           self.robot.pos.x+1414*cos(robot.get_theta()+3*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+3*pi/4),
                           self.robot.pos.x+1414*cos(robot.get_theta()+5*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+5*pi/4),
                           self.robot.pos.x+1414*cos(robot.get_theta()+7*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+7*pi/4),
@@ -160,10 +164,15 @@ class SceneD(Drawing):
         top_island_y.adjust(scene.dx, scene.dy, scene.s)
         self.objects.append(ArcD(board, top_island_y, 180, 180, "green"))
         
+        photo = PhotoImage(file="simulator/board.ppm")
+        self.image=board.canvas.create_image(0,0, anchor = NW,  image=photo)
+          
+        
     def draw(self):
         self.plateau.draw()
         for obj in self.objects:
             obj.draw()
+        
       
 class ArcD(Drawing):
     def __init__(self, board, box, start, extent, color="blue"):
@@ -193,19 +202,18 @@ class BoxD(Drawing):
         self.board.coords(self.rect, self.box.corner1.x, self.box.corner1.y, self.box.corner2.x, self.box.corner2.y)
         
 
-class Controller:
+class Controller:#(threading.Thread):
     '''MVC pattern + Observer pattern'''
     def __init__(self):
+        #super(self.__class__, self).__init__()
 #        self.simu_robot = Regulator(simu_robot)            
         self.view = None
+        Spy.add_observer(self)
 
 
         
     def update(self, type, event, *args):
         if self.view != None:
-#            if type == "get":
-#                if event.__name__ == "asserv":
-#                    self.simu_robot.asserv_speed(args[0])
             self.view.redraw_robot()
     
 class View(Frame):
@@ -213,17 +221,27 @@ class View(Frame):
     def __init__(self, robot, scene, controller):
         Frame.__init__(self)
         
-        
         self.controller = controller
-#        self.phys_sim   = phys_sim
-
-        self.board = Board(Canvas(self, width=602, height=402, bg='white'))
-        self.scene = SceneD(self.board, scene)
-#        self.simu_robot = RobotD(self.board, simu_robot, "black")
-        self.robot = RobotD(self.board, robot)
-        self.item = None
+        self.robot = robot
+        
+           
         
     def init(self):
+        
+        self.canvas =Canvas(self, width=602, height=402, bg='white')
+        self.photo = PhotoImage(file="simulator/board.ppm")
+        self.image=self.canvas.create_image(0,0, anchor = NW,  image=self.photo)
+        
+        self.board = Board(self.canvas)
+        self.robot = RobotD(self.board, self.robot)
+#        self.scene = SceneD(self.board, scene)
+#        self.simu_robot = RobotD(self.board, simu_robot, "black")
+#        
+        self.item = None
+        
+        
+        
+        
         
         self.board.canvas.pack(padx =5, pady =3)
         self.board.canvas.bind("<Button-1>", self.mouseDown)
@@ -231,22 +249,16 @@ class View(Frame):
         self.board.canvas.bind("<Button1-ButtonRelease>", self.mouseUp)
         self.pack()
         
-        self.scene.draw()
+
         self.robot.draw()
-#        if self.phys_sim:
-#            self.redraw_real_robot()
-        
+
         
     def redraw_robot(self):
         self.robot.draw()
         
-#    def redraw_real_robot(self):
-#        if self.phys_sim:
-#            self.controller.simu_robot.run()
-#            self.simu_robot.draw()
-#            self.after(50, self.redraw_real_robot)
-
-   
+    def update(self):
+        self.robot.draw()
+         
             
     def mouseDown(self, event):
         self.item= self.board.find_graspable_drawing(event.x, event.y)
@@ -266,22 +278,26 @@ class View(Frame):
     
 class Simu:
     def __init__(self, robot, scene):
-#        self.simu_robot = Real_robot(robot, 200, 60)
+
         self.controller = Controller()
-        Spy.add_observer(self.controller)
+
         self.view = View(robot, scene, self.controller)
-        self.controller.view = self.view
         self.view.init()
+        self.controller.view = self.view
+        
         
     def main(self):
+        self.view.board.canvas.pack()
+        self.view.pack()
         self.view.mainloop()
         
 if __name__ == '__main__':
-    from tests.server import Server_test
-    
+
     robot = Proxy_robot(Small_robot())
-#    ia = IA(Small_robot(), "r2d2")
-#    ia_thread = threading.Thread(None, ia.main, None, (), {})
-#    ia_thread.start()
-#    simu = Simu(robot, Scene())
-#    simu.main()
+    ia = IA(Small_robot(), "r2d2")
+    ia_thread = threading.Thread(None, ia.main, None, (), {})
+    ia_thread.start()
+    simu = Simu(robot, Scene())
+    simu.main()
+
+    
