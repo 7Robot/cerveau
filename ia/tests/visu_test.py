@@ -22,7 +22,7 @@ class Server_test1(Server_test):
     def tests(self):
         self.send_cmd("bump back close")
         self.running.wait(0.4)
-        self.send_cmd("odo pos -12000 10000 0")
+        self.send_cmd("odo pos -12000 10000 100")
         self.running.wait(0.1)
         self.send_cmd("asserv done dist 3000")
         self.running.wait(0.1)
@@ -30,12 +30,11 @@ class Server_test1(Server_test):
         self.running.wait(0.4)
         self.send_cmd("asserv done rot 900")
         self.running.wait(0.1)
-        self.send_cmd("odo pos -15000 7000 90")
+        self.send_cmd("odo pos -15000 7000 450")
         self.running.wait(0.1)
         self.send_cmd("bump back close")
         self.running.wait(0.4)
         self.send_cmd("odo pos -15000 7000 -900")
-        self.running.wait(0.3)
         self.stop()
 
 if __name__ == '__main__':

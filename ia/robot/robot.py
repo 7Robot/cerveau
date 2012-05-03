@@ -46,7 +46,10 @@ class Robot:
         
     def set_position(self, pos):
         self.pos = pos
-        print ("updated pos", pos)
+#        print ("updated pos", pos)
+        
+    def set_theta(self, theta):
+        self.theta = theta
         
     
     def stop(self):

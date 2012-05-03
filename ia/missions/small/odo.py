@@ -17,6 +17,8 @@ class OdoMission(Mission):
             if event.name == "odo":
                 if event.type == "pos":
                     self.robot.set_position(event.value)
+                    self.robot.set_theta(event.rot)
+                    
                     
   
 

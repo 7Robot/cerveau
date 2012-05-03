@@ -14,7 +14,7 @@ from threading import Timer
 class Simu_robot():
     '''Robot physiquement simulé qui répond aux commandes de l'IA'''
         
-    def __init__(self, pos, theta, max_speed, max_acceleration, sensors=None):
+    def __init__(self, pos, theta, max_speed, max_acceleration):
         self.pos     = pos
         self.theta   = theta
         self.accel   = 0
@@ -24,14 +24,19 @@ class Simu_robot():
         self.daccel  = max_acceleration/10
         self.msteer  = 50;
         self.action  = None
-        self.can     = None
-        self.sensors = sensors
-        if sensors == None:
-            self.sensors = []
+        self.msg_can = None
+        self.sensors = []
+        
         for sensor in self.sensors:
             sensor.robot = self
             sensor.init()
         #self.regulator = Regulator(self)
+        
+    def add_sensor(self, sensor):
+        self.sensors.append(sensor)
+        sensor.robot = self
+        sensor.init()
+        
         
     def get_theta(self):
         '''Retourne la direction en radian'''

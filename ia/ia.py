@@ -37,6 +37,8 @@ class IA:
 		self.dispatcher.start()
 		self.msg_can.start()
 		self.msg_robot.start()
+		print("Robot ready !!!!!!")
+		print("msg_can", self.robot.msg_can) 
 		
 	def connect(self, sock, ip, port):
 		try:

@@ -50,6 +50,10 @@ class Board:
     def create_circle(self, x1, y1, x2, y2, **kargs):
         return self.canvas.create_circle(self.cx(x1), self.cy(y1),
                                      self.cx(x2), self.cy(y2), kargs)
+        
+    def create_line(self, x1, y1, x2, y2, **kargs):
+        return self.canvas.create_line(self.cx(x1), self.cy(y1),
+                                     self.cx(x2), self.cy(y2), kargs)
     
     def create_rectangle(self, x1, y1, x2, y2, **kargs):
         return self.canvas.create_rectangle(self.cx(x1), self.cy(y1),
@@ -100,19 +104,24 @@ class RobotD(Drawing):
     def __init__(self, board, robot, color="gray"):
         super(self.__class__, self).__init__(board, True)
         self.robot  = robot  
-        self.robotd = self.board.create_poly4(self.robot.pos.x+1414*cos(robot.theta+pi/4), self.robot.pos.y+1414*cos(robot.theta+pi/4),
-                          self.robot.pos.x+1414*cos(robot.theta+3*pi/4), self.robot.pos.y+1414*cos(robot.theta+3*pi/4),
-                          self.robot.pos.x+1414*cos(robot.theta+5*pi/4), self.robot.pos.y+1414*cos(robot.theta+5*pi/4),
-                          self.robot.pos.x+1414*cos(robot.theta+7*pi/4), self.robot.pos.y+1414*cos(robot.theta+7*pi/4),
+        self.robotd = self.board.create_poly4(self.robot.pos.x+1414*cos(robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+pi/4),
+                          self.robot.pos.x+1414*cos(robot.get_theta()+3*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+3*pi/4),
+                          self.robot.pos.x+1414*cos(robot.get_theta()+5*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+5*pi/4),
+                          self.robot.pos.x+1414*cos(robot.get_theta()+7*pi/4), self.robot.pos.y+1414*sin(robot.get_theta()+7*pi/4),
                                               width =1, fill=color)
+        self.lined = self.board.create_line(self.robot.pos.x, self.robot.pos.y, self.robot.pos.x+1414*cos(robot.theta), self.robot.pos.y+1414*sin(robot.theta), width =1, fill="black")
+        
+        
         self.board.add_drawing(self, self.robotd)
         
     def draw(self):
-        
-        self.board.coords(self.robotd, self.robot.pos.x+1414*cos(self.robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+pi/4),
+        self.board.coords(self.robotd, self.robot.pos.x+
+                          1414*cos(self.robot.get_theta()+pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+pi/4),
                                        self.robot.pos.x+1414*cos(self.robot.get_theta()+3*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+3*pi/4),
                                        self.robot.pos.x+1414*cos(self.robot.get_theta()+5*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+5*pi/4),
                                        self.robot.pos.x+1414*cos(self.robot.get_theta()+7*pi/4), self.robot.pos.y+1414*sin(self.robot.get_theta()+7*pi/4))
+        
+        self.board.coords(self.lined, self.robot.pos.x, self.robot.pos.y, self.robot.pos.x+1414*cos(self.robot.get_theta()), self.robot.pos.y+1414*sin(self.robot.get_theta()))
                            
         
     def move(self, dx, dy):
@@ -268,9 +277,11 @@ class Simu:
         self.view.mainloop()
         
 if __name__ == '__main__':
+    from tests.server import Server_test
+    
     robot = Proxy_robot(Small_robot())
-    ia = IA(Small_robot(), "r2d2")
-    ia_thread = threading.Thread(None, ia.main, None, (), {})
-    ia_thread.start()
-    simu = Simu(robot, Scene())
-    simu.main()
+#    ia = IA(Small_robot(), "r2d2")
+#    ia_thread = threading.Thread(None, ia.main, None, (), {})
+#    ia_thread.start()
+#    simu = Simu(robot, Scene())
+#    simu.main()

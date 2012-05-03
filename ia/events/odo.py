@@ -13,6 +13,7 @@ class OdoEvent(Event):
 				try:
 					l = list(map(int,cmd[2:]))
 					self.value = Vertex(l[0], l[1])
+					self.rot   = l[2]
 				except ValueError as e:
 					raise CmdError(e.__str__())
 			else:
