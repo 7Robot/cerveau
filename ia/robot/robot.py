@@ -38,6 +38,8 @@ class Robot:
     def rotate(self, dtheta):
         if self.msg_can != None:
             self.msg_can.sender("asserv rot %d" % dtheta)
+        else:
+            print("Pas de can !")
         #FIXME: else logger.fatal
         
     def get_theta(self):
