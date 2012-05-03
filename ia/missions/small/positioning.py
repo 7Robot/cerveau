@@ -7,12 +7,12 @@ class PositioningMission(Mission):
     def process_event(self, e):
         if self.state == 0:
             if e.name == "start":
-                self.robot.rotate(-900);
+                self.robot.rotate(9000);
                 self.state += 1
 
         elif self.state == 1:
             if e.name == "asserv" and e.type == "done":
-                self.robot.asserv(20, 20)
+                self.robot.asserv(-20, -20)
                 self.state += 1
                                     
         elif self.state == 2:
@@ -22,12 +22,12 @@ class PositioningMission(Mission):
                     
         elif self.state == 3:
             if e.name == "timer":
-                self.robot.forward(-1500)
+                self.robot.forward(1500)
                 self.state += 1
                     
         elif self.state == 4:
             if e.name == "asserv" and e.type == "done":
-                self.robot.rotate(900)
+                self.robot.rotate(-9000)
                 self.state += 1
                     
         elif self.state == 5:
@@ -49,20 +49,14 @@ class PositioningMission(Mission):
 
         elif self.state == 8:
             if e.name == "robot":
-                self.robot.asserv(-20, -20)
+                self.robot.forward(-2500)
                 self.state += 1
             elif e.name == "timer":
                 print("Pas de réponse de gros !")
-                self.robot.asserv(-20, -20)
+                self.robot.forward(-2500)
                 self.state += 1
 
         elif self.state == 9:
-            if e.name == "bump" and e.state == "close":
-                self.create_timer(700)
-                self.state += 1
-
-        elif self.state == 10:
             if e.name == "asserv" and e.state == "done":
-                self.robot.forward(2000)
-                self.state += 1
                 print("Petit en position !")
+                self.state += 1

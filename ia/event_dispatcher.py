@@ -18,10 +18,6 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         self.queue    = Queue()
         self._load_all_missions(missions_prefix)
         self.lock     = Lock()
-        if "start" in self.missions:
-            self.missions["start"].process_event(StartEvent())
-        else:
-            print("startMission not found") #FIXME: utiliser un logger.fatal()
             
         
     def _load_all_missions(self, missions_prefix):
@@ -41,6 +37,10 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         self.queue.put(event, True, None) # block=True, timeout=None
     
     def run(self):
+        if "start" in self.missions:
+            self.missions["start"].process_event(StartEvent())
+        else:
+            print("startMission not found") #FIXME: utiliser un logger.fatal()
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
             for missions in self.missions.values():

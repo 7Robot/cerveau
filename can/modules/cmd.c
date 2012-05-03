@@ -101,10 +101,13 @@ int can_write(int fd, can_t packet)
 		} else if ((id & 126) == 4) {
 			sprintf(output, "ASSERV %s\n", (id&1==1)?"ON":"OFF");
 		} else if ((id & 126) == 16) {
-			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", 
-                    (id&1==1)?"rotate":"forward");
-			sprintf(output, "ASSERV DONE %s %hd\n",
-                    (id&1==1)?"ROT":"DIST", distance);
+			sprintf(output, "ASSERV DONE\n");
+		} else if ((id & 126) == 17) {
+			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", "forward");
+			sprintf(output, "ASSERV INT DIST %hd\n", distance);
+		} else if ((id & 126) == 18) {
+			int angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rotate");
+			sprintf(output, "ASSERV INT ROT %hd\n", angle);
         } else if (id = 127) {
             sprintf(output, "ASSERV STOP\n");
 		} else {

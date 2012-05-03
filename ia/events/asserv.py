@@ -49,8 +49,9 @@ class AsservEvent(Event):
                         %(cmd[0], cmd[1]))
                 
         elif self.type == "done":
-            self.type += "_"+cmd[2]
-            self.value = cmd[3]
+            if len(cmd) != 2:
+                raise CmdError("« %s %s » take an interger argument"
+                        %(cmd[0], cmd[1]))
                 
         elif self.type in ["stop", "on", "off"]:
             if len(cmd) != 2:
