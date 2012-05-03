@@ -11,3 +11,5 @@ include_directories("can")
 add_subdirectory("gateway")
 
 add_subdirectory("hub")
+
+add_subdirectory("js")

@@ -253,9 +253,9 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 packet.b[0] = vg;
                 packet.b[1] = vd;
                 if (strword(buffer, line, &pos) && strcasecmp(buffer, "curt") == 0) {
-                    packet.id = 1033;
-                } else {
                     packet.id = 1032;
+                } else {
+                    packet.id = 1033;
                 }
             } else {
                 printf("Warning: « asserv » can't be followed by « %s »\n", buffer);
