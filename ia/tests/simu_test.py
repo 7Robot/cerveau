@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     bump_sensors = Bump_sensor(scene, "back", Vertex(-1000, 0), 
                                Vector(-50, 0))
-    robot = Simu_robot(Vertex(3000-15000, -3000+10000),0, 200, 60)
+    robot = Simu_robot(Vertex(3000-15000, 3000-10000),0, 200, 60)
     
     
     robot = Proxy_robot(Simu_regulator(robot))
