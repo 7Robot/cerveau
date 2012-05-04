@@ -3,18 +3,21 @@
 from threading import Thread
 from events.event import CmdError
 from events import *
+
+import logging
 import socket
 
 
 class Can(Thread):
     def __init__(self, socket, event_manager):
         Thread.__init__(self)
+        self.logger = logging.getLogger("can")
         self.socket    = socket
         self.event_manager = event_manager
         
     def cmd_to_event(self, cmd):
         if cmd == "":
-            # EOF
+            self.logger.warning("Can : no more data on socket.")
             return None
         words = cmd.lower().split()
         if len(words) < 2:
@@ -40,19 +43,20 @@ class Can(Thread):
             try:
                 cmd = self.bufsock.readline()
             except socket.timeout as message:
-                print ("Receiver : timout", message) #TODO: logger.fatal
+                self.logger.error("Receiver : timout. %s" % message)
                 #return None
             except socket.error as message:
-                print ("Receiver : socket error", message) #TODO: logger.fatal
+                self.logger("Receiver : socket error %s" % message)
                 break
             else:
                 try:
                     event = self.cmd_to_event(cmd)
                 except CmdError as e:
-                    print("Failed to parse « %s »" %(cmd.strip()))
-                    print("\tMessage: %s" %e)
+                    self.logger.error("Failed to parse « %s »" %(cmd.strip()))
+                    self.logger.error("\tMessage: %s" %e)
                 else:
                     if event == None:
+                        self.logger.error("Can : event is None, breaking")
                         break
                     else:
                         self.event_manager.add_event(event)
@@ -62,8 +66,8 @@ class Can(Thread):
         try:
             return self.socket.send(bytes(message+"\n", "utf-8"))
         except socket.timeout as message:
-            print ("Sender : timout", message) #TODO: logger.fatal
+            self.logger.error ("Sender : timout %s" % message)
             return None
         except socket.error as message:
-            print ("Sender : socket error", message) #TODO: logger.fatal
+            self.logger.error ("Sender : socket error %s" % message)
             return "stop"

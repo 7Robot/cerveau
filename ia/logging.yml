@@ -1,0 +1,31 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    # IPQ afficher le nom de la méthode, le numéro de ligne ralentit encore plus le logging
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+  socket:
+    class: logging.handlers.SocketHandler
+    level: DEBUG
+    formatter: simple
+    host: 'localhost'
+    port: 7779
+loggers:
+  event:
+    propagate: no
+  ia:
+    propagate: no
+    handlers: [socket] #chack il hérite aussi de root donc a console
+  mission:
+    propagate: no
+  robot:
+    handlers: [socket]
+    
+root:
+  level: WARNING
+  handlers: [console]

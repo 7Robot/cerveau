@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from queue import Queue
 from threading import Thread, Lock
+from logging.handlers import SocketHandler
+
 from class_manager import *
 from events.internal import StartEvent
 from missions.mission import Mission 
@@ -12,6 +15,7 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
     du coup faudrait peut être revoir son nom'''
     def __init__(self, missions_prefix, robot):
         Thread.__init__(self)
+        self.logger = logging.getLogger("Event_dispatcher")
         self.robot = robot
         # instancier toutes les missions 
         self.missions = {}
@@ -40,7 +44,7 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         if "start" in self.missions:
             self.missions["start"].process_event(StartEvent())
         else:
-            print("startMission not found") #FIXME: utiliser un logger.fatal()
+            self.logger.critical("startMission not found")
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
             for missions in self.missions.values():

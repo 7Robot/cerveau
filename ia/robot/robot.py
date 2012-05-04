@@ -1,9 +1,12 @@
 # -*-coding:UTF-8 -*
 
+import logging
 from mathutils.types import Vertex
 
 class Robot:
     def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b):
+        self.logger = logging.getLogger("robot")
+        
         self.pos = Vertex(x, y) # 10e de mm
         self.theta = theta # centidegree
 
@@ -26,38 +29,34 @@ class Robot:
         curt_str = ""
         if curt:
             curt_str = " curt" # l'espace est important
-        if self.msg_can != None:
-            self.msg_can.sender("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
-        #FIXME: else logger.fatal
+        self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
     
     def forward(self, dist):
-        if self.msg_can != None:
-            self.msg_can.sender("asserv dist %d" % dist)
-        #FIXME: else logger.fatal
+        self.send_can("asserv dist %d" % dist)
 
     def rotate(self, dtheta):
-        if self.msg_can != None:
-            self.msg_can.sender("asserv rot %d" % dtheta)
-        else:
-            print("Pas de can !")
-        #FIXME: else logger.fatal
+        self.send_can("asserv rot %d" % dtheta)
         
     def get_theta(self):
         '''Retourne la direction en radian'''
         return self.theta/36000*6.28319
+    
+    def send_can(self, msg):
+        if self.msg_can != None:
+            self.msg_can.sender(msg)
+        else:
+            self.logger.error("Robot : msg_can is None, cannot send %s" % msg)
         
     def set_position(self, pos):
         self.pos = pos
-#        print ("updated pos", pos)
+
         
     def set_theta(self, theta):
         self.theta = theta
         
     
     def stop(self):
-        if self.msg_can != None:
-            self.msg_can.sender("asserv stop")
-        #FIXME: else logger.fatal
+        self.send_can("asserv stop")
 
     def fix_forward(self, dist):
         '''Après un stop, on corrige notre position'''
@@ -65,8 +64,3 @@ class Robot:
 
     def __str__(self):
         return "x=%.2f cm, y=%.2f cm, theta=%.2f°" % (self.pos.x/100, self.pos.y/100, self.theta/100)
-
-
-    def test(self):
-        self.x = 42
-        print("test")

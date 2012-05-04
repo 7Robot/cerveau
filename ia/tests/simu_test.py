@@ -3,11 +3,6 @@
 Created on 1 mai 2012
 '''
 
-# -*- coding: utf-8 -*-
-'''
-Created on 28 avr. 2012
-'''
-
 
 import random
 from time import sleep
@@ -36,7 +31,7 @@ class Server_test1(Server_test):
         self.send_cmd("asserv dist 3000")
         self.running.wait(1)
         print("rot!!!!!!!!!!")
-        self.send_cmd("asserv rot -900")
+        self.send_cmd("asserv rot 900")
         self.running.wait(0.5)
         print("rec!!!!!!!!!!")
         self.send_cmd("asserv speed -42 -42")
