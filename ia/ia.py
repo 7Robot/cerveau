@@ -6,7 +6,7 @@ from logging.handlers import SocketHandler
 import socket
 import yaml
 
-from can import Can
+from can import Can, Wifi
 from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
@@ -39,8 +39,8 @@ class IA:
         self.robot      = robot
         self.dispatcher = Event_dispatcher(self.mission_prefix, self.robot)
         
-        self.msg_can    = Can(self.sock_can, self.dispatcher)
-        self.msg_robot  = Can(self.sock_robot, self.dispatcher) # nom de classe pas judicieux, #TODO: Can = classe fille
+        self.msg_can    = Can (self.sock_can, self.dispatcher)
+        self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
         
         self.robot.msg_can    = self.msg_can
         self.robot.msg_robot  = self.msg_robot

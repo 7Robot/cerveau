@@ -8,16 +8,16 @@ import logging
 import socket
 
 
-class Can(Thread):
+class Comm(Thread):
     def __init__(self, socket, event_manager):
         Thread.__init__(self)
-        self.logger = logging.getLogger("can")
+        self.logger = logging.getLogger("comm")
         self.socket    = socket
         self.event_manager = event_manager
         
     def cmd_to_event(self, cmd):
         if cmd == "":
-            self.logger.warning("Can : no more data on socket.")
+            self.logger.warning("No more data on socket.")
             return None
         words = cmd.lower().split()
         if len(words) < 2:
@@ -56,7 +56,7 @@ class Can(Thread):
                     self.logger.error("\tMessage: %s" %e)
                 else:
                     if event == None:
-                        self.logger.error("Can : event is None, breaking")
+                        self.logger.error("Event is None, breaking")
                         break
                     else:
                         self.event_manager.add_event(event)
@@ -71,3 +71,15 @@ class Can(Thread):
         except socket.error as message:
             self.logger.error ("Sender : socket error %s" % message)
             return "stop"
+
+class Can(Comm):
+    '''Comm sur le bus can'''
+    def __init__(self, socket, event_manager):
+        super(self.__class__, self).__init__(socket, event_manager)
+        self.logger = logging.getLogger("can")
+        
+class Wifi(Comm):
+    '''Comm robot-robot'''
+    def __init__(self, socket, event_manager):
+        super(self.__class__, self).__init__(socket, event_manager)
+        self.logger = logging.getLogger("wifi")
