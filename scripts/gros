@@ -1,0 +1,8 @@
+#!/bin/bash
+
+./tcphub-gros
+sleep 1
+./canbridge-gros
+
+echo "NOW YOU LISEN GROS COMMANDS"
+nc r2d2 7777
