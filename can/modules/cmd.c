@@ -55,7 +55,7 @@ int can_write(int fd, can_t packet)
             if ((id & 3) == 1) {
                 sprintf(output, "BATTERY REQUEST\n");
             } else if ((id & 3) == 2) {
-                sprintf(output, "BATTERY ANSWER %hu\n", ((uint16_t*)packet.b)[0]);
+                sprintf(output, "BATTERY ANSWER %hu\n", ((uint16_t*)packet.b)[0] / getValue("alim", "battery"));
             } else {
                 send = 0;
             }
