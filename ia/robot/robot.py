@@ -1,5 +1,5 @@
 # -*-coding:UTF-8 -*
-
+from math import cos, sin
 import logging
 from mathutils.types import Vertex
 
@@ -32,6 +32,7 @@ class Robot:
         self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
     
     def forward(self, dist):
+        self.pos_target = self.pos + Vertex(dist*cos(self.theta), dist*sin(self.theta))
         self.send_can("asserv dist %d" % dist)
 
     def rotate(self, dtheta):
@@ -47,12 +48,21 @@ class Robot:
         else:
             self.logger.error("Robot : msg_can is None, cannot send %s" % msg)
         
+    # Retro comptabilité à refaire    
     def set_position(self, pos):
         self.pos = pos
+        
+    def set_x(self, x):
+        self.pos.x = x
+        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
 
+    def set_y(self, y):
+        self.pos.y = y
+        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
         
     def set_theta(self, theta):
         self.theta = theta
+        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
         
     
     def stop(self):

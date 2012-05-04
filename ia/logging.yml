@@ -18,14 +18,16 @@ handlers:
 loggers:
   event:
     propagate: no
+    handlers: [console]
   ia:
     propagate: no
-    handlers: [socket] #chack il hérite aussi de root donc a console
+    handlers: [socket] #check il hérite aussi de root donc a une console
   mission:
     propagate: no
+    handlers: [console]
   robot:
     handlers: [socket]
     
 root:
-  level: WARNING
+  level: DEBUG
   handlers: [console]

@@ -7,4 +7,4 @@ from robot.robot import Robot
 
 class Small_robot(Robot):
     def __init__(self):
-        super(self.__class__, self).__init__(3000-15000, 3000-10000, 0, 0,0,0,0)
+        super(self.__class__, self).__init__(3000-15000, 3000-10000, 0, 1290, 1290, 1190, 920)

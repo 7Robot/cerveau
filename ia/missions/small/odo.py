@@ -11,11 +11,14 @@ car sinon on a des import automatiques de missions qui ont le même nom
 from missions.mission import Mission
 
 class OdoMission(Mission):
+    def __init__(self, robot):
+        super(self.__class__,self).__init__(robot)
     
     def process_event(self, event):
         if self.state == 0:
             if event.name == "odo":
                 if event.type == "pos":
+                    self.logger.info("Odo : pos %d %d, theta: %d" % (event.value.x, event.value.y, event.rot))
                     self.robot.set_position(event.value)
                     self.robot.set_theta(event.rot)
                     

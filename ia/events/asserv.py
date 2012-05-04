@@ -19,6 +19,22 @@ class AsservEvent(Event):
                 self.value = int(self.value)
             except ValueError as e:
                 raise CmdError(e.__str__())
+            
+        # Interruption de consigne
+        # ex: asserv int dist 586 (100µm)
+        # ex : asserv int rot 55132 (centidegré)
+        elif self.type == "int":
+            if len(cmd) == 4:
+                self.type += "_" + cmd[2]
+                self.value = cmd[3]
+            else:
+                raise CmdError("« %s %s » takes exactly 4 argument"
+                        %(cmd[0], cmd[1]))
+            try:
+                self.value = int(self.value)
+            except ValueError as e:
+                raise CmdError(e.__str__())
+            
         
         # asserv speed
         elif self.type == "speed":
@@ -37,6 +53,7 @@ class AsservEvent(Event):
             else:
                 raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
+                
         elif self.type == "pos":
             if len(cmd) == 3:
                 try:
@@ -48,6 +65,7 @@ class AsservEvent(Event):
                         + " « rot », then by a integer"
                         %(cmd[0], cmd[1]))
                 
+        # asserv done
         elif self.type == "done":
             if len(cmd) != 2:
                 raise CmdError("« %s %s » take an interger argument"

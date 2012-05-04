@@ -1,4 +1,6 @@
 − timer avec arguments
+− tester la réception des logs
+− un fichier de log par robot
 
 
 Secondaire:

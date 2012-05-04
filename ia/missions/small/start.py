@@ -7,6 +7,8 @@ from missions.mission import Mission
 from events.internal import StartEvent
 
 class StartMission(Mission):
+    def __init__(self, robot):
+        super(self.__class__,self).__init__(robot)
 
     def process_event(self, event):
         if self.state == 0:

@@ -3,6 +3,8 @@
 from missions.mission import Mission
 
 class PositioningMission(Mission):
+    def __init__(self, robot):
+        super(self.__class__,self).__init__(robot)
 
     def process_event(self, e):
         if self.state == 0:
@@ -16,9 +18,9 @@ class PositioningMission(Mission):
                 self.state += 1
                                     
         elif self.state == 2:
-            print(2)
             if e.name == "bump" and e.state == "close":
-                print(2.5)
+                self.logger.info("Positioning : bump 1")
+                self.robot.set_y(self.robot.dim_b - 10000) # parenthèses obligées
                 self.create_timer(700)
                 self.state += 1
                     
@@ -39,6 +41,8 @@ class PositioningMission(Mission):
 
         elif self.state == 6:
             if e.name == "bump" and e.state == "close":
+                self.robot.set_x(self.robot.dim_b - 15000)
+                self.robot.theta = 0
                 self.create_timer(700)
                 self.state += 1
                     

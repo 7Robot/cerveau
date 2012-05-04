@@ -6,12 +6,11 @@ from events.internal import TimerEvent
 
 class Mission:
     def __init__(self, robot):
-        ''' Convention state = 0 : état initial (d'attente)'''
-        self.logger = logging.getLogger("mission")
-        
+        ''' Convention state = 0 : état initial (d'attente)'''       
         self.state = 0
         self.robot = robot
         name = self.__class__.__name__
+        self.logger = logging.getLogger("mission."+name)
         if name[-7:] == "Mission":
             self.name = name[0:-7].lower()
             self.logger.info("Mission « %s » loaded" %self.name)
