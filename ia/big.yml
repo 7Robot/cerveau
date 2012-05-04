@@ -10,11 +10,11 @@ handlers:
     formatter: simple
     stream: ext://sys.stdout
   socket:
-    class: logging.handlers.SocketHandler
+    class: logger.SocketStringHandler
     level: DEBUG
     formatter: simple
     host: 'localhost'
-    port: 7779
+    port: 7769
 loggers:
   event:
     propagate: no

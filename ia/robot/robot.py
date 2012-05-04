@@ -48,9 +48,10 @@ class Robot:
         else:
             self.logger.error("Robot : msg_can is None, cannot send %s" % msg)
         
-    # Retro comptabilité à refaire    
+    # Retro comptabilité
     def set_position(self, pos):
         self.pos = pos
+        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
         
     def set_x(self, x):
         self.pos.x = x

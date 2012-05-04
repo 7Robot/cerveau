@@ -20,7 +20,7 @@ class PositioningMission(Mission):
         elif self.state == 2:
             if e.name == "bump" and e.state == "close":
                 self.logger.info("Positioning : bump 1")
-                self.robot.set_y(self.robot.dim_b - 10000) # parenthèses obligées
+                self.robot.set_y(self.robot.dim_b - 10000)
                 self.create_timer(700)
                 self.state += 1
                     
