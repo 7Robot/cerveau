@@ -51,6 +51,19 @@ int can_write(int fd, can_t packet)
 		}
 	} else if (carte == 1) { // ALIM (tourelle) ----------------------
 		send = 0;
+        if ((id & 124) == 64) {
+            if ((id & 3) == 1) {
+                sprintf(output, "BATTERY REQUEST\n");
+            } else if ((id & 3) == 2) {
+                sprintf(output, "BATTERY ANSWER %hu\n", ((uint16_t*)packet.b)[0]);
+            } else {
+                send = 0;
+            }
+        } else if ((id & 120) == 0){
+            sprintf(output, "TURRET untranslated packet\n");
+        } else {
+            send = 0;
+        }
 	} else if (carte == 2) { // CAPTEURS -----------------------------
         if ((id & 64) == 64) { // rangefinder
             if ((id & 32) == 32) { // value
@@ -68,9 +81,18 @@ int can_write(int fd, can_t packet)
                 sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7));
             }
         } else if ((id & 60) == 0) { //bump
+            int bumpid = (id & 3) + 1;
+            char bumpname[64];
+            if (bumpid == 1) {
+                strcpy(bumpname, "BACK");
+            } else if (bumpid == 2) {
+                strcpy(bumpname, "FRONT");
+            } else {
+                sprintf(bumpname, "%d", bumpid);
+            }
             sprintf(output, "BUMP %s %s\n",
-                    (id&2)==2?"FRONT":"BACK",
-                    (id&1)==1?"CLOSE":"OPEN");
+                    bumpname,
+                    (id&8)==8?"CLOSE":"OPEN");
         } else {
             send = 0;
         }
@@ -97,18 +119,25 @@ int can_write(int fd, can_t packet)
 		} else if ((id & 126) == 8) {
 			sprintf(output, "ASSERV SPEED %+hhd %+hhd %s\n",
                     packet.b[0], packet.b[1],
-                    (id&1==1)?"CURT":"");
+                    (id&1==1)?"":"CURT");
 		} else if ((id & 126) == 4) {
 			sprintf(output, "ASSERV %s\n", (id&1==1)?"ON":"OFF");
-		} else if ((id & 126) == 16) {
+		} else if (id  == 16) {
 			sprintf(output, "ASSERV DONE\n");
-		} else if ((id & 126) == 17) {
+		} else if (id == 17) {
 			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", "forward");
 			sprintf(output, "ASSERV INT DIST %hd\n", distance);
-		} else if ((id & 126) == 18) {
+		} else if (id == 18) {
 			int angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rotate");
 			sprintf(output, "ASSERV INT ROT %hd\n", angle);
-        } else if (id = 127) {
+        } else if (id == 1043) {
+            sprintf(output, "ASSERV TICKS RESET\n");
+        } else if (id == 1044) {
+            sprintf(output, "ASSERV TICKS REQUEST\n");
+        } else if (id == 1045) {
+            int distance = ((int32_t*)packet.b)[0] / getValue("asserv", "forward");
+            sprintf(output, "ASSERV TICKS ANSWER %d\n", distance);
+        } else if (id == 127) {
             sprintf(output, "ASSERV STOP\n");
 		} else {
 			send = 0;
