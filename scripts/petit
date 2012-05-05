@@ -1,0 +1,8 @@
+#!/bin/bash
+
+./tcphub-petit
+sleep 1
+./canbridge-petit
+
+echo "NOW YOU LISEN PETIT COMMANDS"
+nc r2d2 7773

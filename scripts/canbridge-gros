@@ -1,0 +1,16 @@
+#!/bin/bash
+export CAN_MODULES_DIR=../build/can/modules
+export ROBOT_CONFIG_FILE=../config/gros.ini 
+
+CMD="../build/can/canbridge bin@r2d2:7775 dec@r2d2:7776 cmd@r2d2:7777"
+
+ps aux | grep canbridge | grep 7775 | awk '{print $2}' | xargs kill
+
+echo ""
+echo "Robot config file: '$ROBOT_CONFIG_FILE'"
+echo "Can modules dir: '$CAN_MODULES_DIR'"
+echo "Command: '$CMD'"
+echo ""
+
+mkdir -p log
+${CMD} > log/canbridge-gros.log 2>&1 &

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source ./canbridge-gros
+
+killall "$CMD"
+
+ps aux | grep "tcphub 7775" | awk '{print $2}' | xargs kill
+ps aux | grep "tcphub 7776" | awk '{print $2}' | xargs kill
+ps aux | grep "tcphub 7777" | awk '{print $2}' | xargs kill
+
+tcphub 7775 > log/tcphub-7775.log 2>&1 &
+tcphub 7776 > log/tcphub-7776.log 2>&1 &
+tcphub 7777 > log/tcphub-7777.log 2>&1 &

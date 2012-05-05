@@ -146,10 +146,9 @@ int main(int argc, char * argv[])
 
 void show_help(char * cmd)
 {
-	printf("Usage: %s [-D <device>] [-H <host>] [-P <port>] [-S <speed>] [-h]\n", cmd);
-	printf("\tD: set device (default: %s)\n", DEFAULT_DEVICE);
-	printf("\tH: set host (default: %s)\n", DEFAULT_PORT);
-	printf("\tP: set port (default: %s)\n", DEFAULT_PORT);
-	printf("\tS: set speed (default: %s)\n", DEFAULT_SPEED);
+	printf("Usage: %s [-D <device>] [-H <host>] [-P <port>] [-h]\n", cmd);
+	printf("\tD: set device to open\n");
+	printf("\tH: set host to connect\n");
+	printf("\tP: set port to connect\n");
 	printf("\th: show this help\n");
 }
