@@ -437,6 +437,8 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                         } else {
                             packet.length = 2;
                             int value = atoi(buffer);
+                            packet.b[0] = ((uint16_t*)&value)[0];
+                            packet.b[1] = ((uint16_t*)&value)[1];
                         }
                     }
                 }

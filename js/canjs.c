@@ -138,8 +138,8 @@ void * sender(void * arg)
             todo = 1;
         }
         if (v < NB_CONSIGNE) {
-            fprintf(can, "rx 1 set %d\n", a);
-            fprintf(can, "rx 2 set %d\n", a);
+            fprintf(can, "ax 1 set %d\n", a);
+            fprintf(can, "ax 2 set %d\n", a);
             fflush(can);
             todo = 1;
         }
