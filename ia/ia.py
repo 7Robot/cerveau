@@ -6,7 +6,7 @@ from logging.handlers import SocketHandler
 import socket
 import yaml
 
-from can import Can, Wifi
+from can import Can, Wifi, UI
 from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
@@ -23,10 +23,10 @@ class IA:
         assert(self.mission_prefix in ["small", "big", "simu"])
         self.ip         = ip_can
         self.port       = port_can
-        self.sock_can   = None
-        self.sock_robot = None
-        self.sock_can   = self.connect(self.sock_can, ip_can, port_can)
-        self.sock_robot = self.connect(self.sock_robot, ip_robot, port_robot)
+
+        self.sock_can   = self.connect(ip_can, port_can)
+        self.sock_robot = self.connect(ip_robot, port_robot)
+        self.sock_ui    = self.connect(ip_robot, port_ui)
         
         # TODO: faire en sortes que si "self.sock_robot" casser l'ia ne plante pas
         
@@ -41,6 +41,7 @@ class IA:
         
         self.msg_can    = Can (self.sock_can, self.dispatcher)
         self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
+        self.msg_ui     =   UI(self.sock_ui, self.dispatcher)
         
         self.robot.msg_can    = self.msg_can
         self.robot.msg_robot  = self.msg_robot
@@ -50,7 +51,7 @@ class IA:
         self.msg_robot.start()
         self.logger.info("IA initialized")
         
-    def connect(self, sock, ip, port):
+    def connect(self, ip, port):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))

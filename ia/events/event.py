@@ -13,6 +13,15 @@ class Event:
         else:
             self.logger.warning("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()
+            
+    def parse_int(self, string):
+        value = None
+        try:
+            value = int(string)
+        except ValueError as e:
+            raise CmdError(e.__str__())
+        return value
+        
     def __str__(self):
         s = ""
         for i in self.__dict__:
