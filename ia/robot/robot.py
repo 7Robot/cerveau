@@ -51,19 +51,19 @@ class Robot:
     # Retro comptabilité
     def set_position(self, pos):
         self.pos = pos
-        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
+        self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     def set_x(self, x):
         self.pos.x = x
-        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
+        self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
 
     def set_y(self, y):
         self.pos.y = y
-        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
+        self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     def set_theta(self, theta):
         self.theta = theta
-        self.send_can("odo set %d %d %d" % (self.pos.x, self.pos.y, self.theta))
+        self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     
     def stop(self):

@@ -293,11 +293,6 @@ class Simu:
         
 if __name__ == '__main__':
 
-    robot = Proxy_robot(Small_robot())
-    ia = IA(Small_robot(), "r2d2")
-    ia_thread = threading.Thread(None, ia.main, None, (), {})
-    ia_thread.start()
-    simu = Simu(robot, Scene())
-    simu.main()
+    print("ça sert à rien de runner ici ça marchera pas !")
 
     
