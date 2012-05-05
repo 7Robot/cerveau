@@ -14,15 +14,16 @@ class AsservMission(Mission):
             self.create_timer(50)
         elif self.state == 1:
             if event.name == "asserv":
+                self.logger.info("Simu Asserv : %s" % (event.value.__str__()))
                 if event.type == "speed":
-                    self.robot.asserv_speed(event.value[0], event.curt)
+                    self.robot.asserv.asserv_speed(event.value[0], event.curt)
                     self.robot.run()
                     self.create_timer(50)
                 elif event.type == "dist":
-                    self.robot.asserv_dist(event.value)
+                    self.robot.asserv.asserv_dist(event.value)
                     #self.create_timer(50)
                 elif event.type == "rot":
-                    self.robot.asserv_rot(event.value)
+                    self.robot.asserv.asserv_rot(event.value)
                     #self.create_timer(50)
                     
                     

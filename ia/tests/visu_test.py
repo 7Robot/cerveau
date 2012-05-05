@@ -13,6 +13,7 @@ from robot.small_robot import Small_robot
 from robot.proxy_robot import Proxy_robot
 from scene import Scene
 import threading
+import os
 
 
 class Server_test1(Server_test):
@@ -52,8 +53,7 @@ if __name__ == '__main__':
     
     robot = Proxy_robot(Small_robot())
     simu = Simu(robot, Scene())
-    ia = IA(robot, "127.0.0.1", port,"127.0.0.1", port+1)
+    ia = IA(robot, "127.0.0.1", port, "", 0)
     ia_thread = threading.Thread(None, ia.main, None, (), {})
     ia_thread.start()
     simu.main()
-    

@@ -1,8 +1,8 @@
 − timer avec arguments
-− tester la réception des logs
-− un fichier de log par robot
+
 
 
 Secondaire:
 − event stop ? → raise
 − sender → send, receiver → receive
+− faire une queue pour l'émission histoire qu'il n'y ait pas plus d'un message toutes les 10ms

@@ -8,7 +8,45 @@ from mathutils.types import Vertex
 from mathutils.geometry import angle, distance
 from threading import Timer
 
-
+class Asserv:
+    def __init__(self, robot):
+        self.robot = robot
+        self.fun  = None
+        self.args = None
+    def asserv_dist(self, dist):
+        print("pos", self.robot.pos)
+        self.fun  = self.robot.reach_vertex
+        self.args = (Vertex(dist*cos(self.robot.get_theta()), 
+                           dist*sin(self.robot.get_theta())) \
+                    + self.pos,)
+        print ("target", Vertex(dist*cos(self.robot.get_theta()), 
+                           dist*sin(self.robot.get_theta())) \
+                    + self.pos)
+        timer = Timer(0.05, self.robot.run, [])
+        timer.start()
+        
+         
+    def asserv_rot(self, theta):
+        self.fun = self.robot.turn_direction
+        self.args=(theta+self.robot.theta,)
+        timer = Timer(0.05, self.robot.run, [])
+        timer.start()
+        
+    def asserv_speed(self, speed, curt=False):
+        self.fun  = self.robot.go_speed
+        self.args = (speed, curt,)
+#        timer = Timer(0.05, self.run, [])
+#        timer.start()
+        
+    
+    def run(self):
+        self.robot.run()
+        if self.fun != None and self.args != None:
+            self.fun(*self.args)
+            self.robot.move()
+#            timer = Timer(0.05, self.run, [])
+#            timer.start()
+        
             
 
 class Simu_robot():
@@ -22,15 +60,18 @@ class Simu_robot():
         self.mspeed  = max_speed
         self.maccel  = max_acceleration
         self.daccel  = max_acceleration/10
-        self.msteer  = 50;
+        self.msteer  = 500;
         self.action  = None
         self.msg_can = None
+        self.asserv  = Asserv(self)
         self.sensors = []
+        
         
         for sensor in self.sensors:
             sensor.robot = self
             sensor.init()
         #self.regulator = Regulator(self)
+        
         
     def add_sensor(self, sensor):
         self.sensors.append(sensor)
@@ -40,7 +81,7 @@ class Simu_robot():
         
     def get_theta(self):
         '''Retourne la direction en radian'''
-        return self.theta/3600*6.28319
+        return self.theta/36000*6.28319
         
     def accelerate(self,  accel): #rate between -100 and 100
         self.speed = min(accel+self.speed,self.mspeed)
@@ -75,25 +116,25 @@ class Simu_robot():
     def turn(self, steer):
         self.theta += steer
         if self.theta < 0:
-            self.theta += 3600
-        if self.theta > 3600:
-            self.theta -= 3600
+            self.theta += 36000
+        if self.theta > 36000:
+            self.theta -= 36000
         #print("theta", self.theta)
 
     def turn_direction(self, d):
         dd = d - self.theta
-        if dd < -1800:
-            dd = 3600 + dd
-        if dd > 1800:
-            dd = -3600 + dd
+        if dd < -18000:
+            dd = 36000 + dd
+        if dd > 18000:
+            dd = -36000 + dd
 
         sign = 1
         if dd < 0:
             sign = -1
         # trop la flemme pour un PID
-        if abs(dd) < 100: #10 deg
-            self.turn(self.msteer / 100 * dd)
-        else:
+        if abs(dd) < 1000: #10 deg
+            self.turn(self.msteer / 1000 * dd)
+        elif abs(dd) > 50:
             self.turn(self.msteer * sign)
             
 #    def run(self):
@@ -130,46 +171,6 @@ class Simu_robot():
     def run(self):
         for sensor in self.sensors:
             sensor.run()
-
-class Simu_regulator(Simu_robot):
-    '''Pattern decorator, peut assigner autant de "cartes d'extension" 
-    à un robot, il restera un robot'''
-    def __init__(self, robot):
-        self.__dict__ = robot.__dict__.copy()
-        self.robot = robot
-        self.fun  = None
-        self.args = None
-    def asserv_dist(self, dist):
-        print("pos", self.pos)
-        self.fun  = self.reach_vertex
-        self.args = (Vertex(dist*cos(self.get_theta()), 
-                           dist*sin(self.get_theta())) \
-                    + self.pos,)
-        print ("target", Vertex(dist*cos(self.get_theta()), 
-                           dist*sin(self.get_theta())) \
-                    + self.pos)
-        timer = Timer(0.05, self.run, [])
-        timer.start()
-        self.run()
-         
-    def asserv_rot(self, theta):
-        self.fun = self.turn_direction
-        self.args=(theta,)
-        timer = Timer(0.05, self.run, [])
-        timer.start()
-        
-    def asserv_speed(self, speed, curt=False):
-        self.fun  = self.go_speed
-        self.args = (speed, curt,)
-#        timer = Timer(0.05, self.run, [])
-#        timer.start()
-        self.run()
-    
-    def run(self):
-        self.robot.run()
-        if self.fun != None and self.args != None:
-            self.fun(*self.args)
+        if self.asserv.fun != None and self.asserv.args != None:
+            self.asserv.fun(*self.asserv.args)
             self.move()
-#            timer = Timer(0.05, self.run, [])
-#            timer.start()
-        

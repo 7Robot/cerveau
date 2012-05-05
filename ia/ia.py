@@ -55,11 +55,10 @@ class IA:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
         except socket.error as message:
-            if sock:
-                sock.shutdown(socket.SHUT_WR) 
+            if sock: 
                 sock.close()
             sock = None # On est sûr de tout arréter 
-            self.logger.critical("Impossible d'otenir une connection : %s" % message)
+            self.logger.critical("Impossible d'otenir une connection pour %s %d : %s" % (ip, port, message))
         return sock 
         
         

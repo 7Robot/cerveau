@@ -37,29 +37,30 @@ class Comm(Thread):
             self.event_manager.add_event(event)
     
     def run(self):
-        self.bufsock   = self.socket.makefile(buffering=1,
-                errors='replace')
-        while True:
-            try:
-                cmd = self.bufsock.readline()
-            except socket.timeout as message:
-                self.logger.error("Receiver : timout. %s" % message)
-                #return None
-            except socket.error as message:
-                self.logger("Receiver : socket error %s" % message)
-                break
-            else:
+        if self.socket != None:
+            self.bufsock   = self.socket.makefile(buffering=1,
+                    errors='replace')
+            while True:
                 try:
-                    event = self.cmd_to_event(cmd)
-                except CmdError as e:
-                    self.logger.error("Failed to parse « %s »" %(cmd.strip()))
-                    self.logger.error("\tMessage: %s" %e)
+                    cmd = self.bufsock.readline()
+                except socket.timeout as message:
+                    self.logger.error("Receiver : timout. %s" % message)
+                    #return None
+                except socket.error as message:
+                    self.logger("Receiver : socket error %s" % message)
+                    break
                 else:
-                    if event == None:
-                        self.logger.error("Event is None, breaking")
-                        break
+                    try:
+                        event = self.cmd_to_event(cmd)
+                    except CmdError as e:
+                        self.logger.error("Failed to parse « %s »" %(cmd.strip()))
+                        self.logger.error("\tMessage: %s" %e)
                     else:
-                        self.event_manager.add_event(event)
+                        if event == None:
+                            self.logger.error("Event is None, breaking")
+                            break
+                        else:
+                            self.event_manager.add_event(event)
             
 
     def sender(self, message):
