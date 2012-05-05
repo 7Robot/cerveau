@@ -52,10 +52,20 @@ int can_write(int fd, can_t packet)
 	} else if (carte == 1) { // ALIM (tourelle) ----------------------
 		send = 0;
         if ((id & 124) == 64) {
-            if ((id & 3) == 1) {
+            if (id == 65) {
                 sprintf(output, "BATTERY REQUEST\n");
-            } else if ((id & 3) == 2) {
+            } else if (id = 66) {
                 sprintf(output, "BATTERY ANSWER %hu\n", ((uint16_t*)packet.b)[0] / getValue("alim", "battery"));
+            } else {
+                send = 0;
+            }
+        } else if ((id & 96) == 96) {
+            if ((id & 24) == 0) {
+                sprintf(output, "AX %d REQUEST\n", (id & 7) + 1);
+            } else if ((id & 16) == 16) {
+                sprintf(output, "AX %d %s %hu\n",
+                        ((id & 8) == 8)?"SET":"ANSWER",
+                        (id & 7) + 1, ((uint16_t*)packet.b)[0]);
             } else {
                 send = 0;
             }
@@ -233,31 +243,7 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 packet.b[1] = ((char*)&dist)[1];
                 packet.id = 1025;
             } else if (!strcasecmp(buffer, "done")) {
-                int16_t dist;
-                if (!strword(buffer, line, &pos)) {
-                    printf("Warning: bag arguments for « asserv done »\n");
-                    send = 0;
-                } else {
-                    if (!strcasecmp(buffer, "dist")) {
-                        packet.id = 1040;
-                    } else if (!strcasecmp(buffer, "rot")) {
-                        packet.id = 1041;
-                    } else {
-                        printf("Warning: bag arguments for « asserv done »\n");
-                        send = 0;
-                    }
-                    if (send) {
-                        if (!strword(buffer, line, &pos)) {
-                            printf("Warning: bag arguments for « asserv done »\n");
-                            send = 0;
-                        }
-                        dist = atoi(buffer) * getValue("asserv",
-                                (packet.id&1==1)?"rotate":"forward");
-                        packet.length = 2;
-                        packet.b[0] = ((char*)&dist)[0];
-                        packet.b[1] = ((char*)&dist)[1];
-                    }
-                }
+                packet.id = 1040;
             } else if (!strcasecmp(buffer, "rot")) {
                 int16_t angle;
                 if (!strword(buffer, line, &pos)) {
@@ -288,6 +274,55 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     packet.id = 1032;
                 } else {
                     packet.id = 1033;
+                }
+            } else if (!strcasecmp(buffer, "int")) {
+                char * errmsg = "Warning: « asserv int » must be followed by « dist » or « rot », then by an integer\n";
+                if (!strword(buffer, line, &pos)) {
+                    printf("%s", errmsg);
+                    send = 0;
+                }
+                if (!strcasecmp(buffer, "dist")) {
+                    packet.id = 1041;
+                } else if (!strcasecmp(buffer, "rot")) {
+                    packet.id = 1042;
+                } else {
+                    printf("%s", errmsg);
+                    send = 0;
+                }
+                if (send) {
+                    if (!strword(buffer, line, &pos)) {
+                        printf("%s", errmsg);
+                        send = 0;
+                    }
+                    int value = atoi(buffer) * getValue("asserv", packet.id==1041?"forward":"rotate");
+                    packet.length = 2;
+                    packet.b[0] = ((uint8_t*)&value)[0];
+                    packet.b[1] = ((uint8_t*)&value)[1];
+                }
+            } else if (!strcasecmp(buffer, "ticks")) {
+                if (!strword(buffer, line, &pos)) {
+                    printf("Warning: « asserv ticks » need argument\n");
+                    send = 0;
+                }
+                if (!strcasecmp(buffer, "reset")) {
+                    packet.id = 1043;
+                } else if (!strcasecmp(buffer, "request")) {
+                    packet.id = 1044;
+                } else if (!strcasecmp(buffer, "answer")) {
+                    if (!strword(buffer, line, &pos)) {
+                        printf("Warning: « asserv ticks answer » need an integer argument\n");
+                        send = 0;
+                    }
+                    int answer = atoi(buffer) * getValue("asserv", "forward");
+                    int i;
+                    for (i = 0; i < 4 ; i++) {
+                        packet.b[i] = ((int8_t*)&answer)[i];
+                    }
+                    packet.length = 4;
+                    packet.id = 1045;
+                } else {
+                    printf("Warning: bag arguments for « asserv ticks »\n");
+                    send = 0;
                 }
             } else {
                 printf("Warning: « asserv » can't be followed by « %s »\n", buffer);
@@ -345,15 +380,37 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 }
             }
         } else if (!strcasecmp(buffer, "bump")) {
-            int front, close;
-            if (!strword(buffer, line, &pos) || ((front = strcasecmp(buffer, "back")) && strcasecmp(buffer, "front"))
+            int close, bid;
+            if (!strword(buffer, line, &pos) || (bid = atoi(buffer)) < 1 || bid > 8
                     || !strword(buffer, line, &pos) || ((close = strcasecmp(buffer, "open")) && strcasecmp(buffer, "close"))) {
-                printf("Warning: « bump » must be followed by « back » or « front », then, « open » or « close »\n");
+                printf("Warning: « bump » must be followed by i in [1;8], then, « open » or « close »\n");
                 send = 0;
             }
-            packet.id = 256;
-            if (front) packet.id += 2;
-            if (close) packet.id += 1;
+            packet.id = 272;
+            packet.id += bid - 1;
+            if (close) packet.id += 4;
+        } else if (!strcasecmp(buffer, "battery")) {
+            if (!strword(buffer, line, &pos)) {
+                if (!strcasecmp(buffer, "request")) {
+                    send = 193;
+                } else if (!strcasecmp(buffer, "answer")) {
+                    if (!strword(buffer, line, &pos)) {
+                        printf("Warning: « battery answer » must be followed by an integer\n");
+                        send = 0;
+                    } else {
+                        int value = atoi(buffer) * getValue("alim", "battery");
+                        packet.length = 2;
+                        packet.b[0] = ((uint8_t*)&value)[0];
+                        packet.b[1] = ((uint8_t*)&value)[1];
+                    }
+                } else {
+                    printf("Warning: « battery » must be followed by « request » or « answer »\n");
+                    send = 0;
+                }
+            } else {
+                printf("Warning: « battery » must be followed by « request » or « answer »\n");
+                send = 0;
+            }
         } else {
             send = 0;
         }
