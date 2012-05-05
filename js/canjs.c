@@ -10,15 +10,14 @@
 #include <linux/joystick.h>
 
 #define DELAY 200
-#define NB_CONSIGNE 3
+#define NB_CONSIGNE 2
 
 #define NAME_LENGTH 128
 #define DEFAULT_DEVICE "/dev/input/js0"
 #define DEFAULT_HOST "r2d2"
 #define DEFAULT_PORT "7773"
 
-int left;
-int right;
+int left, right, angle;
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t cnd_mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
@@ -39,10 +38,11 @@ int can_open(char * host, char * port)
     return 0;
 }
 
-void update_pos(int _x, int _y)
+void update_pos(int _x, int _y, int _z)
 {
     int x = (_x * 80) / 32767;
     int y = (_y * 80) / 32767;
+    int z = (_z * 1023) / 65536 + 511;
 
     if (pthread_mutex_lock(&mtx) < 0) {
         perror("pthread_mutex_lock");
@@ -51,6 +51,7 @@ void update_pos(int _x, int _y)
 
     left = - (80 * (y + x)) / (80 + abs(x));
     right = - (80 * (y - x)) / (80 + abs(x));
+    angle = z;
 
     if (pthread_mutex_unlock(&mtx) < 0) {
         perror("pthread_mutex_unlock");
@@ -90,7 +91,7 @@ void update(int axisc, int * axis, int buttonc, char * button)
         for (i = 0; i < 4 ; i++) {
             b[i] = 0;
         }
-        update_pos(axis[0], axis[1]);
+        update_pos(axis[0], axis[1], axis[2]);
     }
 }
 
@@ -98,33 +99,51 @@ void * sender(void * arg)
 {
     int l = INT_MIN;
     int r = INT_MIN;
+    int a = INT_MIN;
     int u = 0;
+    int v = 0;
+    int todo;
     
     while (1) {
 
-        int l = 0;
-        int r = 0;
-        
+        todo = 0;
+
+        if (pthread_mutex_lock(&mtx) < 0) {
+            perror("pthread_mutex_lock");
+            exit(1);
+        }
+
         if (l == left && r == right) {
             u++;
         } else {
             u = 0;
-            if (pthread_mutex_lock(&mtx) < 0) {
-                perror("pthread_mutex_lock");
-                exit(1);
-            }
             l = left;
             r = right;
-            if (pthread_mutex_unlock(&mtx) < 0) {
-                perror("pthread_mutex_unlock");
-                exit(1);
-            }
+        }
+        if (a == angle) {
+            v++;
+        } else {
+            v = 0;
+            a = angle;
+        }
+
+        if (pthread_mutex_unlock(&mtx) < 0) {
+            perror("pthread_mutex_unlock");
+            exit(1);
         }
         
         if (u < NB_CONSIGNE) {
             fprintf(can, "asserv speed %d %d\n", r, l);
             fflush(can);
-            //fprintf(stdout, "asserv speed %d %d\n", l, r);
+            todo = 1;
+        }
+        if (v < NB_CONSIGNE) {
+            fprintf(can, "rx 1 set %d\n", a);
+            fprintf(can, "rx 2 set %d\n", a);
+            fflush(can);
+            todo = 1;
+        }
+        if (todo) {
             usleep(DELAY * 1000);
         } else {
             pthread_mutex_lock(&cnd_mtx);
