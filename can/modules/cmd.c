@@ -55,7 +55,7 @@ int can_write(int fd, can_t packet)
             if (id == 65) {
                 sprintf(output, "BATTERY REQUEST\n");
             } else if (id = 66) {
-                sprintf(output, "BATTERY ANSWER %hu\n", ((uint16_t*)packet.b)[0] / getValue("alim", "battery"));
+                sprintf(output, "BATTERY ANSWER %.2lf\n", ((uint16_t*)packet.b)[0] / getValue("alim", "battery"));
             } else {
                 send = 0;
             }
@@ -64,8 +64,9 @@ int can_write(int fd, can_t packet)
                 sprintf(output, "AX %d REQUEST\n", (id & 7) + 1);
             } else if ((id & 16) == 16) {
                 sprintf(output, "AX %d %s %hu\n",
+                        (id & 7) + 1,
                         ((id & 8) == 8)?"SET":"ANSWER",
-                        (id & 7) + 1, ((uint16_t*)packet.b)[0]);
+                        ((uint16_t*)packet.b)[0]);
             } else {
                 send = 0;
             }
@@ -112,7 +113,7 @@ int can_write(int fd, can_t packet)
         } else if ((id & 126) == 2) {
 			sprintf(output, "ODO %s\n", (id&1)==1?"UNMUTE":"MUTE");
         } else if ((id & 126) == 4) {
-			sprintf(output, "ODO %s %+hd %+hd %+hu\n", (id&1)==1?"SET":"POS",
+			sprintf(output, "ODO %s %+hd %+hd %hu\n", (id&1)==1?"SET":"POS",
                     ((int16_t*)packet.b)[0],
                     ((int16_t*)packet.b)[1],
                     ((uint16_t*)packet.b)[2]);
