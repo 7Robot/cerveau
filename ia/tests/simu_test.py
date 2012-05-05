@@ -12,7 +12,7 @@ from ia import IA
 from mathutils.types import Vertex, Vector
 from robot.proxy_robot import Proxy_robot
 from simulator.simu import Simu
-from simulator.simu_robot import Simu_robot, Simu_regulator
+from simulator.simu_robot import Simu_robot
 from simulator.sensors import Bump_sensor
 from scene import Scene
 from tests.ia_test import Server_test_robot
@@ -56,10 +56,10 @@ if __name__ == '__main__':
 
     bump_sensors = Bump_sensor(scene, "back", Vertex(-1000, 0), 
                                Vector(-50, 0))
-    robot = Simu_robot(Vertex(3000-15000, 3000-10000),0, 200, 60)
+    robot = Simu_robot(3000-15000, 3000-10000,0, 200, 60)
     
     
-    robot = Proxy_robot(Simu_regulator(robot))
+    robot = Proxy_robot(robot)
     robot.add_sensor(bump_sensors)
     
     #robot.regulator.asserv_speed(20, False)
