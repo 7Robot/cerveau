@@ -391,13 +391,17 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
             if (close) packet.id += 4;
         } else if (!strcasecmp(buffer, "battery")) {
             if (!strword(buffer, line, &pos)) {
+                printf("Warning: « battery » must be followed by « request » or « answer »\n");
+                send = 0;
+            } else {
                 if (!strcasecmp(buffer, "request")) {
-                    send = 193;
+                    packet.id = 193;
                 } else if (!strcasecmp(buffer, "answer")) {
                     if (!strword(buffer, line, &pos)) {
                         printf("Warning: « battery answer » must be followed by an integer\n");
                         send = 0;
                     } else {
+                        packet.id = 194;
                         int value = atoi(buffer) * getValue("alim", "battery");
                         packet.length = 2;
                         packet.b[0] = ((uint8_t*)&value)[0];
@@ -407,9 +411,6 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     printf("Warning: « battery » must be followed by « request » or « answer »\n");
                     send = 0;
                 }
-            } else {
-                printf("Warning: « battery » must be followed by « request » or « answer »\n");
-                send = 0;
             }
         } else {
             send = 0;
