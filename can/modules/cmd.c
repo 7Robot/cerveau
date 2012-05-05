@@ -50,7 +50,6 @@ int can_write(int fd, can_t packet)
 			send = 0;
 		}
 	} else if (carte == 1) { // ALIM (tourelle) ----------------------
-		send = 0;
         if ((id & 124) == 64) {
             if (id == 65) {
                 sprintf(output, "BATTERY REQUEST\n");
@@ -156,7 +155,7 @@ int can_write(int fd, can_t packet)
 	} else {
 		send = 0;
 	}
-    
+   
 	if (send) {
 		write(fd, output, strlen(output));
     	fsync(fd);
