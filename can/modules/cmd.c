@@ -412,6 +412,35 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     send = 0;
                 }
             }
+        } else if (!strcasecmp(buffer, "ax")) {
+            if (!strword(buffer, line, &pos)) {
+                printf("Warning: « ax » must be followed by an id in [1;8]\n");
+                send = 0;
+            } else {
+                packet.id = 224 + atoi(buffer) - 1;
+                if (!strword(buffer, line, &pos)) {
+                    printf("Warning: « ax <id> » must be followed by « request », « answer » or « set »\n");
+                    send = 0;
+                } else {
+                    if (strcasecmp(buffer, "request")) {
+                        if (!strcasecmp(buffer, "answer")) {
+                            packet.id += 16;
+                        } else if (!strcasecmp(buffer, "set")) {
+                            packet.id += 24;
+                        } else {
+                            printf("Warning: invalid argument for « ax » command\n"); 
+                            send = 0;
+                        }
+                        if (send && !strword(buffer, line, &pos)) {
+                            printf("Warning: missing argument for « ax » command\n");
+                            send = 0;
+                        } else {
+                            packet.length = 2;
+                            int value = atoi(buffer);
+                        }
+                    }
+                }
+            }
         } else {
             send = 0;
         }
