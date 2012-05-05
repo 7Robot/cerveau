@@ -9,7 +9,7 @@
 
 #define BUF_SIZE 256
 #define ENV_MODULES_DIR "CAN_MODULES_DIR"
-#define DEFAULT_DIR "modules"
+#define DEFAULT_DIR "/usr/bin/can"
 
 char * can_module_dir = NULL;
 

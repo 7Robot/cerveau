@@ -90,13 +90,15 @@ int can_write(int fd, can_t packet)
             } else { // request
                 sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7));
             }
-        } else if ((id & 60) == 0) { //bump
+        } else if ((id & 112) == 16) { //bump
             int bumpid = (id & 3) + 1;
             char bumpname[64];
             if (bumpid == 1) {
                 strcpy(bumpname, "BACK");
             } else if (bumpid == 2) {
                 strcpy(bumpname, "FRONT");
+            } else if (bumpid == 3) {
+                strcpy(bumpname, "ALIM");
             } else {
                 sprintf(bumpname, "%d", bumpid);
             }
