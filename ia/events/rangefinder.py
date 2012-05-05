@@ -20,7 +20,7 @@ class SonarEvent(Event):
 				if cmd[3] == "edge":
 					self.edge = True
 				else:
-					raise CmdError("expected « edge » or nothing as firth "
+					raise CmdError("expected « edge » or nothing as third "
 							+ "argument, got « %s »"%cmd[3])
 		else:
 			raise CmdError("« %s » takes exactly 2 or 3 arguments"%(cmd[0]))

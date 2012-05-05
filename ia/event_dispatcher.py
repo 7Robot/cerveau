@@ -3,7 +3,6 @@
 import logging
 from queue import Queue
 from threading import Thread, Lock
-from logging.handlers import SocketHandler
 
 from class_manager import *
 from events.internal import StartEvent
@@ -15,10 +14,11 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
     du coup faudrait peut être revoir son nom'''
     def __init__(self, missions_prefix, robot):
         Thread.__init__(self)
-        self.logger = logging.getLogger("Event_dispatcher")
-        self.robot = robot
+        self.logger   = logging.getLogger("Event_dispatcher")
+        self.robot    = robot
         # instancier toutes les missions 
-        self.missions = {}
+        self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
+        self.robot.missions = self.missions
         self.queue    = Queue()
         self._load_all_missions(missions_prefix)
         self.lock     = Lock()
@@ -26,7 +26,6 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         
     def _load_all_missions(self, missions_prefix):
         '''Charge toutes les instances de toutes les missions'''
-        self.missions    = {}
         path             = os.path.join(os.getcwd(),"missions", missions_prefix)
         classes_missions = class_loader(path)
         for classe_mission in set(classes_missions):

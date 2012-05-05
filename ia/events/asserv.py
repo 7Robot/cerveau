@@ -21,7 +21,7 @@ class AsservEvent(Event):
                 raise CmdError(e.__str__())
             
         # Interruption de consigne
-        # ex: asserv int dist 586 (100µm)
+        # ex: asserv int dist 586 (10e de mm)
         # ex : asserv int rot 55132 (centidegré)
         elif self.type == "int":
             if len(cmd) == 4:
