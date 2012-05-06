@@ -5,7 +5,7 @@ Created on 2 mai 2012
 
 from events.event import Event
 
-class PositioningEndEvent(Event):
+class RobotEvent(Event):
     def __init__(self, cmd):
         super(self.__class__,self).__init__()
         
