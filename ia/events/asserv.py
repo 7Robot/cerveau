@@ -23,7 +23,7 @@ class AsservEvent(Event):
         elif self.type == "int":
             if len(cmd) == 4:
                 self.type += "_" + cmd[2]
-                self.value = cmd[3]
+                self.value = self.parse_int(cmd[3])
             else:
                 raise CmdError("« %s %s » takes exactly 4 argument"
                         %(cmd[0], cmd[1]))
