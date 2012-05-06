@@ -17,8 +17,9 @@ class ForwardMission(Mission):
     def process_event(self, event):
         if self.state == 1:
             # state = 1 on en en train d'executer une consigne d'asservissement
-            if event.name == "sonar":
-                # et si on a un obstacle devant
+            if event.name == "rangefinder":
+                # On a un robot devant
+                # FIXME: est ce qu'un totem peut m'empécher d'avancer ? 
                 if event.pos == "under":
                     self.robot.stop()
                     self.state += 1
@@ -27,7 +28,7 @@ class ForwardMission(Mission):
                 if event.type == "done":
                     # on a pu aller là où on voulait aller
                     self.state = 0
-                    # TODO: notifier le robot
+                    # missions.small.asserv a notifié robot.Robot
                     
         if self.state == 2:
             if event.name == "asserv":
@@ -37,7 +38,7 @@ class ForwardMission(Mission):
                 
         if self.state == 3:
             # on est arrété
-            if event.name ==  "sonar":
+            if event.name ==  "rangefinder":
                 if event.pos == "over":
                     # il n'y a plus rien devant, continuer
                     self.state = 1
