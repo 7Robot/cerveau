@@ -26,7 +26,7 @@ class IA:
 
         self.sock_can   = self.connect(ip_can, port_can)
         self.sock_robot = self.connect(ip_robot, port_robot)
-        self.sock_ui    = self.connect(ip_robot, port_ui)
+        self.sock_ui    = self.connect(ip_ui, port_ui)
         
         # TODO: faire en sortes que si "self.sock_robot" casser l'ia ne plante pas
         
@@ -45,10 +45,12 @@ class IA:
         
         self.robot.msg_can    = self.msg_can
         self.robot.msg_robot  = self.msg_robot
+        self.robot.msg_ui     = self.msg_ui
         
         self.dispatcher.start()
         self.msg_can.start()
         self.msg_robot.start()
+        self.msg_ui.start()
         self.logger.info("IA initialized")
         
     def connect(self, ip, port):

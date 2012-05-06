@@ -103,7 +103,7 @@ class UI(Comm):
         event = None
         try:
             m = __import__("events.ui")
-            event = getattr(m, "ui")(words)
+            event = getattr(m, "UIEvent")(words)
         except ImportError:
             raise CmdError("No module called « ui » found")
         return event

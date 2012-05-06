@@ -12,10 +12,9 @@ class UIEvent(Event):
         # précondition : len(cmd) >= 2
         super(self.__class__,self).__init__()
         self.type = cmd[0]
-        
         if self.type == "rangefinder_calibrate":
             # rangefinder_calibrate <id>
-            self.id = self.parse(cmd[1])
+            self.id = self.parse_int(cmd[1])
             
         elif self.type == "get":
             # get <mission> <attribut>
@@ -38,7 +37,7 @@ class UIEvent(Event):
                  %(cmd[0]))
             
         else:
-            raise CmdError("« Unknown command"
+            raise CmdError("« Unknown command %s %s"
                         %(cmd[0], cmd[1]))
             
             

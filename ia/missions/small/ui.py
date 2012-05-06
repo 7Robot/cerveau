@@ -10,6 +10,7 @@ class UIMission(Mission):
         self.state = "repos"
         
     def process_event(self, event):
+        #print("received %s" % event)
         if self.state == "repos":
             if event.name == "ui":
                 if event.type == "rangefinder_calibrate":
@@ -44,9 +45,11 @@ class UIMission(Mission):
                     self.state = "calibrate rangefinder end"
                     
         elif self.state == "calibrate rangefinder end":
-            mean = sum(self.measurements)/6
+            mean = sum(self.measurements)/len(self.measurements)
             self.logger.debug("End calibration rangefinder %d" % self.id)
             self.robot.send_can("rangefinder %d threshold %d" % (self.id, mean))
             self.robot.send_can("rangefinder %d unmute" % event.id)
             self.state = "repos"
+            self.robot.msg_ui.sender("answer rangefinder_calibrate %d done, value is %d" % (self.id, mean))
+            
                 
