@@ -51,18 +51,18 @@ class PositioningMission(Mission):
                 self.create_timer(20000) # FIXME à mesurer
                 self.robot.forward(5000)
                 self.state += 1
-                print("Petit en attente de positionnement de gros")
+                self.logger.info("Petit en attente de positionnement de gros")
 
         elif self.state == 8:
             if e.name == "robot":
                 self.robot.forward(-2500)
                 self.state += 1
             elif e.name == "timer":
-                print("Pas de réponse de gros !")
+                self.logger.warning("Pas de réponse de gros !")
                 self.robot.forward(-2500)
                 self.state += 1
 
         elif self.state == 9:
-            if e.name == "asserv" and e.state == "done":
-                print("Petit en position !")
+            if e.name == "asserv" and e.type == "done":
+                self.logger.info("Petit en position !")
                 self.state += 1

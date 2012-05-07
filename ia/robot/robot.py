@@ -33,6 +33,7 @@ class Robot:
     
     def forward(self, dist):
         self.pos_target = self.pos + Vertex(dist*cos(self.theta), dist*sin(self.theta))
+        self.missions["forward"].move_forward(dist)
         self.send_can("asserv dist %d" % dist)
 
     def rotate(self, dtheta):

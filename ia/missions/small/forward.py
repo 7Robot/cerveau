@@ -9,26 +9,37 @@ class ForwardMission(Mission):
     def __init__(self, robot):
         super(self.__class__,self).__init__(robot)
         
+    def move_forward(self, dist):
+        self.dist  = dist
+        
+        self.state += 1 # sioux : 0 -> 1 ou 2 -> 3
+        
     def process_event(self, event):
-            if self.state == 1:
-                # state = 1 on en en train d'executer une consigne d'asservissement
-                # don on fait des sonars requests périodiquement
-                if event.name == "sonar":
-                    # est si on a un obstacle devant
-                    # if range under
+        if self.state == 1:
+            # state = 1 on en en train d'executer une consigne d'asservissement
+            if event.name == "rangefinder" and event.id in [1,2]:
+                # On a un robot DEVANT
+                # FIXME: est ce qu'un totem peut m'empécher d'avancer ? 
+                if event.pos == "under":
                     self.robot.stop()
-                    self.state = 2
-                    
-                if event.name == "asserv":
-                    if event.type == "done":
-                        # on a pu aller là où on voulait aller
-                        self.state = 0
-                        # notifier le robot
-                    
-            if self.state == 2:
-                # state = 2 : on est arrété
-                if event.name ==  "sonar":
-                    # il n'y a plus rien devant continuer
-                    pass
+                    self.state += 1
                 
-    
+            if event.name == "asserv":
+                if event.type == "done":
+                    # on a pu aller là où on voulait aller
+                    self.state = 0
+                    # missions.small.asserv a notifié robot.Robot
+                    
+        if self.state == 2:
+            if event.name == "asserv":
+                if event.type == "int_dist":
+                    # le prochain move_forward() va mettre à jour state
+                    self.robot.forward(self.dist-event.value)
+                
+        if self.state == 3:
+            # on est arrété
+            if event.name ==  "rangefinder" and event.id in [1,2]:
+                if event.pos == "over":
+                    # il n'y a plus rien devant, continuer
+                    self.state = 1
+            

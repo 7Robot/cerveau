@@ -6,27 +6,27 @@ from logging.handlers import SocketHandler
 import socket
 import yaml
 
-from can import Can, Wifi
+from can import Can, Wifi, UI
 from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
-    def __init__(self, robot, ip_can="r2d2", port_can=7773, ip_robot="r2d2", port_robot=7775):
+    def __init__(self, robot, ip_can="r2d2", port_can=7773, ip_robot="r2d2", port_robot=7779, ip_ui="r2d2", port_ui=7774):
         self.logger = logging.getLogger("ia")
         self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
         f=open(self.mission_prefix+".yml")
         logging.config.dictConfig(yaml.load(f))
         f.close()
         
-        print("Starting « %s » robot" % self.mission_prefix)
+        self.logger.info("Starting « %s » robot" % self.mission_prefix)
         # On ne peut pas avoir "simu" car la class proxy renvoie le __class__.__name__ de l'objet proxié
         assert(self.mission_prefix in ["small", "big", "simu"])
         self.ip         = ip_can
         self.port       = port_can
-        self.sock_can   = None
-        self.sock_robot = None
-        self.sock_can   = self.connect(self.sock_can, ip_can, port_can)
-        self.sock_robot = self.connect(self.sock_robot, ip_robot, port_robot)
+
+        self.sock_can   = self.connect(ip_can, port_can)
+        self.sock_robot = self.connect(ip_robot, port_robot)
+        self.sock_ui    = self.connect(ip_ui, port_ui)
         
         # TODO: faire en sortes que si "self.sock_robot" casser l'ia ne plante pas
         
@@ -41,16 +41,19 @@ class IA:
         
         self.msg_can    = Can (self.sock_can, self.dispatcher)
         self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
+        self.msg_ui     =   UI(self.sock_ui, self.dispatcher)
         
         self.robot.msg_can    = self.msg_can
         self.robot.msg_robot  = self.msg_robot
+        self.robot.msg_ui     = self.msg_ui
         
         self.dispatcher.start()
         self.msg_can.start()
         self.msg_robot.start()
+        self.msg_ui.start()
         self.logger.info("IA initialized")
         
-    def connect(self, sock, ip, port):
+    def connect(self, ip, port):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))

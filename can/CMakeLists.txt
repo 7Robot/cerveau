@@ -8,6 +8,7 @@ set_source_files_properties(${SRC_FILES} PROPERTIES COMPILE_FLAGS "-std=gnu99")
 
 add_library(can SHARED libcan.c)
 install(TARGETS can LIBRARY DESTINATION lib)
+install(FILES libcan.h DESTINATION include)
 
 add_subdirectory(modules)
 

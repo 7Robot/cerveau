@@ -12,8 +12,9 @@ class Test_can(unittest.TestCase):
         self.can = Can(None, None)
         
     def test_asserv(self):
-        self.assertIs(type(self.can.cmd_to_event("asserv done dist 2645\n")), AsservEvent)
-        self.assertIs(type(self.can.cmd_to_event("asserv done rot 2645\n")), AsservEvent)
+        self.assertIs(type(self.can.cmd_to_event("asserv done\n")), AsservEvent)
+        self.assertIs(type(self.can.cmd_to_event("asserv int rot 2645\n")), AsservEvent)
+        self.assertIs(type(self.can.cmd_to_event("asserv int dist 2645\n")), AsservEvent)
     def test_bump(self):
         for pos in ["back", "front"]:
             for state in ["open", "close"]:
@@ -21,8 +22,8 @@ class Test_can(unittest.TestCase):
     def test_odo(self):
         self.assertIs(type(self.can.cmd_to_event("odo pos 5 7 65\n")), OdoEvent) 
     def test_sonar(self):
-        pass
-        #self.assertIs(type(self.can.cmd_to_event("sonar %d %s\n" % (pos, state))), SonarEvent)
+        self.assertIs(type(self.can.cmd_to_event("rangefinder 1 value 15 under edge")), RangefinderEvent)
+        self.assertIs(type(self.can.cmd_to_event("rangefinder 1 value 15 over")), RangefinderEvent)
     
 if __name__ == '__main__':
     unittest.main()
