@@ -59,12 +59,15 @@ int can_write(int fd, can_t packet)
                 send = 0;
             }
         } else if ((id & 96) == 96) {
-            if ((id & 24) == 0) {
-                sprintf(output, "AX %d REQUEST\n", (id & 7) + 1);
-            } else if ((id & 16) == 16) {
-                sprintf(output, "AX %d %s %hu\n",
-                        (id & 7) + 1,
-                        ((id & 8) == 8)?"SET":"ANSWER",
+            if ((id & 12) == 0) {
+                sprintf(output, "AX %d %s REQUEST\n",
+                        (id & 3) + 1,
+                        ((id & 16) == 16)?"ANGLE":"TORQUE");
+            } else if ((id & 8) == 8) {
+                sprintf(output, "AX %d %s %s %hu\n",
+                        (id & 3) + 1,
+                        ((id & 16) == 16)?"ANGLE":"TORQUE", 
+                        ((id & 4) == 4)?"SET":"ANSWER",
                         ((uint16_t*)packet.b)[0]);
             } else {
                 send = 0;
@@ -420,27 +423,43 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 send = 0;
             } else {
                 packet.id = 224 + atoi(buffer) - 1;
-                if (!strword(buffer, line, &pos)) {
-                    printf("Warning: « ax <id> » must be followed by « request », « answer » or « set »\n");
+                if (packet.id > 231 || packet.id < 224) {
+                    printf("Warning: the ax12 ip must be in range [1;8]\n");
+                    send = 0;
+                } else if (!strword(buffer, line, &pos)) {
+                    printf("Warning: « ax <id> » must be followed by « angle » or « torque »\n");
                     send = 0;
                 } else {
-                    if (strcasecmp(buffer, "request")) {
-                        if (!strcasecmp(buffer, "answer")) {
-                            packet.id += 16;
-                        } else if (!strcasecmp(buffer, "set")) {
-                            packet.id += 24;
-                        } else {
-                            printf("Warning: invalid argument for « ax » command\n"); 
-                            send = 0;
-                        }
-                        if (send && !strword(buffer, line, &pos)) {
-                            printf("Warning: missing argument for « ax » command\n");
-                            send = 0;
-                        } else {
-                            packet.length = 2;
-                            int value = atoi(buffer);
-                            packet.b[0] = ((uint8_t*)&value)[0];
-                            packet.b[1] = ((uint8_t*)&value)[1];
+                    if (!strcasecmp(buffer, "angle")) {
+                        packet.id += 16;
+                    } else if (strcasecmp(buffer, "torque")) {
+                        printf("Warning: « ax <id> » must be followed by « angle » or « torque »\n");
+                        send = 0;
+                    }
+                }
+                if (send) {
+                    if (!strword(buffer, line, &pos)) {
+                        printf("Warning: « ax <id> <angle/torque> » must be followed by « request », « answer » or « set »\n");
+                        send = 0;
+                    } else {
+                        if (strcasecmp(buffer, "request")) {
+                            if (!strcasecmp(buffer, "answer")) {
+                                packet.id += 8;
+                            } else if (!strcasecmp(buffer, "set")) {
+                                packet.id += 12;
+                            } else {
+                                printf("Warning: invalid argument for « ax » command\n"); 
+                                send = 0;
+                            }
+                            if (send && !strword(buffer, line, &pos)) {
+                                printf("Warning: missing argument for « ax » command\n");
+                                send = 0;
+                            } else {
+                                packet.length = 2;
+                                int value = atoi(buffer);
+                                packet.b[0] = ((uint8_t*)&value)[0];
+                                packet.b[1] = ((uint8_t*)&value)[1];
+                            }
                         }
                     }
                 }
