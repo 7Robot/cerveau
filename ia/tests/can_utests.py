@@ -3,9 +3,13 @@
 Created on 29 avr. 2012
 '''
 
-from can import Can
+import random
+import string
 import unittest
+
+from can import Can
 from events import *
+from events.event import CmdError
 
 class Test_can(unittest.TestCase):
     def setUp(self):
@@ -26,6 +30,21 @@ class Test_can(unittest.TestCase):
         for pos in ["back", "front"]:
             for state in ["open", "close"]:
                 self.assertIs(type(self.can.cmd_to_event("bump %s %s\n" % (pos, state))), BumpEvent)
+    def test_fuzzer(self):
+        cmds = ["asserv", "ax", "battery", "bump", "odo", "rangefinder", "turret", 
+                "done", "int", "rot", "dist", "answer", "request", "value", "under", 
+                "over", "back", "front", "edge", "open", "closed", "mute", "unmute", 
+                "threshold", "on", "off"]
+        for j in range(30):
+            cmd = ""
+            for i in range(random.randint(1,8)):
+                if random.randint(0,2):
+                    cmd += cmds[random.randint(0,len(cmds))]
+                else:
+                    cmd += ''.join(random.choice(string.digits) for x in range(random.randint(1,8)))
+                cmd += " "
+            print("testing", cmd)
+            self.assertRaises(CmdError, self.can.cmd_to_event, cmd)
     def test_odo(self):
         self.assertIs(type(self.can.cmd_to_event("odo pos 5 7 65\n")), OdoEvent) 
     def test_sonar(self):
