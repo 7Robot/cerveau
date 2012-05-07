@@ -72,8 +72,26 @@ int can_write(int fd, can_t packet)
             } else {
                 send = 0;
             }
-        } else if ((id & 120) == 0){
-            sprintf(output, "TURRET untranslated packet\n");
+        } else if ((id & 112) == 0){
+            if ((id & 15) == 4) {
+                sprintf(output, "TURRET REQUEST\n");
+            } else if ((id & 15) == 5) {
+                sprintf(output, "TURRET ANSWER"); 
+                int i;
+                for (i = 0 ; i < 3 ; i++) {
+                    if (packet.length > 1) {
+                        sprintf(output+strlen(output), " %hu", ((uint16_t*)packet.b)[i]);
+                        packet.length -= 2;
+                    }
+                }
+                sprintf(output+strlen(output), "\n");
+            } else if ((id & 14) == 6) {
+                sprintf(output, "TURRET %s\n", (id&1)==1?"UNMUTE":"MUTE");
+            } else if ((id & 14) == 8) {
+                sprintf(output, "TURRET %s\n", (id&1)==1?"ON":"OFF");
+            } else {
+                send = 0;
+            }
         } else {
             send = 0;
         }
