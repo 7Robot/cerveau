@@ -78,7 +78,7 @@ int can_write(int fd, can_t packet)
             } else if ((id & 15) == 5) {
                 sprintf(output, "TURRET ANSWER"); 
                 int i;
-                for (i = 0 ; i < 3 ; i++) {
+                for (i = 0 ; i < 4 ; i++) {
                     if (packet.length > 1) {
                         sprintf(output+strlen(output), " %hu", ((uint16_t*)packet.b)[i]);
                         packet.length -= 2;
@@ -480,6 +480,36 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                             }
                         }
                     }
+                }
+            }
+        } else if (!strcasecmp(buffer, "turret")) {
+            if (!strword(buffer, line, &pos)) {
+                send = 0;
+            } else {
+                if (!strcasecmp(buffer, "request")) {
+                    packet.id = 132;
+                } else if (!strcasecmp(buffer, "answer")) {
+                    packet.id = 133;
+                    int i, value;
+                    for (i = 0; i < 4 ; i++) {
+                        if (!strword(buffer, line, &pos)) {
+                            break;
+                        }
+                        value = atoi(buffer);
+                        packet.length += 2;
+                        packet.b[i*2] = ((uint8_t*)&value)[0];
+                        packet.b[i*2+1] = ((uint8_t*)&value)[1];
+                    }
+                } else if (!strcasecmp(buffer, "mute")) {
+                    packet.id = 134;
+                } else if (!strcasecmp(buffer, "unmute")) {
+                    packet.id = 135;
+                } else if (!strcasecmp(buffer, "off")) {
+                    packet.id = 136;
+                } else if (!strcasecmp(buffer, "on")) {
+                    packet.id = 137;
+                } else {
+                    send = 0;
                 }
             }
         } else {
