@@ -148,6 +148,7 @@ void show_help(char * cmd)
 {
 	printf("Usage: %s [-D <device>] [-H <host>] [-P <port>] [-h]\n", cmd);
 	printf("\tD: set device to open\n");
+	printf("\tS: set speed transmission\n");
 	printf("\tH: set host to connect\n");
 	printf("\tP: set port to connect\n");
 	printf("\th: show this help\n");
