@@ -11,7 +11,7 @@ from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
-    def __init__(self, robot, ip_can="r2d2", port_can=7773, ip_robot="r2d2", port_robot=7779, ip_ui="r2d2", port_ui=7774):
+    def __init__(self, robot, ip_can="localhost", port_can=7773, ip_robot="r2d2", port_robot=7769, ip_ui="localhost", port_ui=7774):
         self.logger = logging.getLogger("ia")
         self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
         f=open(self.mission_prefix+".yml")

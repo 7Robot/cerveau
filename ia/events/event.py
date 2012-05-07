@@ -4,7 +4,7 @@ import logging
 
 class Event:
     def __init__(self):
-        '''EN théorie cmd_to_event nous passe une commande avec 2 ou plus arguments'''
+        '''En théorie cmd_to_event nous passe une commande avec 2 ou plus arguments'''
         self.logger = logging.getLogger("event")
         '''Raccourci de nommage pour récupérer le type d'un event'''
         name = self.__class__.__name__

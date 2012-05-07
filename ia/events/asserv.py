@@ -44,22 +44,20 @@ class AsservEvent(Event):
             else:
                 raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
-                
-        elif self.type == "pos":
-            if len(cmd) == 3:
-                    self.value = self.parse_int(cmd[2])
+
+        # asserv ticks
+        elif self.type == "ticks":
+            if len(cmd) == 3 and cmd[2] in ["reset", "request"]:
+                self.cmd = cmd[2]
+            elif len(cmd) == 4 and cmd[2] == "answer":
+                self.cmd = "answer"
+                self.value = self.parse_int(cmd[3])
             else:
-                raise CmdError("« %s %s » must be followed by « dist » or"
-                        + " « rot », then by a integer"
-                        %(cmd[0], cmd[1]))
+                raise CmdError("« asserv ticks » must be followed by "
+                        + "« reset », « request » or « answer <dist> »")
                 
-        # asserv done
-        elif self.type == "done":
-            if len(cmd) != 2:
-                raise CmdError("« %s %s » doesn't take any argument"
-                        %(cmd[0], cmd[1]))
-                
-        elif self.type in ["stop", "on", "off"]:
+        # asserv stop/on/off/done
+        elif self.type in ["stop", "on", "off", "done"]:
             if len(cmd) != 2:
                 raise CmdError("« %s %s » takes no argument"
                          %(cmd[0], cmd[1]))
