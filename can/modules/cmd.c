@@ -80,7 +80,7 @@ int can_write(int fd, can_t packet)
                 int i;
                 for (i = 0 ; i < 4 ; i++) {
                     if (packet.length > 1) {
-                        sprintf(output+strlen(output), " %hu", ((uint16_t*)packet.b)[i]);
+                        sprintf(output+strlen(output), "\t%hhu %hhu", packet.b[2*i], packet.b[2*i+1]);
                         packet.length -= 2;
                     }
                 }
@@ -490,15 +490,19 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     packet.id = 132;
                 } else if (!strcasecmp(buffer, "answer")) {
                     packet.id = 133;
-                    int i, value;
+                    int i, dist, angle;
                     for (i = 0; i < 4 ; i++) {
                         if (!strword(buffer, line, &pos)) {
                             break;
                         }
-                        value = atoi(buffer);
+                        dist = atoi(buffer);
+                        if (!strword(buffer, line, &pos)) {
+                            break;
+                        }
+                        angle = atoi(buffer);
                         packet.length += 2;
-                        packet.b[i*2] = ((uint8_t*)&value)[0];
-                        packet.b[i*2+1] = ((uint8_t*)&value)[1];
+                        packet.b[i*2] = dist;
+                        packet.b[i*2+1] = angle;
                     }
                 } else if (!strcasecmp(buffer, "mute")) {
                     packet.id = 134;
