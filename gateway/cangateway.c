@@ -46,7 +46,7 @@ int main(int argc, char * argv[])
 	}
 	env = getenv("CANGATEWAY_SPEED");
 	if ((env != NULL) && (strlen(env) != 0)) {
-		sscanf(env, "%d", speed);
+		sscanf(env, "%d", &speed);
 	}
 	env = getenv("CANGATEWAY_HOST");
 	if ((env != NULL) && (strlen(env) != 0)) {
@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
                 device = opt_device;
 				break;
 			case 'S':
-				if (sscanf(optarg, "%d", speed) != 1) {
+				if (sscanf(optarg, "%d", &speed) != 1) {
 					fprintf(stderr, "Bad argument for '-S' option\n");
 					show_help(argv[0]);
 					exit(1);
@@ -148,6 +148,7 @@ void show_help(char * cmd)
 {
 	printf("Usage: %s [-D <device>] [-H <host>] [-P <port>] [-h]\n", cmd);
 	printf("\tD: set device to open\n");
+	printf("\tS: set speed transmission\n");
 	printf("\tH: set host to connect\n");
 	printf("\tP: set port to connect\n");
 	printf("\th: show this help\n");
