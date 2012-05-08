@@ -109,7 +109,7 @@ int can_write(int fd, can_t packet)
                 sprintf(output, "RANGEFINDER %d THRESHOLD %hu\n", (id & 7) + 1,
                         ((uint16_t*)packet.b)[0]);
             } else { // request
-                sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7));
+                sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7) + 1);
             }
         } else if ((id & 112) == 16) { //bump
             int bumpid = (id & 3) + 1;
