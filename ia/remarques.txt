@@ -1,5 +1,6 @@
 − timer avec arguments
-
+- queue pour émission
+- histérésis tourelle
 
 
 Secondaire:
