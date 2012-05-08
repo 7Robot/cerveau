@@ -11,7 +11,7 @@ from robot.small_robot import Small_robot
 from event_dispatcher import Event_dispatcher
 
 class IA:
-    def __init__(self, robot, ip_can="r2d2", port_can=7773, ip_robot="r2d2", port_robot=7780, ip_ui="r2d2", port_ui=7774):
+    def __init__(self, robot, ip_can="petit", port_can=7773, ip_robot="petit", port_robot=7780, ip_ui="r2d2", port_ui=7774):
         self.logger = logging.getLogger("ia")
         self.mission_prefix = robot.__class__.__name__.lower().split('_')[0]
         f=open(self.mission_prefix+".yml")
@@ -30,7 +30,7 @@ class IA:
         
         # TODO: faire en sortes que si "self.sock_robot" casser l'ia ne plante pas
         
-        if self.sock_can != None:
+        if self.sock_can == None:
             self.keep_on = False
             self.logger.critical("IA: Failed to get a socket.")
         else:

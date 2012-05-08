@@ -8,11 +8,8 @@ class BumpEvent(Event):
         super(self.__class__,self).__init__()
         if len(cmd) == 3:
             self.pos = cmd[1]
-            if cmd[2] == "close":
-                self.state = 1
-            elif cmd[2] == "open":
-                self.state = 0
-            else:
+            self.state = cmd[2]
+            if self.state not in [ "open", "close" ]:
                 raise CmdError("« bump » must be followed by an id, then "
                         + "« open » or « close »")
         else:

@@ -13,8 +13,8 @@ handlers:
     class: logger.SocketStringHandler
     level: DEBUG
     formatter: simple
-    host: 'localhost'
-    port: 7768
+    host: 'r2d2'
+    port: 7769
 loggers:
   event:
     propagate: no

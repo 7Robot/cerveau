@@ -12,5 +12,7 @@ class StartMission(Mission):
 
     def process_event(self, event):
         if self.state == 0:
-            self.missions["positioning"].process_event(StartEvent())
+            self.robot.send_can("rangefinder 1 threshold 1800")
+            self.robot.send_can("rangefinder 2 threshold 1800")
+            #self.missions["positioning"].process_event(StartEvent())
             self.state +=1

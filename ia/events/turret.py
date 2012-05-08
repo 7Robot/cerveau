@@ -6,14 +6,18 @@ from events.event import CmdError
 class TurretEvent(Event):
     def __init__(self, cmd):
         super(self.__class__,self).__init__()
-        self.type = cmd[1]
+        self.type   = cmd[1]
+        self.angle  = []
+        self.dist   = []
 
         if self.type == "answer":
             if len(cmd) < 7:
-                try:
-                    self.value = list(map(int,cmd[2:]))
-                except ValueError as e:
-                    raise CmdError(e.__str__())
+                values  = list(map(self.parse_int,cmd[2:])) 
+                for i in range(len(values)):
+                    if i%2 == 0:
+                        self.dist.append(values[i])
+                    else:
+                        self.angle.append(values[i])
             else:
                 raise CmdError("« turret answer » must be followed by "
                         +" a maximum of four integers")

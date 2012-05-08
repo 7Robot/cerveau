@@ -19,6 +19,7 @@ class Server_test_can(Server_test):
         self.running.wait(1)
         self.send_cmd("asserv done")
         
+        self.running.wait(1)
         self.send_cmd("bump back close")
         self.running.wait(1)
         

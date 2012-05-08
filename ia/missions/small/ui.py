@@ -48,7 +48,8 @@ class UIMission(Mission):
             mean = sum(self.measurements)/len(self.measurements)
             self.logger.debug("End calibration rangefinder %d" % self.id)
             self.robot.send_can("rangefinder %d threshold %d" % (self.id, mean))
-            self.robot.send_can("rangefinder %d unmute" % event.id)
+            self.robot.send_can("rangefinder %d mute" % event.id)
+            self.robot.send_can("rangefinder %d mute" % event.id)
             self.state = "repos"
             self.robot.msg_ui.sender("answer rangefinder_calibrate %d done, value is %d" % (self.id, mean))
             

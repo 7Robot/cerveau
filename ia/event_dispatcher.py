@@ -31,7 +31,10 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
                 mission = classe_mission(self.robot)
-                mission.missions = self.missions 
+                print("debug load mission", mission.name)
+                #print("dict: ", dir(mission))
+                mission.missions = self.missions
+                mission.dispatch = self 
                 self.missions[mission.name] = mission      
                 
     
@@ -46,5 +49,9 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
             self.logger.critical("startMission not found")
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
+            self.logger.debug("Process event : %s", event.__str__())
             for missions in self.missions.values():
+                state = missions.state
                 missions.process_event(event)
+                if missions.state != state:
+                    self.logger.debug("Event processing by: %s", missions.name)
