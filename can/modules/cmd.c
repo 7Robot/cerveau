@@ -120,6 +120,8 @@ int can_write(int fd, can_t packet)
                 strcpy(bumpname, "FRONT");
             } else if (bumpid == 3) {
                 strcpy(bumpname, "ALIM");
+            } else if (bumpid == 4) {
+                strcpy(bumpname, "LEASH");
             } else {
                 sprintf(bumpname, "%d", bumpid);
             }
