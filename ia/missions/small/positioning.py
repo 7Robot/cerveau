@@ -69,4 +69,4 @@ class PositioningMission(Mission):
         elif self.state == 9:
             if e.name == "asserv" and e.type == "done":
                 self.logger.info("Petit en position !")
-                self.state += 1
+                self.state = 0

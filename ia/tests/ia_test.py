@@ -46,6 +46,7 @@ if __name__ == '__main__':
     test_server_robot.start()
     
     sleep(0.3)
-    ia        = IA(Small_robot(), "127.0.0.1", port, "127.0.0.1", port+1)
+    # "127.0.0.1", port, "127.0.0.1", port+1
+    ia        = IA(Small_robot())
     ia.main()
     

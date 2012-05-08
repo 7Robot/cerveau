@@ -4,6 +4,8 @@ Created on 6 mai 2012
 '''
 
 from missions.mission import Mission
+from events.internal import StartEvent
+
 class UIMission(Mission):
     def __init__(self, robot):
         super(self.__class__,self).__init__(robot)
@@ -13,7 +15,7 @@ class UIMission(Mission):
         #print("received %s" % event)
         if self.state == "repos":
             if event.name == "ui":
-                if event.type == "rangefinder_calibrate":
+                if event.type == "calibrate":
                     self.robot.send_can("rangefinder %d unmute" % event.id)
                     self.state        = "calibrate rangefinder measurements"
                     self.measurements = []
@@ -33,6 +35,9 @@ class UIMission(Mission):
                         elif  event.type == "float":
                             value = float(value)
                         setattr(self.missions[event.mission], event.attribute, value)
+
+                elif event.type == "positioning":
+                    self.missions["positioning"].process_event(StartEvent())
                         
                         
         elif self.state == "calibrate rangefinder measurements":
@@ -47,10 +52,10 @@ class UIMission(Mission):
         elif self.state == "calibrate rangefinder end":
             mean = sum(self.measurements)/len(self.measurements)
             self.logger.debug("End calibration rangefinder %d" % self.id)
+            self.robot.send_can("rangefinder %d mute" % event.id)
+            self.robot.send_can("rangefinder %d mute" % event.id)
             self.robot.send_can("rangefinder %d threshold %d" % (self.id, mean))
-            self.robot.send_can("rangefinder %d mute" % event.id)
-            self.robot.send_can("rangefinder %d mute" % event.id)
             self.state = "repos"
-            self.robot.msg_ui.sender("answer rangefinder_calibrate %d done, value is %d" % (self.id, mean))
+            self.robot.msg_ui.sender("answer calibrate %d done, value is %d" % (self.id, mean))
             
                 
