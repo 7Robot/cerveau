@@ -14,7 +14,7 @@ handlers:
     level: DEBUG
     formatter: simple
     host: 'r2d2'
-    port: 7769
+    port: 7768
 loggers:
   event:
     propagate: no

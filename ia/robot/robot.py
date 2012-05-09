@@ -42,15 +42,18 @@ class Robot:
         self.sock_ui    = self.connect(ip_ui, port_ui)
         
         self.dispatcher = Event_dispatcher(self.mission_prefix, self)
-        self.dispatcher.start()
+        
         
         self.msg_can    = Can (self.sock_can, self.dispatcher)
         self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
         self.msg_ui     =   UI(self.sock_ui, self.dispatcher)
         
+        
+        self.dispatcher.start()
         self.msg_can.start()
         self.msg_robot.start()
         self.msg_ui.start()
+        
         
         
     def connect(self, ip, port):
