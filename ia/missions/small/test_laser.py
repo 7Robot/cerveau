@@ -3,7 +3,7 @@
 Created on 8 mai 2012
 '''
 
-from math import cos, sin
+from math import cos, sin, pi
 
 from missions.mission import Mission
 class TestLaserMission(Mission): #(Mission):
@@ -17,13 +17,16 @@ class TestLaserMission(Mission): #(Mission):
             free_way = True
             next_histeresis = 0
             for i in range(len(e.angle)):
-                obs_x = e.dist[i]*cos(e.angle[i])
-                obs_y = e.dist[i]*sin(e.angle[i])
+                e.dist[i] -= 8
+                obs_x = e.dist[i]*cos(e.angle[i]/180*pi)
+                obs_y = e.dist[i]*sin(e.angle[i]/180*pi)
 #                print(obs_x, obs_y)
                 # la tourelle laser est à 8cm du bord droit, 15cm du bord gauche, TODO, mettre ces params dans le robot
-                if  obs_x < 8+2*self.histeresis and obs_x > -12-2*self.histeresis \
-                and obs_y < 30+self.histeresis:
+                print("X: %d, Y: %d, histeresis: %d" %(obs_x, obs_y, self.histeresis))
+                if  obs_x < 10+8*self.histeresis and obs_x > -12-8*self.histeresis \
+                and obs_y < 30+4*self.histeresis:
                     free_way = False
+                    histeresis = 1
                     next_histeresis = 1
 #                    print("gêne")
                     break

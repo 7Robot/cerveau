@@ -8,7 +8,7 @@ from event_dispatcher import Event_dispatcher
 from mathutils.types import Vertex
 
 class Robot:
-    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, ip_can="petit", port_can=7773, ip_robot="petit", port_robot=7780, ip_ui="r2d2", port_ui=7774):
+    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, ip_can, port_can, ip_robot, port_robot, ip_ui, port_ui):
         self.logger = logging.getLogger("robot")
         
         self.mission_prefix = self.__class__.__name__.lower().split('_')[0]

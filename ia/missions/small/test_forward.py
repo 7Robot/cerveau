@@ -9,7 +9,6 @@ class TestForwardMission(Mission):
         super(self.__class__,self).__init__(robot)
         
     def process_event(self, e):
-        print("see event %s", e)
         if e.name == "bump" and e.state == "close":
             self.logger.debug("On avance !!!!")
             self.robot.forward(15000)
