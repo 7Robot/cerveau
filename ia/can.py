@@ -5,8 +5,9 @@ from events.event import CmdError
 from events import *
 
 import logging
+from queue import Queue
 import socket
-
+import threading
 
 class Comm(Thread):
     def __init__(self, socket, event_manager):
@@ -78,6 +79,11 @@ class Can(Comm):
     def __init__(self, socket, event_manager):
         super(self.__class__, self).__init__(socket, event_manager)
         self.logger = logging.getLogger("can")
+        self.queued_sender = Queued_sender(self.socket)
+        self.queued_sender.start()
+        
+    def sender(self, message):
+        return self.queued_sender.add_action(message)
         
 class Wifi(Comm):
     '''Comm robot-robot'''
@@ -112,3 +118,30 @@ class UI(Comm):
         event = self.cmd_to_event(cmd)
         if event != None:
             self.event_manager.add_event(event)
+            
+            
+
+class Queued_sender(Thread): # FIXME renommer en Event_Manager
+    '''envoie les actions sans saturer le medium de communication'''
+    def __init__(self, socket):
+        Thread.__init__(self)
+        self.running= threading.Event( )
+        self.queue  = Queue()
+        self.socket = socket
+    
+    def add_action(self, action):
+        '''Inutile, sauf si on change d'implémentation'''
+        action = bytes(action+"\n", "utf-8")
+        self.queue.put(action, True, None) # block=True, timeout=None
+        return len(action) # pour être compatible avec Comm.sender()
+    
+    def run(self):
+        while not self.running.set( ):
+            action = self.queue.get(True, None) # block=True, timeout=None
+            try:
+                self.socket.send(action)
+            except socket.timeout as message:
+                self.logger.error ("Sender : timout %s" % message)
+            except socket.error as message:
+                self.logger.error ("Sender : socket error %s" % message)
+            self.running.wait(0.05) # 5ms entre chaque message

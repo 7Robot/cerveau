@@ -21,7 +21,6 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         self.robot.missions = self.missions
         self.queue    = Queue()
         self._load_all_missions(missions_prefix)
-        self.lock     = Lock()
             
         
     def _load_all_missions(self, missions_prefix):
