@@ -24,8 +24,7 @@ class IA:
         self.logger.info("Starting « %s » robot" % name)
         assert(name in ["petit", "gros"])
         
-        module = __import__("robots")
-        print(module.__dict__.keys())
+        module = __import__("robots."+name)
         self.robot = getattr(getattr(module, name), name.capitalize()+"Robot")()
         
         
