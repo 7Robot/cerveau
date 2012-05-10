@@ -13,6 +13,9 @@ class ForwardMission(Mission):
         self.state = "repos"
         self.free_way = { 0: True, 1: True, 2: True, 3: True }
 
+    def disable(self):
+        self.state = "repos"
+
     def way_is_free(self):
         free_way = True
         sensors = [] 
@@ -52,7 +55,7 @@ class ForwardMission(Mission):
             self.robot.pos = event.pos
             self.robot.rot = event.rot
             # détermination du mouvement à effecuter
-            self.dist  = self.robot.pos_target - self.robot.pos
+            self.dist  = (self.robot.pos_target - self.robot.pos).norm
             self.state = "forwarding" # sioux : 0 -> 1 ou 2 -> 3
             self.robot.send_can("asserv dist %d" %self.dist)
         elif event.name == "rangefinder" and event.id in [1,2]:
@@ -93,3 +96,4 @@ class ForwardMission(Mission):
                 self.dist -= event.value
                 self.decrement = True
                 self.resume()
+

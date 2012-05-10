@@ -13,9 +13,15 @@ from missions.mission import Mission
 class OdoMission(Mission):
     def __init__(self, robot):
         super(self.__class__,self).__init__(robot)
+        self.state = "mute"
+
+    def broadcast(self, state = "unmute"):
+        if state != self.state:
+            self.state = state
+            self.robot.send_can("odo %s" %state)
     
     def process_event(self, event):
-        if self.state == 0:
+        if self.state == "unmute":
             if event.name == "odo":
                 if event.type == "pos":
                     self.logger.info("Odo : pos %d %d, theta: %d" % (event.value.x, event.value.y, event.rot))

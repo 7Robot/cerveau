@@ -21,6 +21,9 @@ class Mission:
     def process_event(self, event):
         pass
 
+    def disable(self):
+        self.state = 0
+
     def create_timer(self, duration):
         '''Créé un timer qui va envoyer un évènement Timer_end à la fin'''
         t = threading.Timer(duration/1000, self.process_event, [TimerEvent()]) #TODO: vérifier que le thread se termine bien après le process_event

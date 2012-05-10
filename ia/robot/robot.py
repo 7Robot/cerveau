@@ -11,13 +11,16 @@ from mathutils.types import Vertex
 class Robot:
     def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, ip_can, port_can, ip_robot, port_robot, ip_ui, port_ui):
         self.logger = logging.getLogger("robot")
-        
+       
+        # récupération de « big » ou « small »
         self.mission_prefix = self.__class__.__name__.lower().split('_')[0]
         
+        # REAL POS
         self.pos = Vertex(x, y) # 10e de mm
-        self.theta = theta # centidegree
+        self.theta = normal_angle(theta) # centidegree
 
-        self.action = None #forwarding, rotating 
+        # TARGET POS
+        self.action = None # forwarding, rotating
         self.pos_target = Vertex(0, 0) # à court terme
         self.theta_target = 0
 
@@ -31,24 +34,15 @@ class Robot:
         self.msg_can   = None
         self.msg_robot = None
         
-#        self.ip_can     = ip_can
-#        self.port_can   = port_can
-#        self.ip_robot   = ip_robot
-#        self.port_robot = port_robot
-#        self.ip_ui      = ip_ui
-#        self.port_ui    = port_ui
-        
         self.sock_can   = self.connect(ip_can, port_can)
         self.sock_robot = self.connect(ip_robot, port_robot)
         self.sock_ui    = self.connect(ip_ui, port_ui)
         
         self.dispatcher = Event_dispatcher(self.mission_prefix, self)
         
-        
         self.msg_can    = Can (self.sock_can, self.dispatcher)
         self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
         self.msg_ui     =   UI(self.sock_ui, self.dispatcher)
-        
         
         self.dispatcher.start()
         self.msg_can.start()
@@ -66,15 +60,12 @@ class Robot:
             self.logger.critical("Impossible d'otenir une connection pour %s %d : %s" % (ip, port, message))
         return sock
     
-    def stop(self):
-        self.sock_can.shutdown(socket.SHUT_WR) 
-        self.sock_can.close()
-
-    def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
-        curt_str = ""
-        if curt:
-            curt_str = " curt" # l'espace est important
-        self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
+    #def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
+    #    self.
+    #    curt_str = ""
+    #    if curt:
+    #        curt_str = " curt" # l'espace est important
+    #    self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
    
     # Avancer de dist
     def forward(self, dist):
@@ -91,12 +82,8 @@ class Robot:
     # arrivant
     def move(self, pos, rot = None):
         self.pos_target = pos
-        self.rot_target = rot
+        self.rot_target = normal_angle(rot)
         self.missions["goto"].move_to()
-        
-    def get_theta(self):
-        '''Retourne la direction en radian'''
-        return self.theta/36000*6.28319
     
     def send_can(self, msg):
         if self.msg_can != None:
@@ -104,15 +91,19 @@ class Robot:
         else:
             self.logger.error("Robot : msg_can is None, cannot send %s" % msg)
     
-    def move_direction(self, dist, direction):
-        '''dist en 10e de mmm
-           direction en 10e de degré'''
-        drot = direction-self.theta
-        if drot < -18000:
-            rot = 36000 + drot
-        if drot > 18000:
-            drot = -36000 + drot
-        
+    #def move_direction(self, dist, direction):
+    #    '''dist en 10e de mmm
+    #       direction en 10e de degré'''
+    #    drot = direction-self.theta
+    #    if drot < -18000:
+    #        rot = 36000 + drot
+    #    if drot > 18000:
+    #        drot = -36000 + drot
+    
+    # ensure: theta > -72000
+    def normal_angle(theta):
+        return ((theta + 72000) % 36000) - 18000
+
     # Retro comptabilité
     def set_position(self, pos):
         self.pos = pos
@@ -127,7 +118,7 @@ class Robot:
         self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     def set_theta(self, theta):
-        self.theta = theta
+        self.theta = normal_angle(theta)
         self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     

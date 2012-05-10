@@ -11,6 +11,9 @@ class GotoMission(Mission):
         super(self.__class__,self).__init__(robot)
         self.state = "repos"
 
+    def disable(self):
+        self.state = "repos"
+
     def move_to(self):
         if self.state == "repos":
             # première étape : prendre la direction du point cible

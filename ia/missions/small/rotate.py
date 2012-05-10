@@ -4,7 +4,7 @@ Created on 5 mai 2012
 '''
 
 from events.internal import RotateDoneEvent
-from math import cot
+from mathutils.geometry import angle
 
 from missions.mission import Mission
 class RotateMission(Mission):
@@ -13,12 +13,15 @@ class RotateMission(Mission):
         self.state = "repos"
         self.mission = None
 
+    def disable:
+        self.state = "repos"
+
     # s'orienter dans la direction rot_target
     def rotate(self):
         if self.state == "repos":
             # première étape : mettre à jour la position actuelle
             self.robot.send_can("odo request")
-            self.state == "maj"
+            self.state == "updating"
             self.mission = "rotate"
 
     # s'orienter dans la direction du point pos_target
@@ -26,7 +29,7 @@ class RotateMission(Mission):
         if self.state == "repos":
             # première étape : mettre à jour la position actuelle
             self.robot.send_can("odo request")
-            self.state == "maj"
+            self.state == "updating"
             self.mission = "take_direction"
 
     def process_event(self, event):
@@ -38,10 +41,11 @@ class RotateMission(Mission):
                 # détermination de l'angle à effectuer
                 rot = 0
                 if self.mission == "rotate":
-                    rot = self.robot.rot_target - self.robot.rot 
+                    rot = self.robot.normal_angle(self.robot.rot_target - self.robot.rot)
                 else: # self.mission == "take_direction"
-                    rot = cot( (self.robot.pos_target.y - self.robot.pos.y) /
-                            (self.robot.pos_target.x - self.robot.pos.x) )
+                    #rot = self.robot.normal_angle( atan2( (self.robot.pos_target.y - self.robot.pos.y) /
+                    #        (self.robot.pos_target.x - self.robot.pos.x) ) * 18000 / pi )
+                    rot = angle(self.robot.pos_target, self.robot.pos) * 18000 / pi
                 # envoit de l'ordre de rotation
                 self.robot.can_send("asserv rot %d" %rot )
                 self.state = "rotating"
