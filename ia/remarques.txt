@@ -1,9 +1,0 @@
-− timer avec arguments
-- queue pour émission
-- histérésis tourelle
-
-
-Secondaire:
-− event stop ? → raise
-− sender → send, receiver → receive
-− faire une queue pour l'émission histoire qu'il n'y ait pas plus d'un message toutes les 10ms

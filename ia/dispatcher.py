@@ -9,16 +9,17 @@ from events.internal import StartEvent
 from missions.mission import Mission 
 
 
-class Dispatcher(Thread): # FIXME renommer en Event_Manager
-    '''Dispatch les events et la lance lat 1e missions
+class Dispatcher(Thread):
+    '''Dispatch les events et la lance la 1e missions
     du coup faudrait peut être revoir son nom'''
-    def __init__(self, missions_prefix, robot):
+    def __init__(self, robot, can, ui):
         Thread.__init__(self)
         self.logger   = logging.getLogger("dispatcher")
         self.robot    = robot
+        self.can = can
+        self.ui = ui
         # instancier toutes les missions 
         self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
-        self.robot.missions = self.missions
         self.queue    = Queue()
         self._load_all_missions(missions_prefix)
             
@@ -29,9 +30,7 @@ class Dispatcher(Thread): # FIXME renommer en Event_Manager
         classes_missions = class_loader(path)
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
-                mission = classe_mission(self.robot)
-                #print("debug load mission", mission.name)
-                #print("dict: ", dir(mission))
+                mission = classe_mission(self.robot, self.can, self.ui)
                 mission.missions = self.missions
                 mission.dispatch = self 
                 self.missions[mission.name] = mission      

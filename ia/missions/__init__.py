@@ -8,7 +8,7 @@ changer event_dispatcher._load_all_missions() ...
 '''
 
 import os, sys
-from class_manager import *
+from tools.class_manager import *
 from missions.mission import Mission
 
 
