@@ -41,8 +41,8 @@ class IA:
         
         
             
-        self.can = Can(self.sock)
-        self.ui  = UI(self.sock)
+        self.can = Can(self.can_sock)
+        self.ui  = UI(self.ui_sock)
         self.dispatcher = Dispatcher(self.robot, self.can, self.ui)
         
         self.can.dispatcher = self.dispatcher
