@@ -12,7 +12,7 @@ class OdoEvent(Event):
 			if len(cmd) == 5:
 				try:
 					l = list(map(int,cmd[2:]))
-					self.value = Vertex(l[0] * 10, l[1] * 10)
+					self.pos = Vertex(l[0] * 10, l[1] * 10)
 					self.rot   = l[2]
 				except ValueError as e:
 					raise CmdError(e.__str__())

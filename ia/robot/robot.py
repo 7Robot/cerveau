@@ -17,8 +17,8 @@ class Robot:
         self.theta = theta # centidegree
 
         self.action = None #forwarding, rotating 
-        self.pos_target = None # à court terme
-        self.theta_target = None
+        self.pos_target = Vertex(0, 0) # à court terme
+        self.theta_target = 0
 
         # Dimmensions du robot, left, right, bottom, top
         # L'origine du repère et le point médian entre les deux roues
@@ -54,8 +54,6 @@ class Robot:
         self.msg_robot.start()
         self.msg_ui.start()
         
-        
-        
     def connect(self, ip, port):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,7 +69,6 @@ class Robot:
         self.sock_can.shutdown(socket.SHUT_WR) 
         self.sock_can.close()
 
-
     def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
         curt_str = ""
         if curt:
@@ -79,11 +76,11 @@ class Robot:
         self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
     
     def forward(self, dist):
-        self.pos_target = self.pos + Vertex(dist*cos(self.theta), dist*sin(self.theta))
-        #print("DEBUG: ", dir(self.missions["forward"]))
+        self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target), dist*sin(self.theta_target))
         self.missions["forward"].move_forward(dist)
 
     def rotate(self, dtheta):
+        self.theta_target = self.theta_target + dtheta
         self.send_can("asserv rot %d" % dtheta)
         
     def get_theta(self):
