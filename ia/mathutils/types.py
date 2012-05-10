@@ -30,7 +30,10 @@ class Vertex(object):
         return Vertex(self.x+v.x, self.y+v.y)
         
     def __mul__(self, c):
-        return Vertex(self.x*c, self.y*c)
+        if isinstance(c,Vertex):
+            return self.x*c.x + self.y*c.y # on convertit implicitement en Vector
+        else:
+            return Vertex(self.x*c, self.y*c)
     
     def __neg__(self): 
         return Vertex(-self.x, -self.y)     

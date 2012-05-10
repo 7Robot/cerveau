@@ -14,9 +14,10 @@ class StartMission(Mission):
         if self.state == 0:
             self.robot.send_can("rangefinder 1 threshold 1800")
             self.robot.send_can("rangefinder 2 threshold 1800")
+            self.robot.send_can("rangefinder 3 threshold 1800")
             self.missions["odo"].broadcast()
             self.robot.send_can("turret unmute")
-            self.robot.send_can("turret on")
+#            self.robot.send_can("turret on")
             #self.missions["positioning"].process_event(StartEvent())
             self.state += 1
 

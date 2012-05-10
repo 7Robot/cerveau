@@ -4,7 +4,9 @@ Created on 5 mai 2012
 '''
 
 from events.internal import ForwardDoneEvent
-from math import cos, sin, pi
+from mathutils.types import Vertex
+
+from math import cos, sin, pi, copysign
 
 from missions.mission import Mission
 class ForwardMission(Mission):
@@ -32,7 +34,13 @@ class ForwardMission(Mission):
     def move_forward(self):
         if self.state == "repos":
             self.dist  = (self.robot.pos_target - self.robot.pos).norm()
-            self.state = "forwarding" # sioux : 0 -> 1 ou 2 -> 3
+            sign       = copysign(1, (self.robot.pos_target - self.robot.pos)   
+                * Vertex(20*cos(self.robot.theta/18000*pi), 20*sin(self.robot.theta/18000*pi)))
+#            print("sign", sign, type(sign))
+#            print(self.dist, type(self.dist))
+            self.state = "forwarding"
+            self.dist = int(self.dist*sign)
+#            print("Move forward, asserv dist %d " % self.dist)
             self.robot.send_can("asserv dist %d" % self.dist)
 
     def resume(self):
@@ -40,6 +48,7 @@ class ForwardMission(Mission):
             if self.way_is_free():
                 self.state = "forwarding"
                 self.robot.send_can("asserv dist %d" %self.dist)
+#                print("resume, asserv dist %d " % self.dist)
 
     def stop(self):
         self.robot.send_can("asserv stop")

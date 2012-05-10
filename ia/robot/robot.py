@@ -5,7 +5,7 @@ from math import cos, sin, pi
 import socket
 
 from can import Can, Wifi, UI
-from event_dispatcher import Event_dispatcher
+from dispatcher import Dispatcher
 from mathutils.types import Vertex
 
 class Robot:
@@ -38,7 +38,7 @@ class Robot:
         self.sock_robot = self.connect(ip_robot, port_robot)
         self.sock_ui    = self.connect(ip_ui, port_ui)
         
-        self.dispatcher = Event_dispatcher(self.mission_prefix, self)
+        self.dispatcher = Dispatcher(self.mission_prefix, self)
         
         self.msg_can    = Can (self.sock_can, self.dispatcher)
         self.msg_robot  = Wifi(self.sock_robot, self.dispatcher)
@@ -69,7 +69,8 @@ class Robot:
    
     # Avancer de dist
     def forward(self, dist):
-        self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target/18000*pi), dist*sin(self.theta_target/18000*pi))
+        print("forward, ", self.pos , self.pos_target, Vertex(dist*cos(self.theta_target/18000*pi), dist*sin(self.theta_target/18000*pi)))
+        self.pos_target = self.pos + Vertex(dist*cos(self.theta_target/18000*pi), dist*sin(self.theta_target/18000*pi))
         self.missions["forward"].move_forward()
 
     # Tourner de dtheta

@@ -16,7 +16,7 @@ handlers:
     host: 'r2d2'
     port: 7768
 loggers:
-  Event_dispatcher:
+  dispatcher:
     handlers: [socket,console]
     level: INFO
   event:
