@@ -50,8 +50,23 @@ class ForwardMission(Mission):
                 self.stop()
             if self.state == "waiting" and event.pos == "over":
                 self.resume()
-        elif event.name == "turret":
-            pass
+        elif event.name == "turret" and e.type == "answer":
+            hysteresis = 0
+            if not self.free_way[0]: # 
+                hysteresis = 1
+            self.free_way[0] = True
+            for i in range(len(e.angle)):
+                e.dist[i] -= 8
+                obs_x = e.dist[i]*cos(e.angle[i]/180*pi)
+                obs_y = e.dist[i]*sin(e.angle[i]/180*pi)
+                # la tourelle laser est à 8cm du bord droit
+                # 15cm du bord gauche  TODO: mettre ces params dans le robot
+                #print("X: %d, Y: %d, histeresis: %d"
+                #        %(obs_x, obs_y, self.histeresis))
+                if  obs_x < 10+8*self.histeresis and obs_x > -12-8*self.histeresis \
+                and obs_y < 30+4*self.histeresis:
+                    self.free_way[0] = False
+                    break
 
         if self.state == "forwarding":
             if event.name == "asserv":
