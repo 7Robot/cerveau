@@ -1,26 +1,32 @@
 #!/usr/bin/python3
 # -*-coding:UTF-8 -*
 
-import logging, logging.config
+from logging import getLogger
+from logging.config import dictConfig
 import socket
+import sys
+from yaml import load
 
 from comm.can import Can
 from comm.ui  import UI
 from dispatcher import Dispatcher
 
+
 class IA:
     def __init__(self, name, **kargs):
         
-        self.logger = logging.getLogger("ia")
+        # Initialisation du logger
+        self.logger = getLogger("ia")
         f=open(name+".yml")
-        logging.config.dictConfig(yaml.load(f))
+        dictConfig(load(f))
         f.close()
 
         self.logger.info("Starting « %s » robot" % name)
         assert(name in ["petit", "gros"])
         
-        module = __import__("robots."+name)
-        self.robot = getattr(module, name.capitalize()+"Robot")()
+        module = __import__("robots")
+        print(module.__dict__.keys())
+        self.robot = getattr(getattr(module, name), name.capitalize()+"Robot")()
         
         
         # On écrase les attributs du robot par ceux passés ici en argument, utiles pour le testing
@@ -31,19 +37,19 @@ class IA:
         self.can_sock = socket.socket()
         self.ui_sock  = socket.socket()
         
-        self.can_sock.connect((robot.can_ip, robot.can_port))
-        self.ui_sock.connect((robot.ui_ip, robot.ui_port))
+        self.can_sock.connect((self.robot.can_ip, self.robot.can_port))
+        self.ui_sock.connect((self.robot.ui_ip, self.robot.ui_port))
         
         
             
         self.can = Can(self.sock)
         self.ui  = UI(self.sock)
-        self.dispatcher = Dispacher(self.robot, self.can, self.ui)
+        self.dispatcher = Dispatcher(self.robot, self.can, self.ui)
         
-        self.can.dispatcher = dispatcher
-        self.ui.dispatcher  = ui
+        self.can.dispatcher = self.dispatcher
+        self.ui.dispatcher  = self.ui
         
-        self.dispatcher.start() # Mieux si démarre avant can et ui
+        self.dispatcher.start() # Mieux si démarré avant can et ui
         self.can.start()
         self.ui.start()
 
@@ -51,7 +57,7 @@ class IA:
         
 
 if __name__ == "__main__":
-    if len(argv) < 1:
+    if len(sys.argv) < 2:
         print("Usage: ./ia.py nom_robot")
     else:
         ia = IA(sys.argv[1], **{"ui_ip": "r2d2"})

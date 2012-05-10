@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from queue import Queue
-import threading
+from threading import Thread, Event
+import socket
 
-class Queued_sender(threading.Thread):
+class Queued_sender(Thread):
     '''envoie les actions sans saturer le medium de communication'''
     def __init__(self, socket):
         Thread.__init__(self)
-        self.running= threading.Event( )
+        self.running= Event( )
         self.queue  = Queue()
         self.socket = socket
     

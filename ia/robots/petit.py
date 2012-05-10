@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mathutils.type import Vertex
+from mathutils.types import Vertex
 
 class PetitRobot:
 
@@ -9,8 +9,8 @@ class PetitRobot:
         self.name = "petit"
 
         # dimension du robot
-        self.dimensions = [ "left": 1290, "right": 1290,
-                "front": 1190, "back": 920 ]
+        self.dimensions = { "left": 1290, "right": 1290,
+                "front": 1190, "back": 920 }
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)
@@ -18,7 +18,7 @@ class PetitRobot:
         self.rot = 0
 
         # paramètre de la tourelle
-        self.turret = [ "left": 12, "right": 8, "front": 40 ]
+        self.turret = { "left": 12, "right": 8, "front": 40 }
 
         # paramètre par défaut des sockets
         # (utilisé par IA si pas de valeur spécifié)

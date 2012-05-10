@@ -3,10 +3,11 @@
 import logging
 from queue import Queue
 from threading import Thread, Lock
+import os
 
-from class_manager import *
 from events.internal import StartEvent
-from missions.mission import Mission 
+from missions.mission import Mission
+from tools.class_manager import class_loader 
 
 
 class Dispatcher(Thread):
@@ -21,7 +22,7 @@ class Dispatcher(Thread):
         # instancier toutes les missions 
         self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
         self.queue    = Queue()
-        self._load_all_missions(missions_prefix)
+        self._load_all_missions(robot.name)
             
         
     def _load_all_missions(self, missions_prefix):

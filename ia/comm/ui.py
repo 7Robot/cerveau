@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import logging
+from comm.comm import Comm
+from events.event import CmdError
 
 class UI(Comm):
     '''Comm robot-robot'''
