@@ -39,9 +39,9 @@ class GotoMission(Mission):
                     self.state = "rotating"
                     self.missions["rotate"].rotate()
 
-       if self.state == "rotating":
-           if event.name == "rotatedone":
-               # C'était la dernière étape
-               self.state = "repos"
-               self.dispatch.add_event(GotoDoneEvent())
+        if self.state == "rotating":
+            if event.name == "rotatedone":
+                # C'était la dernière étape
+                self.state = "repos"
+                self.dispatch.add_event(GotoDoneEvent())
 

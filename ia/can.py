@@ -136,7 +136,7 @@ class Queued_sender(Thread): # FIXME renommer en Event_Manager
         return len(action) # pour être compatible avec Comm.sender()
     
     def run(self):
-        while not self.running.set( ):
+        while not self.running.isSet( ):
             action = self.queue.get(True, None) # block=True, timeout=None
             try:
                 self.socket.send(action)
@@ -144,4 +144,4 @@ class Queued_sender(Thread): # FIXME renommer en Event_Manager
                 self.logger.error ("Sender : timout %s" % message)
             except socket.error as message:
                 self.logger.error ("Sender : socket error %s" % message)
-            self.running.wait(0.05) # 5ms entre chaque message
+            self.running.wait(0.01) # 5ms entre chaque message

@@ -30,7 +30,7 @@ class Server_test_can(Server_test):
         self.send_cmd("rangefinder 1 value 15 over edge")
         
         self.send_cmd("asserv done")
-        self.running.wait(1)
+        self.running.wait(3)
         
         print("------------------------------------------")
         print("Expected result:")
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     
     sleep(0.3)
-    ia        = IA(Small_robot(), "127.0.0.1", port)
+    ia        = IA(Small_robot("127.0.0.1", port))
     ia.main()
     ia.robot.forward(1000)
     

@@ -13,7 +13,7 @@ class RotateMission(Mission):
         self.state = "repos"
         self.mission = None
 
-    def disable:
+    def disable(self):
         self.state = "repos"
 
     # s'orienter dans la direction rot_target

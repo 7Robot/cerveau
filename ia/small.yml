@@ -18,10 +18,11 @@ handlers:
 loggers:
   Event_dispatcher:
     handlers: [socket,console]
-    level: DEBUG
+    level: INFO
   event:
     propagate: no
     handlers: [socket,console]
+    level: INFO
   ia:
     propagate: no
     handlers: [socket,console]

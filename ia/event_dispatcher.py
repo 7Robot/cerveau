@@ -53,4 +53,4 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
                 state = missions.state
                 missions.process_event(event)
                 if missions.state != state:
-                    self.logger.debug("Event processing by: %s", missions.name)
+                    self.logger.info("Event processing: [%s] %s → %s", missions.name, state, missions.state)

@@ -13,20 +13,24 @@ handlers:
     class: logger.SocketStringHandler
     level: DEBUG
     formatter: simple
-    host: 'localhost'
+    host: 'r2d2'
     port: 7769
 loggers:
+  Event_dispatcher:
+    handlers: [socket,console]
+    level: INFO
   event:
     propagate: no
-    handlers: [console]
+    handlers: [socket,console]
+    level: INFO
   ia:
     propagate: no
-    handlers: [socket] #check il hérite aussi de root donc a une console
+    handlers: [socket, console] #check il hérite aussi de root donc a une console
   mission:
     propagate: no
-    handlers: [console]
+    handlers: [socket, console]
   robot:
-    handlers: [socket]
+    handlers: [socket, console]
     
 root:
   level: DEBUG

@@ -6,10 +6,12 @@ import yaml
 
 
 from robot.small_robot import Small_robot
+from robot.big_robot import Big_robot
 
 
 class IA:
     def __init__(self, robot):
+        self.robot = robot
         self.logger = logging.getLogger("ia")
         f = open("small.yml") #FIXME
         f=open(robot.mission_prefix+".yml")
@@ -47,8 +49,8 @@ class IA:
     
 
 if __name__ == "__main__":
-    ia = IA(Small_robot())
-    #ia = IA(Big_robot())
+    #ia = IA(Small_robot())
+    ia = IA(Big_robot())
     ia.main()
 #   ev = Event_dispatcher("small", None)
 #   ev.start()

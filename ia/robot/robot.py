@@ -17,11 +17,11 @@ class Robot:
         
         # REAL POS
         self.pos = Vertex(x, y) # 10e de mm
-        self.theta = normal_angle(theta) # centidegree
+        self.theta = self.normal_angle(theta) # centidegree
 
         # TARGET POS
         self.action = None # forwarding, rotating
-        self.pos_target = Vertex(0, 0) # à court terme
+        self.pos_target = Vertex(x, y) # à court terme
         self.theta_target = 0
 
         # Dimmensions du robot, left, right, bottom, top
@@ -70,7 +70,7 @@ class Robot:
     # Avancer de dist
     def forward(self, dist):
         self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target/18000*pi), dist*sin(self.theta_target/18000*pi))
-        self.missions["forward"].move_forward(dist)
+        self.missions["forward"].move_forward()
 
     # Tourner de dtheta
     def rotate(self, dtheta):
@@ -82,7 +82,7 @@ class Robot:
     # arrivant
     def move(self, pos, rot = None):
         self.pos_target = pos
-        self.rot_target = normal_angle(rot)
+        self.rot_target = self.normal_angle(rot)
         self.missions["goto"].move_to()
     
     def send_can(self, msg):
@@ -101,7 +101,7 @@ class Robot:
     #        drot = -36000 + drot
     
     # ensure: theta > -72000
-    def normal_angle(theta):
+    def normal_angle(self,theta):
         return ((theta + 72000) % 36000) - 18000
 
     # Retro comptabilité
@@ -118,7 +118,7 @@ class Robot:
         self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     def set_theta(self, theta):
-        self.theta = normal_angle(theta)
+        self.theta = self.normal_angle(theta)
         self.send_can("odo set %d %d %d" % (self.pos.x/10, self.pos.y/10, self.theta))
         
     

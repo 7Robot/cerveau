@@ -24,7 +24,6 @@ class OdoMission(Mission):
         if self.state == "unmute":
             if event.name == "odo":
                 if event.type == "pos":
-                    self.logger.info("Odo : pos %d %d, theta: %d" % (event.value.x, event.value.y, event.rot))
                     self.robot.pos = event.pos
                     self.robot.theta = event.rot
                 elif event.type == "set":

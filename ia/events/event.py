@@ -10,7 +10,7 @@ class Event:
         name = self.__class__.__name__
         if name[-5:] == "Event":
             self.name = name[:-5].lower()
-            self.logger.info("Received event « %s »"%self.name)
+            self.logger.debug("Received event « %s »"%self.name)
         else:
             self.logger.warning("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()

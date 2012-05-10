@@ -24,7 +24,11 @@ class UIMission(Mission):
                     
                 elif event.type == "get":
                     if event.mission in self.missions:
-                        getattr(self.missions[event.mission], event.attribute)
+                        ans = getattr(self.missions[event.mission], event.attribute)
+                        self.robot.msg_ui.sender("answer %s" % (ans.__str__()))
+                    else:
+                        self.robot.msg_ui.sender("exception  mission %s not found" % (event.mission))
+                        
                         
                 elif event.type == "set":
                     if event.mission in self.missions:
