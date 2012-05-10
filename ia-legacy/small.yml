@@ -1,0 +1,37 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    # IPQ afficher le nom de la méthode, le numéro de ligne ralentit encore plus le logging
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+  socket:
+    class: logger.SocketStringHandler
+    level: DEBUG
+    formatter: simple
+    host: 'r2d2'
+    port: 7768
+loggers:
+  dispatcher:
+    handlers: [socket,console]
+    level: INFO
+  event:
+    propagate: no
+    handlers: [socket,console]
+    level: INFO
+  ia:
+    propagate: no
+    handlers: [socket,console]
+  mission:
+    propagate: no
+    handlers: [socket,console]
+  robot:
+    handlers: [socket,console]
+    
+root:
+  level: DEBUG
+  handlers: [console]
