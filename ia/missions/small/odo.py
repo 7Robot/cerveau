@@ -19,8 +19,11 @@ class OdoMission(Mission):
             if event.name == "odo":
                 if event.type == "pos":
                     self.logger.info("Odo : pos %d %d, theta: %d" % (event.value.x, event.value.y, event.rot))
-                    self.robot.pos = event.value
+                    self.robot.pos = event.pos
                     self.robot.theta = event.rot
+                elif event.type == "set":
+                    self.robot.pos_target = event.pos
+                    self.robot.theta_target = event.rot
                     
                     
   

@@ -13,14 +13,17 @@ class AsservMission(Mission):
         super(self.__class__,self).__init__(robot)
     
     def process_event(self, event):
-        if self.state == 0:
-            if event.name == "asserv":
-                if event.type == "done":
-                    self.robot.pos_target = None
-                elif event.type == "int_dist":
+        pass
+#        if self.state == 0:
+#            if event.name == "asserv":
+#                if event.type == "done":
+#                    self.robot.pos_target = None
+# NON: c'est le ForwardDone ou le RotateDone qui doit déclencher ça mais le
+# mieux c'est qu'il soit écouté par le robot
+#                elif event.type == "int_dist":
                     # mise à jour des coordonnées inutile car l'odo nous la donne ?
                     # prévenir le robot/le mission manager d'une interruption
-                    pass
+#                    pass
                     
                     
   

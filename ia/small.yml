@@ -16,6 +16,9 @@ handlers:
     host: 'r2d2'
     port: 7768
 loggers:
+  Event_dispatcher:
+    handlers: [socket,console]
+    level: DEBUG
   event:
     propagate: no
     handlers: [socket,console]

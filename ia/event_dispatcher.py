@@ -30,7 +30,7 @@ class Event_dispatcher(Thread): # FIXME renommer en Event_Manager
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
                 mission = classe_mission(self.robot)
-                print("debug load mission", mission.name)
+                #print("debug load mission", mission.name)
                 #print("dict: ", dir(mission))
                 mission.missions = self.missions
                 mission.dispatch = self 

@@ -17,6 +17,14 @@ class TimerEvent(Event):
     def __init__(self):
         super(self.__class__,self).__init__()
 
-class ForwardDone(Event):
+class ForwardDoneEvent(Event):
+    def __init__(self):
+        super(self.__class__,self).__init__()
+
+class RotateDoneEvent(Event):
+    def __init__(self):
+        super(self.__class__,self).__init__()
+
+class GotoDoneEvent(Event):
     def __init__(self):
         super(self.__class__,self).__init__()

@@ -3,7 +3,8 @@
 Created on 5 mai 2012
 '''
 
-from events.internal import ForwardDone
+from events.internal import ForwardDoneEvent
+from math import cos, sin, pi
 
 from missions.mission import Mission
 class ForwardMission(Mission):
@@ -25,11 +26,11 @@ class ForwardMission(Mission):
                 break
         return free_way
         
-    def move_forward(self, dist):
+    def move_forward(self):
         if self.state == "repos":
-            self.dist  = dist
-            self.state = "forwarding" # sioux : 0 -> 1 ou 2 -> 3
-            self.robot.send_can("asserv dist %d" %self.dist)
+            # première étape : récupérer la position actuelle
+            self.robot.can_send("odo request")
+            self.state = "updating"
 
     def resume(self):
         if self.decrement:
@@ -44,21 +45,46 @@ class ForwardMission(Mission):
         
         
     def process_event(self, event):
-        if event.name == "rangefinder" and event.id in [1,2]:
+        if          self.state == "updating"
+                and event.name == "odo"
+                and event.type == "answer":
+            # màj de la position
+            self.robot.pos = event.pos
+            self.robot.rot = event.rot
+            # détermination du mouvement à effecuter
+            self.dist  = self.robot.pos_target - self.robot.pos
+            self.state = "forwarding" # sioux : 0 -> 1 ou 2 -> 3
+            self.robot.send_can("asserv dist %d" %self.dist)
+        elif event.name == "rangefinder" and event.id in [1,2]:
             self.free_way[event.id] = (event.pos == "over")
             if self.state == "forwarding" and event.pos == "under":
                 self.stop()
             if self.state == "waiting" and event.pos == "over":
                 self.resume()
-        elif event.name == "turret":
-            pass
+        elif event.name == "turret" and e.type == "answer":
+            hysteresis = 0
+            if not self.free_way[0]: # 
+                hysteresis = 1
+            self.free_way[0] = True
+            for i in range(len(e.angle)):
+                e.dist[i] -= 8
+                obs_x = e.dist[i]*cos(e.angle[i]/180*pi)
+                obs_y = e.dist[i]*sin(e.angle[i]/180*pi)
+                # la tourelle laser est à 8cm du bord droit
+                # 15cm du bord gauche  TODO: mettre ces params dans le robot
+                #print("X: %d, Y: %d, histeresis: %d"
+                #        %(obs_x, obs_y, self.histeresis))
+                if  obs_x < 10+8*self.histeresis and obs_x > -12-8*self.histeresis \
+                and obs_y < 30+4*self.histeresis:
+                    self.free_way[0] = False
+                    break
 
         if self.state == "forwarding":
             if event.name == "asserv":
                 if event.type == "done":
                     # on a pu aller là où on voulait aller
                     self.state = "repos"
-                    self.dispatch.add_event(ForwardDone())
+                    self.dispatch.add_event(ForwardDoneEvent())
                     
         elif self.state == "waiting":
             if          event.name == "asserv" \

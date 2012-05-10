@@ -138,8 +138,10 @@ void * sender(void * arg)
             todo = 1;
         }
         if (v < NB_CONSIGNE) {
-            fprintf(can, "ax 1 set %d\n", a);
-            fprintf(can, "ax 2 set %d\n", a);
+            fprintf(can, "ax 1 angle set %d\n", a);
+            fflush(can);
+            usleep(100*1000);
+            fprintf(can, "ax 2 angle set %d\n", a);
             fflush(can);
             todo = 1;
         }

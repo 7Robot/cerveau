@@ -8,7 +8,7 @@ from event_dispatcher import Event_dispatcher
 from mathutils.types import Vertex
 
 class Robot:
-    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, ip_can="petit", port_can=7773, ip_robot="petit", port_robot=7780, ip_ui="r2d2", port_ui=7774):
+    def __init__(self, x, y, theta, dim_l, dim_r, dim_t, dim_b, ip_can, port_can, ip_robot, port_robot, ip_ui, port_ui):
         self.logger = logging.getLogger("robot")
         
         self.mission_prefix = self.__class__.__name__.lower().split('_')[0]
@@ -17,8 +17,8 @@ class Robot:
         self.theta = theta # centidegree
 
         self.action = None #forwarding, rotating 
-        self.pos_target = None # à court terme
-        self.theta_target = None
+        self.pos_target = Vertex(0, 0) # à court terme
+        self.theta_target = 0
 
         # Dimmensions du robot, left, right, bottom, top
         # L'origine du repère et le point médian entre les deux roues
@@ -54,8 +54,6 @@ class Robot:
         self.msg_robot.start()
         self.msg_ui.start()
         
-        
-        
     def connect(self, ip, port):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,20 +69,29 @@ class Robot:
         self.sock_can.shutdown(socket.SHUT_WR) 
         self.sock_can.close()
 
-
     def asserv(self, left_wheel_speed, right_wheel_speed, curt=False):
         curt_str = ""
         if curt:
             curt_str = " curt" # l'espace est important
         self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
-    
+   
+    # Avancer de dist
     def forward(self, dist):
-        self.pos_target = self.pos + Vertex(dist*cos(self.theta), dist*sin(self.theta))
-        #print("DEBUG: ", dir(self.missions["forward"]))
+        self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target), dist*sin(self.theta_target))
         self.missions["forward"].move_forward(dist)
 
+    # Tourner de dtheta
     def rotate(self, dtheta):
-        self.send_can("asserv rot %d" % dtheta)
+        self.theta_target = self.theta_target + dtheta
+        self.missions["rotate"].move_rotate()
+
+    # Aller au point de coord « pos », en étant orienté dans la direction « rot »
+    # Si rot vaut None, cela signifie qu'il n'est pas utile de s'orienter en
+    # arrivant
+    def move(self, pos, rot = None):
+        self.pos_target = pos
+        self.rot_target = rot
+        self.missions["goto"].move_to()
         
     def get_theta(self):
         '''Retourne la direction en radian'''

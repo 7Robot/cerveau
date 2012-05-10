@@ -48,6 +48,7 @@ class IA:
 
 if __name__ == "__main__":
     ia = IA(Small_robot())
+    #ia = IA(Big_robot())
     ia.main()
 #   ev = Event_dispatcher("small", None)
 #   ev.start()
