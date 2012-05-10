@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 30 avr. 2012
-
-Je pense qu'il vaut mieux préfixer les modules par _missions 
-car sinon on a des import automatiques de missions qui ont le même nom
 '''
 
-# -*-coding:UTF-8 -*
+from events.internal import MoveDoneEvent 
+from math import cos, sin, pi, copysign
 
 from missions.mission import Mission
 from mathutils.types import Vertex
-from math import cos, sin, pi, copysign
+
 
 class MoveMission(Mission):
     def __init__(self, robot):
@@ -63,7 +61,7 @@ class MoveMission(Mission):
         # events gérés suivant la mission en cours
         if self.mission == "forward": # mission d'avancement
             if event.name == "movedone": # la mission précédente est terminé
-                self.target_pos = self.pos
+                self.target_pos = self.pos \
                         + Vertex(self.dist * cos(self.rot/18000*pi),
                                 self.dist * sin(self.rot/18000*pi))
                 self.state = "forwarding"
@@ -73,7 +71,7 @@ class MoveMission(Mission):
                     # l'avancement est terminé
                     self.state = None
                     self.mission = None
-                    self.callback.process_event(MoveDoneEVent())
+                    self.callback.process_event(MoveDoneEvent())
                 elif self.state == "stopping":
                     # l'arrêt de l'oppération est terminé
                     self.process_event(MoveDoneEvent())

@@ -17,6 +17,10 @@ class TimerEvent(Event):
     def __init__(self):
         super(self.__class__,self).__init__()
 
+class ForwardDoneEvent(Event):
+    def __init__(self):
+        super(self.__class__,self).__init__()
+
 class MoveDoneEvent(Event):
     def __init__(self):
         super(self.__class__,self).__init__()
