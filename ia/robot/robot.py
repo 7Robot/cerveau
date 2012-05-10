@@ -1,6 +1,7 @@
 # -*-coding:UTF-8 -*
-from math import cos, sin
+
 import logging
+from math import cos, sin, pi
 import socket
 
 from can import Can, Wifi, UI
@@ -77,7 +78,7 @@ class Robot:
    
     # Avancer de dist
     def forward(self, dist):
-        self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target), dist*sin(self.theta_target))
+        self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target/18000*pi), dist*sin(self.theta_target/18000*pi))
         self.missions["forward"].move_forward(dist)
 
     # Tourner de dtheta
