@@ -74,14 +74,24 @@ class Robot:
         if curt:
             curt_str = " curt" # l'espace est important
         self.send_can("asserv speed %d %d%s" % (left_wheel_speed, right_wheel_speed, curt_str))
-    
+   
+    # Avancer de dist
     def forward(self, dist):
         self.pos_target = self.pos_target + Vertex(dist*cos(self.theta_target), dist*sin(self.theta_target))
         self.missions["forward"].move_forward(dist)
 
+    # Tourner de dtheta
     def rotate(self, dtheta):
         self.theta_target = self.theta_target + dtheta
-        self.send_can("asserv rot %d" % dtheta)
+        self.missions["rotate"].move_rotate()
+
+    # Aller au point de coord « pos », en étant orienté dans la direction « rot »
+    # Si rot vaut None, cela signifie qu'il n'est pas utile de s'orienter en
+    # arrivant
+    def move(self, pos, rot = None):
+        self.pos_target = pos
+        self.rot_target = rot
+        self.missions["goto"].move_to()
         
     def get_theta(self):
         '''Retourne la direction en radian'''
