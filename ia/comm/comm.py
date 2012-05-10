@@ -61,7 +61,7 @@ class Comm(Thread):
                             self.event_manager.add_event(event)
             
 
-    def sender(self, message):
+    def send(self, message):
         try:
             return self.socket.send(bytes(message+"\n", "utf-8"))
         except socket.timeout as message:

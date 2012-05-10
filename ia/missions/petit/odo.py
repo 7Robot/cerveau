@@ -11,8 +11,8 @@ car sinon on a des import automatiques de missions qui ont le même nom
 from missions.mission import Mission
 
 class OdoMission(Mission):
-    def __init__(self, robot):
-        super(self.__class__,self).__init__(robot)
+    def __init__(self, robot, can, ui):
+        super(self.__class__,self).__init__(robot, can, ui)
         self.state = "mute"
 
     def broadcast(self, state = "unmute"):

@@ -6,8 +6,8 @@ from events.event import CmdError
 
 class UI(Comm):
     '''Comm robot-robot'''
-    def __init__(self, socket, event_manager):
-        super(self.__class__, self).__init__(socket, event_manager)
+    def __init__(self, socket):
+        super(self.__class__, self).__init__(socket)
         self.logger = logging.getLogger("ui")
         
     def cmd_to_event(self, cmd):

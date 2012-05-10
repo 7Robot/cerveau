@@ -29,6 +29,8 @@ class Dispatcher(Thread):
         '''Charge toutes les instances de toutes les missions'''
         path             = os.path.join(os.getcwd(),"missions", missions_prefix)
         classes_missions = class_loader(path)
+        print(path)
+        print("classes",classes_missions)
         for classe_mission in set(classes_missions):
             if classe_mission.__name__ != "Mission" and issubclass(classe_mission, Mission):
                 mission = classe_mission(self.robot, self.can, self.ui)
