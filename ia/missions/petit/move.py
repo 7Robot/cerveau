@@ -8,6 +8,7 @@ from math import cos, sin, pi, copysign
 
 from missions.mission import Mission
 from mathutils.types import Vertex
+from mathutils.geometry import angle_normalize
 
 
 class MoveMission(Mission):
@@ -58,6 +59,7 @@ class MoveMission(Mission):
     # avancer d'une distance donné
     def forward(self, callback, dist):
         if self.mission == None:
+            self.target_pos += Vertex(dist * cos(self.rot/18000*pi), dist * sin(self.rot/18000*pi))
             self.callback = callback
             self.mission = "forward"
             distance = (self.target_pos - self.pos).norm()
@@ -101,4 +103,5 @@ class MoveMission(Mission):
             if event.name == "move" and event.type == "done":
                 self.callback.process_event(MoveEvent("done"))
                 self.mission = None
-                self.state = None
+                if self.state != None: # c'est pour pas produire de log inutil
+                    self.state = None

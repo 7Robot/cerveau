@@ -43,7 +43,43 @@ int can_write(int fd, can_t packet)
 
 	int send = 1;
 
-	if (carte == 0) { // ARM & SUIVEUR ---------------------------------
+	if (carte == 2) { // CAPTEURS -----------------------------
+        if ((id & 64) == 64) { // rangefinder
+            if ((id & 32) == 32) { // value
+                sprintf(output, "RANGEFINDER %d VALUE %hu %s %s\n",
+                        (id & 7) + 1, ((uint16_t*)packet.b)[0],
+                        ((id & 16) == 16)?"UNDER":"OVER",
+                        ((id & 8) == 8)?"EDGE":"");
+            } else if ((id & 16) == 16) { // broadcast
+                sprintf(output, "RANGEFINDER %d %s\n", (id & 7) + 1,
+                        ((id & 8) == 8)?"UNMUTE":"MUTE");
+            } else if ((id & 8) == 8) { // threshold
+                sprintf(output, "RANGEFINDER %d THRESHOLD %hu\n", (id & 7) + 1,
+                        ((uint16_t*)packet.b)[0]);
+            } else { // request
+                sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7) + 1);
+            }
+        } else if ((id & 112) == 16) { //bump
+            int bumpid = (id & 3) + 1;
+            char bumpname[64];
+            if (bumpid == 1) {
+                strcpy(bumpname, "BACK");
+            } else if (bumpid == 2) {
+                strcpy(bumpname, "FRONT");
+            } else if (bumpid == 3) {
+                strcpy(bumpname, "ALIM");
+            } else if (bumpid == 4) {
+                strcpy(bumpname, "LEASH");
+            } else {
+                sprintf(bumpname, "%d", bumpid);
+            }
+            sprintf(output, "BUMP %s %s\n",
+                    bumpname,
+                    (id&8)==8?"CLOSE":"OPEN");
+        } else {
+            send = 0;
+        }
+    } else if (carte == 0) { // ARM & SUIVEUR ---------------------------------
 		if (id == 127) { // reset
 			sprintf(output, "RESET\n");
 		} else {
@@ -92,42 +128,6 @@ int can_write(int fd, can_t packet)
             } else {
                 send = 0;
             }
-        } else {
-            send = 0;
-        }
-	} else if (carte == 2) { // CAPTEURS -----------------------------
-        if ((id & 64) == 64) { // rangefinder
-            if ((id & 32) == 32) { // value
-                sprintf(output, "RANGEFINDER %d VALUE %hu %s %s\n",
-                        (id & 7) + 1, ((uint16_t*)packet.b)[0],
-                        ((id & 16) == 16)?"UNDER":"OVER",
-                        ((id & 8) == 8)?"EDGE":"");
-            } else if ((id & 16) == 16) { // broadcast
-                sprintf(output, "RANGEFINDER %d %s\n", (id & 7) + 1,
-                        ((id & 8) == 8)?"UNMUTE":"MUTE");
-            } else if ((id & 8) == 8) { // threshold
-                sprintf(output, "RANGEFINDER %d THRESHOLD %hu\n", (id & 7) + 1,
-                        ((uint16_t*)packet.b)[0]);
-            } else { // request
-                sprintf(output, "RANGEFINDER %d REQUEST\n", (id & 7) + 1);
-            }
-        } else if ((id & 112) == 16) { //bump
-            int bumpid = (id & 3) + 1;
-            char bumpname[64];
-            if (bumpid == 1) {
-                strcpy(bumpname, "BACK");
-            } else if (bumpid == 2) {
-                strcpy(bumpname, "FRONT");
-            } else if (bumpid == 3) {
-                strcpy(bumpname, "ALIM");
-            } else if (bumpid == 4) {
-                strcpy(bumpname, "LEASH");
-            } else {
-                sprintf(bumpname, "%d", bumpid);
-            }
-            sprintf(output, "BUMP %s %s\n",
-                    bumpname,
-                    (id&8)==8?"CLOSE":"OPEN");
         } else {
             send = 0;
         }
