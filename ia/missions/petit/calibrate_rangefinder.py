@@ -6,7 +6,7 @@ Created on 11 mai 2012
 from missions.mission import Mission
 
 
-class Recalibrate_rangefinderMission(Mission):
+class Calibrate_rangefinderMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos"
@@ -15,10 +15,9 @@ class Recalibrate_rangefinderMission(Mission):
     def process_event(self, event):
         if self.state == "repos":
             if event.name == "start":
-                self.can.send("rangefinder %d unmute" % event.id)
+                self.can.send("rangefinder %d unmute" % self.id)
                 self.state        = "calibrate rangefinder measurements"
                 self.measurements = []
-                self.id           = event.id
                 self.logger.debug("Start calibration rangefinder %d" % self.id)
                     
         if self.state == "calibrate rangefinder measurements":
@@ -36,3 +35,7 @@ class Recalibrate_rangefinderMission(Mission):
                     self.can.send("rangefinder %d threshold %d" % (self.id, mean))
                     self.ui.send("answer calibrate %d done, value is %d" % (self.id, mean))
                     self.state = "repos"
+                    
+    def start(self, id):
+        self.id = id
+        super(self.__class__, self).start()
