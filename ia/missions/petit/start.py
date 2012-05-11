@@ -24,7 +24,8 @@ class StartMission(Mission):
 
         if self.state == 1:
             if event.name == "odo" and event.type == "done":
-                self.missions["positioning"].start()
+                self.state += 1
+                # self.missions["positioning"].start()
 
 
 
