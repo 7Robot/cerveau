@@ -15,7 +15,8 @@ class StartMission(Mission):
             self.state +=1
             self.can.send("rangefinder 1 threshold 2800")
             self.can.send("rangefinder 2 threshold 2800")
+            self.can.send("rangefinder 8 threshold 2800")
             self.can.send("turret unmute")
             self.can.send("turret on")
             #self.missions["positioning"].process_event(StartEvent())
-            self.missions["forward"].start(15000)
+            self.missions["forward"].start(-15000)

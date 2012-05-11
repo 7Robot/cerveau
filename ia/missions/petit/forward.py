@@ -20,7 +20,7 @@ class ForwardMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos"
-        self.free_way = { 0: True, 1: True, 2: True, 3: True }
+        self.free_way = { 0: True, 1: True, 2: True, 8: True }
 
     def start(self, dist):
         '''C'est moveMission qui va mettre à jour target et nous dire de combien avancer'''
@@ -52,7 +52,9 @@ class ForwardMission(Mission):
         
     def process_event(self, event):
         # events des capteurs
-        if event.name == "rangefinder" and event.id in [1,2]:
+        if event.name == "rangefinder" \
+                and event.id in [1,2,8] \
+                and event.type == "answer":
             self.free_way[event.id] = (event.pos == "over")
             if self.state == "forwarding" and event.pos == "under":
                 self.pause()
@@ -97,7 +99,7 @@ class ForwardMission(Mission):
         if self.dist > 0:
             sensors = [0, 1, 2]
         else:
-            sensors = [3]
+            sensors = [8]
         for key in sensors:
             if not self.free_way[key]:
                 free_way = False

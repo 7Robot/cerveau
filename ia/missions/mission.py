@@ -14,13 +14,15 @@ class Mission:
         self.ui = ui
         name = self.__class__.__name__
 
-        self.logger = logging.getLogger("mission."+name)
+        self.logger = logging.getLogger("mission")
         if name[-7:] == "Mission":
             self.name = name[0:-7].lower()
             self.logger.info("Mission « %s » loaded" %self.name)
         else:
             self.logger.warning("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()
+            
+        self.logger = logging.getLogger("mission."+self.name)
 
     def _get_state(self):
         return self._state

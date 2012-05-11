@@ -14,19 +14,24 @@ class MoveMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         
-        # opération en cours d'execution
-        # valeurs possibles :
-        # * None
-        # * stopping
+        '''
+        opération en cours d'execution
+        valeurs possibles :
+        * None
+        * stopping
+        '''
         self.state = None # pas d'opération en cours
 
-        # mission en cours
-        # valeur possible :
-        # * None
-        # * forward
+        '''
+        mission en cours
+        valeur possible :
+        * None
+        * forward
+        '''
         self.mission = None # pas de mission en cours
         
         # dernière position connu du robot
+        # determiné soit par l'odo, soit par le biais connu du robot
         self.pos = self.robot.pos # position initial
         self.rot = self.robot.rot # orientation initial
 
