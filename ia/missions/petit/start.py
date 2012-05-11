@@ -18,5 +18,7 @@ class StartMission(Mission):
             self.can.send("rangefinder 8 threshold 2800")
             self.can.send("turret unmute")
             self.can.send("turret on")
+            self.can.send("odo unmute")
             #self.missions["positioning"].start()
-            self.missions["forward"].start(15000)
+            #self.missions["forward"].start(15000)
+            self.move.forward(self, 5000)

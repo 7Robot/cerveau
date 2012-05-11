@@ -10,7 +10,7 @@ Liste des états :
     stopping
 '''
 
-from events.internal import ForwardDoneEvent
+from events.internal import MoveEvent
 from mathutils.types import Vertex
 
 from math import cos, sin, pi, copysign
@@ -22,12 +22,13 @@ class ForwardMission(Mission):
         self.state = "repos"
         self.free_way = { 0: True, 1: True, 2: True, 8: True }
 
-    def start(self, dist):
+    def start(self, order):
         '''C'est moveMission qui va mettre à jour target et nous dire de combien avancer'''
         if self.state == "repos":
-            self.dist = int(dist)
+            self.order = int(order)
+            self.remaining = self.order
             self.state = "forwarding"
-            self.can.send("asserv dist %d" % self.dist)
+            self.can.send("asserv dist %d" % self.remaining)
 
     def stop(self):
         if self.state == "forwarding":
@@ -37,7 +38,9 @@ class ForwardMission(Mission):
             self.state = "stopping"
         else:
             self.state = "repos"
-            self.missions["move"].process_event(ForwardDoneEvent())
+            event = MoveEvent("int")
+            event.value = self.order - self.remaining
+            self.missions["move"].process_event(event)
 
     def pause(self):
         if self.state == "forwarding":
@@ -48,7 +51,7 @@ class ForwardMission(Mission):
         if self.state == "waiting":
             if self.way_is_free():
                 self.state = "forwarding"
-                self.can.send("asserv dist %d" %self.dist)
+                self.can.send("asserv dist %d" %self.remaining)
         
     def process_event(self, event):
         # events des capteurs
@@ -86,17 +89,17 @@ class ForwardMission(Mission):
             if event.name == "asserv" and event.type == "done":
                 # on a pu aller là où on voulait aller
                 self.state = "repos"
-                self.dispatch.add_event(ForwardDoneEvent())
+                self.dispatch.add_event(MoveEvent("done"))
         elif self.state == "pausing":
             if event.name == "asserv" and event.type == "int_dist":
                 self.state = "waiting"
-                self.dist -= event.value
+                self.remaining -= event.value
                 self.resume()
 
     def way_is_free(self):
         free_way = True
         sensors = [] 
-        if self.dist > 0:
+        if self.remaining > 0:
             sensors = [0, 1, 2]
         else:
             sensors = [8]
