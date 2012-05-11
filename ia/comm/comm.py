@@ -33,7 +33,7 @@ class Comm(Thread):
                     
         event = self.cmd_to_event(cmd)
         if event != None:
-            self.event_manager.add_event(event)
+            self.dispatcher.add_event(event)
     
     def run(self):
         if self.socket != None and self.dispatcher != None:
@@ -59,7 +59,7 @@ class Comm(Thread):
                             self.logger.error("Event is None, breaking")
                             break
                         else:
-                            self.event_manager.add_event(event)
+                            self.dispatcher.add_event(event)
             
 
     def send(self, message):

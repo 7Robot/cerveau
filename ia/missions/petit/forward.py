@@ -51,7 +51,7 @@ class ForwardMission(Mission):
 #                print("resume, asserv dist %d " % self.dist)
 
     def stop(self):
-        self.send.can("asserv stop")
+        self.can.send("asserv stop")
         self.decrement = False
         self.state = "waiting"
         
@@ -78,9 +78,9 @@ class ForwardMission(Mission):
                 #        %(obs_x, obs_y, self.histeresis))
                 if    obs_x < self.robot.turret["right"]+8*hysteresis \
                   and obs_x > -self.robot.turret["left"]-8*hysteresis \
-                  and obs_y < 40+4*hysteresis:
+                  and obs_y < self.robot.turret["front"]+4*hysteresis:
                     if hysteresis != 1:
-                        self.logger.info("Laser STOP")
+                        self.logger.info("Laser STOP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                     self.free_way[0] = False
                     break
             if self.free_way[0] and hysteresis == 1:
