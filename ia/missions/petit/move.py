@@ -101,7 +101,7 @@ class MoveMission(Mission):
         if self.mission == "forward" or self.mission == "rotate" \
                 or (self.mission == "speed" and self.state == "stopping"):
             if event.name == "move" and event.type == "done":
-                self.callback.process_event(MoveEvent("done"))
                 self.mission = None
-                if self.state != None: # c'est pour pas produire de log inutil
+                if self.state != None: # c'est pour pas produire de log inutile
                     self.state = None
+                self.callback.process_event(MoveEvent("done"))

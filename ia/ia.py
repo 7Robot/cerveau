@@ -53,9 +53,14 @@ class IA:
         self.logger.info("IA initialized")
 
 if __name__ == "__main__":
+    
+    default = "petit"
+    
     if len(sys.argv) < 2:
         print("Usage: %s nom_robot" %sys.argv[0])
-        print("Run default robot « petit » …")
-        ia = IA("petit", **{"ui_ip": "r2d2"})
+        print("Run default robot « %s » …", default)
     else:
-        ia = IA(sys.argv[1], **{"ui_ip": "r2d2"})
+        default = sys.argv[1]
+    
+    ia = IA(default, **{"ui_ip": "localhost", "can_ip": "localhost",
+        "inter_ip": "localhost"})

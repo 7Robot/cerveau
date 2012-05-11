@@ -20,8 +20,6 @@ class SpeedMission(Mission):
             self.left = left
             self.right = right
             self.state = "run"
-            self.dist = 0
-            self.can.send("asserv ticks reset")
             self.can.send("asserv speed %d %d" %(left, right))
 
     def stop(self):
@@ -36,7 +34,7 @@ class SpeedMission(Mission):
                 self.can.send("asserv ticks request")
 
         if self.state == "stopped":
-            if event.name == "asserv" and event.type == "ticks" and event.cmp == "answer":
+            if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
                 self.state = "repos"
                 doneEvent = MoveEvent("done")
                 doneEvent.value = event.value
