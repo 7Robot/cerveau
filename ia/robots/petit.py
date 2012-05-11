@@ -18,7 +18,7 @@ class PetitRobot:
         self.rot = 0
 
         # paramètre de la tourelle
-        self.turret = { "left": 12, "right": 8, "front": 40 }
+        self.turret = { "left": 12, "right": 10, "front": 40 }
 
         # paramètre par défaut des sockets
         # (utilisé par IA si pas de valeur spécifié)

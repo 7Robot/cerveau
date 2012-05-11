@@ -22,9 +22,10 @@ class Comm(Thread):
             raise CmdError("All command require at least 2 arguments")
         w = words[0].capitalize()+"Event"
         event = None
+        
         try:
             m = __import__("events."+self.__class__.__name__.lower()+"."+words[0]) # à tester
-            event = getattr(m, w)(words)
+            event = getattr(getattr(getattr(m, self.__class__.__name__.lower()),words[0]), w)(words)
         except ImportError:
             raise CmdError("No module called « %s » found" %w)
         return event

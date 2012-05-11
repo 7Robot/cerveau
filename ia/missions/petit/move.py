@@ -11,8 +11,8 @@ from mathutils.types import Vertex
 
 
 class MoveMission(Mission):
-    def __init__(self, robot):
-        super(self.__class__,self).__init__(robot)
+    def __init__(self, robot, can, ui):
+        super(self.__class__,self).__init__(robot, can, ui)
         
         # opération en cours d'execution
         # valeurs possibles :
