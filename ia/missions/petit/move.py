@@ -28,52 +28,60 @@ class MoveMission(Mission):
         opération en cours d'execution
         valeurs possibles :
         * None
-        * stopping
-        * inprogress
+        * running
+        * stopping (demande d'arrêt de speed)
         '''
         self.state = None # pas d'opération en cours
 
-    #    '''
-    #    mission en cours
-    #    valeur possible :
-    #    * None
-    #    * forward
-    #    * rotate
-    #    '''
-    #    self._mission = None # pas de mission en cours
+        '''
+        mission en cours
+        valeur possible :
+        * None
+        * forward
+        * rotate
+        * speed
+        '''
+        self._mission = None # pas de mission en cours
 
-    #def _set_mission(self, mission):
-    #    self.logger.info("[%s] (mission)%s → (mission)%s"
-    #            %(self.name, self.mission, mission))
-    #    self._mission = mission
+    def _set_mission(self, mission):
+        self.logger.info("[%s] (mission)%s → (mission)%s"
+                %(self.name, self.mission, mission))
+        self._mission = mission
 
-    #def _get_mission(self):
-    #    return self._mission
+    def _get_mission(self):
+        return self._mission
 
-    #mission = property(_get_mission, _set_mission)
+    mission = property(_get_mission, _set_mission)
 
     ### MISSIONS DISPONIBLE ###
     
     # avancer d'une distance donné
     def forward(self, callback, dist):
-        if self.state == None:
+        if self.mission == None:
             self.callback = callback
-            self.state = "forward"
+            self.mission = "forward"
+            distance = (self.target_pos - self.pos).norm()
+            distance *=  copysign(1, (self.robot.pos_target - self.robot.pos)
+                    * Vertex(20*cos(self.robot.theta/18000*pi), 20*sin(self.robot.theta/18000*pi)))
+            self.missions["forward"].start(distance)
 
     def rotate(self, callback, angle):
-        if self.state == None:
+        if self.mission == None:
             self.callback = callback
-            self.state = "rotate"
+            self.mission = "rotate"
+            angle = angle_normalize(angle)
+            self.missions["rotate"].start(angle)
 
-    def speed(self, left, right):
-        if self.state == None:
-            self.state = "speed"
-            self.missions["speed"].start(left, right)
+    def speed(self, left, right, curt = False):
+        if self.mission == None:
+            self.mission = "speed"
+            self.state = "running"
+            self.missions["speed"].start(left, right, curt)
 
     def stop(self, callback):
-        if self.state == "speed":
+        if self.mission == "speed":
             self.callback = callback
-            self.state = "stop"
+            self.state = "stopping"
             self.missions["speed"].stop()
 
     ### FIN DES MISSIONS ###
@@ -86,20 +94,10 @@ class MoveMission(Mission):
                 self.pos = event.pos
                 self.rot = event.rot
 
-        # events gérés suivant la mission en cours
-        #if self.mission == "forward": # mission d'avancement
-        #    if event.name == "movedone": # la mission précédente est terminé
-        #        self.target_pos = self.pos \
-        #                + Vertex(self.dist * cos(self.rot/18000*pi),
-        #                        self.dist * sin(self.rot/18000*pi))
-        #        self.state = "forwarding"
-        #        self.missions["forward"].start()
-        #    elif event.name == "forwarddone": # arrêt
-        #        if self.state == "forwarding":
-        #            # l'avancement est terminé
-        #            self.state = None
-        #            self.mission = None
-        #            self.callback.process_event(MoveDoneEvent())
-        #        elif self.state == "stopping":
-        #            # l'arrêt de l'oppération est terminé
-        #            self.process_event(MoveDoneEvent())
+        # events gérés suivant l'état
+        if self.mission == "forward" or self.mission == "rotate" \
+                or (self.mission == "speed" and self.state == "stopping"):
+            if event.name == "move" and event.type == "done":
+                self.callback.process_event(MoveEvent("done"))
+                self.mission = None
+                self.state = None
