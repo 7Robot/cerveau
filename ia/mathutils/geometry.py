@@ -13,6 +13,15 @@ def angle(v1, v2):
     angle = atan2(dv.y, dv.x)
     return angle
 
+def angle_normalize(angle):
+    '''Normalise un angle en centidegré'''
+    if angle < -18000:
+        return angle+36000
+    elif angle > 18000:
+        return angle-36000
+    else:
+        return angle
+
 def dot_product(v1,  v2):
     return v1.x*v2.x + v1.y*v2.y
     
