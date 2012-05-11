@@ -21,4 +21,4 @@ class StartMission(Mission):
             self.can.send("odo unmute")
             #self.missions["positioning"].start()
             #self.missions["forward"].start(15000)
-            self.move.forward(self, 5000)
+#            self.move.forward(self, 5000)
