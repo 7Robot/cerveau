@@ -44,7 +44,7 @@ class IA:
         self.dispatcher = Dispatcher(self.robot, self.can, self.ui)
         
         self.can.dispatcher = self.dispatcher
-        self.ui.dispatcher  = self.ui
+        self.ui.dispatcher  = self.dispatcher
         
         self.dispatcher.start() # Mieux si démarré avant can et ui
         self.can.start()
