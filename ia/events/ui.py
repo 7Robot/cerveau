@@ -43,6 +43,9 @@ class UIEvent(Event):
             else:
                 raise CmdError("« %s » takes 4 arguments"
                  %(cmd[0]))
+                
+        elif self.type == "test":
+            self.test = cmd[1]
             
         else:
             raise CmdError("« Unknown command %s %s"
