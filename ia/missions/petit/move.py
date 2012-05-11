@@ -65,12 +65,12 @@ class MoveMission(Mission):
             self.callback = callback
             self.state = "rotate"
 
-    def speed(self, left, right)
+    def speed(self, left, right):
         if self.state == None:
             self.state = "speed"
             self.missions["speed"].start(left, right)
 
-    def stop(self, callback)
+    def stop(self, callback):
         if self.state == "speed":
             self.callback = callback
             self.state = "stop"
