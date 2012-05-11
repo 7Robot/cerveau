@@ -13,14 +13,15 @@ class UIMission(Mission):
         self.state = "repos"
         
     def process_event(self, event):
-        #print("received %s" % event)
+        print("received %s" % event)
+        print(type(event))
         if self.state == "repos":
             if event.name == "ui":
                 if event.type == "calibrate":
-                    if "calibrate" in self.missions:
-                        self.missions["recalibrate_rangefinder"].start()
+                    if "calibrate_rangefinder" in self.missions:
+                        self.missions["calibrate_rangefinder"].start(event.id)
                     else:
-                        self.logger.error("The mission 'recalibrate_rangefinder' is not loaded")
+                        self.logger.error("The mission 'calibrate_rangefinder' is not loaded")
                     
                 elif event.type == "get":
                     if event.mission in self.missions:

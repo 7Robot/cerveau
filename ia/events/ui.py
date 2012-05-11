@@ -30,15 +30,15 @@ class UIEvent(Event):
             if len(cmd) == 5:
                 self.mission   = cmd[1]
                 self.attribute = cmd[2]
-                self.type      = cmd[3]
+                self.set_type      = cmd[3]
                 self.value     = cmd[4]
-                if self.type not in ["str", "float", "int"]:
-                    raise CmdError("Unknown type « %s »" %(self.type))
+                if self.set_type not in ["str", "float", "int"]:
+                    raise CmdError("Unknown type « %s »" %(self.set_type))
                 
                 # On change le type de la valeur à setter
-                if self.type == "int":
+                if self.set_type == "int":
                     self.value = int(self.value)
-                elif  self.type == "float":
+                elif  self.set_type == "float":
                     self.value = float(self.value)
             else:
                 raise CmdError("« %s » takes 4 arguments"
