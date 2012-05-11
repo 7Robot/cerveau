@@ -12,8 +12,10 @@ class StartMission(Mission):
 
     def process_event(self, event):
         if self.state == 0:
-            self.can.send("rangefinder 1 threshold 2200")
-            self.can.send("rangefinder 2 threshold 2200")
-            #self.missions["positioning"].process_event(StartEvent())
-#            self.missions["forward"].move_forward(15000)
             self.state +=1
+            self.can.send("rangefinder 1 threshold 2800")
+            self.can.send("rangefinder 2 threshold 2800")
+            self.can.send("turret unmute")
+            self.can.send("turret on")
+            #self.missions["positioning"].process_event(StartEvent())
+            self.missions["forward"].start(15000)

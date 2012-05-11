@@ -17,6 +17,6 @@ handlers:
     port: 7768
     
 root:
-  level: DEBUG
+  level: INFO
   propagate: no
   handlers: [socket,console]

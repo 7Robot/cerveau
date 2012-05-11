@@ -6,12 +6,14 @@ from events.internal import TimerEvent
 
 class Mission:
     def __init__(self, robot, can, ui):
-        ''' Convention state = 0 : état initial (d'attente)'''       
-        self.state = 0
+        ''' Convention state = 0 : état initial (d'attente)'''  
+        self.dispatch = None      # sera mis a jour par le loader de mission dans dispatcher.py
+        self._state = 0
         self.robot = robot
         self.can = can
         self.ui = ui
         name = self.__class__.__name__
+
         self.logger = logging.getLogger("mission."+name)
         if name[-7:] == "Mission":
             self.name = name[0:-7].lower()
@@ -19,7 +21,17 @@ class Mission:
         else:
             self.logger.warning("Warning: convention de nommage non respectée pour %s" %name)
             self.name = name.lower()
-        
+
+    def _get_state(self):
+        return self._state
+
+    def _set_state(self, state):
+        self.logger.info("[%s] %s → %s" %(self.name, self._state, state))
+        self._state = state
+
+    state = property(_get_state, _set_state)
+
+
     def process_event(self, event):
         pass
 

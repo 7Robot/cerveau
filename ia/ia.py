@@ -40,7 +40,6 @@ class IA:
         self.ui_sock.connect((self.robot.ui_ip, self.robot.ui_port))
         
         
-            
         self.can = Can(self.can_sock)
         self.ui  = UI(self.ui_sock)
         self.dispatcher = Dispatcher(self.robot, self.can, self.ui)
@@ -53,7 +52,6 @@ class IA:
         self.ui.start()
 
         self.logger.info("IA initialized")
-        
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

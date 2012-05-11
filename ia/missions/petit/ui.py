@@ -6,6 +6,14 @@ Created on 6 mai 2012
 from missions.mission import Mission
 from events.internal import StartEvent
 
+'''
+#FIXME : A REVOIR
+
+File "/mnt/elie/ia/comm/ui.py", line 25, in cmd_to_event
+    event = getattr(m, "UIEvent")(words)
+AttributeError: 'module' object has no attribute 'UIEvent'
+'''
+
 class UIMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
@@ -24,7 +32,11 @@ class UIMission(Mission):
                     
                 elif event.type == "get":
                     if event.mission in self.missions:
-                        getattr(self.missions[event.mission], event.attribute)
+                        ans = getattr(self.missions[event.mission], event.attribute)
+                        self.robot.msg_ui.sender("answer %s" % (ans.__str__()))
+                    else:
+                        self.robot.msg_ui.sender("exception  mission %s not found" % (event.mission))
+                        
                         
                 elif event.type == "set":
                     if event.mission in self.missions:
@@ -56,6 +68,4 @@ class UIMission(Mission):
             self.can.send("rangefinder %d mute" % event.id)
             self.can.send("rangefinder %d threshold %d" % (self.id, mean))
             self.state = "repos"
-            self.ui.send.sender("answer calibrate %d done, value is %d" % (self.id, mean))
-            
-                
+            self.robot.msg_ui.sender("answer calibrate %d done, value is %d" % (self.id, mean))
