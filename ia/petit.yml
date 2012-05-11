@@ -15,8 +15,7 @@ handlers:
     formatter: simple
     host: 'r2d2'
     port: 7768
-    
 root:
-  level: INFO
-  propagate: no
-  handlers: [socket,console]
+    level: INFO
+    propagate: no
+    handlers: [socket,console]

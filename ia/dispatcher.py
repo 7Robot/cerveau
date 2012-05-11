@@ -45,7 +45,12 @@ class Dispatcher(Thread):
         if "start" in self.missions:
             self.missions["start"].process_event(StartEvent())
         else:
-            self.logger.critical("startMission not found")
+            self.logger.critical("StartMission not found")
+        if "move" in self.missions:
+            for mission in self.missions:
+                self.missions[mission].move = self.missions["move"]
+        else:
+            self.logger.critical("MoveMission not found")
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
             self.logger.debug("Process event : %s", event.__str__())

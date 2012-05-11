@@ -2,10 +2,9 @@
 # -*-coding:UTF-8 -*
 
 from logging import getLogger
-from logging.config import dictConfig
+from logging.config import fileConfig
 import socket
 import sys
-from yaml import load
 
 from comm.can import Can
 from comm.ui  import UI
@@ -17,8 +16,8 @@ class IA:
         
         # Initialisation du logger
         self.logger = getLogger("ia")
-        f=open(name+".yml")
-        dictConfig(load(f))
+        f=open(name+".ini")
+        fileConfig(f)
         f.close()
 
         self.logger.info("Starting « %s » robot" % name)
@@ -55,6 +54,8 @@ class IA:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: ./ia.py nom_robot")
+        print("Usage: %s nom_robot" %sys.argv[0])
+        print("Run default robot « petit » …")
+        ia = IA("petit", **{"ui_ip": "r2d2"})
     else:
         ia = IA(sys.argv[1], **{"ui_ip": "r2d2"})

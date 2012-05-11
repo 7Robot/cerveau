@@ -6,31 +6,28 @@ class PositioningMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 
-    def process_event(self, e):
+    def start(self):
         if self.state == 0:
-            if e.name == "start":
-                self.robot.rotate(9000);
-                self.state += 1
-                self.logger.debug("Positioning (1) : start")
-        elif self.state == 1:
+            self.move.rotate(9000)
+            self.state += 1
+
+    def process_event(self, e):
+        if self.state == 1:
             if e.name == "asserv" and e.type == "done":
-                self.robot.asserv(-20, -20)
+                self.move.speed(-20, -20)
                 self.state += 1
-                self.logger.debug("Positioning (2) : asserv done")
                                     
         elif self.state == 2:
-            self.logger.debug("Positioning (3) : event received")
             if e.name == "bump" and e.state == "close":
-                self.robot.set_y(self.robot.dim_b - 10000)
                 self.create_timer(700)
                 self.state += 1
-                self.logger.info("Positioning (3) : bump close")
                     
         elif self.state == 3:
             if e.name == "timer":
+                # self.robot.set_y(self.robot.dim_b - 10000)
+                self.move.stop()
                 self.robot.forward(1500)
                 self.state += 1
-                self.logger.info("Positioning (4) : timer")
                     
         elif self.state == 4:
             if e.name == "asserv" and e.type == "done":
@@ -52,7 +49,7 @@ class PositioningMission(Mission):
                     
         elif self.state == 7:
             if e.name == "timer":
-                self.create_timer(20000) # FIXME à mesurer
+                self.create_timer(10000) # FIXME à mesurer
                 self.robot.forward(5000)
                 self.state += 1
                 self.logger.info("Petit en attente de positionnement de gros")
