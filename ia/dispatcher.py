@@ -22,7 +22,9 @@ class Dispatcher(Thread):
         # instancier toutes les missions 
         self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
         self.queue    = Queue()
+        self.logger.info("Loading all missions …")
         self._load_all_missions(robot.name)
+        self.logger.info("––––– All missions loaded –––––")
             
         
     def _load_all_missions(self, missions_prefix):
@@ -42,20 +44,20 @@ class Dispatcher(Thread):
         self.queue.put(event, True, None) # block=True, timeout=None
     
     def run(self):
-        if "start" in self.missions:
-            self.missions["start"].process_event(StartEvent())
-        else:
-            self.logger.critical("StartMission not found")
+        
         if "move" in self.missions:
             for mission in self.missions:
                 self.missions[mission].move = self.missions["move"]
         else:
             self.logger.critical("MoveMission not found")
+
+        if "start" in self.missions:
+            self.missions["start"].start()
+        else:
+            self.logger.critical("StartMission not found")
+        
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
             self.logger.debug("Process event : %s", event.__str__())
             for missions in self.missions.values():
-                #state = missions.state TODO: enlever ça, cf propriété dans mission
                 missions.process_event(event)
-                #if missions.state != state:
-                #    self.logger.info("Event processing: [%s] %s → %s", missions.name, state, missions.state)

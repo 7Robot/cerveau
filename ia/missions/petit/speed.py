@@ -22,7 +22,7 @@ class SpeedMission(Mission):
             self.state = "run"
             self.dist = 0
             self.can.send("asserv ticks reset")
-            self.can.send("asserv speed %d" %order)
+            self.can.send("asserv speed %d %d" %(left, right))
 
     def stop(self):
         if self.state == "run":
