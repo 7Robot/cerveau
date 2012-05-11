@@ -61,8 +61,9 @@ class MoveMission(Mission):
             self.callback = callback
             self.mission = "forward"
             distance = (self.target_pos - self.pos).norm()
-            distance *=  copysign(1, (self.robot.pos_target - self.robot.pos)
-                    * Vertex(20*cos(self.robot.theta/18000*pi), 20*sin(self.robot.theta/18000*pi)))
+            # FIXME: y'a sans doute plus simple
+            distance *=  copysign(1, (self.target_pos - self.pos)
+                    * Vertex(20*cos(self.rot/18000*pi), 20*sin(self.rot/18000*pi)))
             self.missions["forward"].start(distance)
 
     def rotate(self, callback, angle):
