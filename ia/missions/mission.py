@@ -2,7 +2,8 @@
 
 import logging
 import threading
-from events.internal import TimerEvent
+
+from events.internal import StartEvent, TimerEvent
 
 class Mission:
     def __init__(self, robot, can, ui):
@@ -33,6 +34,9 @@ class Mission:
 
     state = property(_get_state, _set_state)
 
+
+    def start(self):
+        self.process_event(StartEvent())
 
     def process_event(self, event):
         pass
