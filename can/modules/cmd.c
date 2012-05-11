@@ -43,7 +43,7 @@ int can_write(int fd, can_t packet)
 
 	int send = 1;
 
-	if (carte == 2) { // CAPTEURS -----------------------------
+	if ((carte & 2) == 2) { // CAPTEURS -----------------------------
         if ((id & 64) == 64) { // rangefinder
             if ((id & 32) == 32) { // value
                 sprintf(output, "RANGEFINDER %d VALUE %hu %s %s\n",
@@ -165,11 +165,11 @@ int can_write(int fd, can_t packet)
 		} else if (id == 18) {
 			int angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rotate");
 			sprintf(output, "ASSERV INT ROT %hd\n", angle);
-        } else if (id == 1043) {
+        } else if (id == 19) {
             sprintf(output, "ASSERV TICKS RESET\n");
-        } else if (id == 1044) {
+        } else if (id == 20) {
             sprintf(output, "ASSERV TICKS REQUEST\n");
-        } else if (id == 1045) {
+        } else if (id == 21) {
             int distance = ((int32_t*)packet.b)[0] / getValue("asserv", "forward");
             sprintf(output, "ASSERV TICKS ANSWER %d\n", distance);
         } else if (id == 127) {
