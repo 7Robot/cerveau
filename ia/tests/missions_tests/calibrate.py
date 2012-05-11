@@ -4,8 +4,7 @@ Created on 6 mai 2012
 '''
 
 
-from ia import IA
-from robots.petit import PetitRobot 
+from ia import IA 
 from tests.server_test import Server_test 
 from time import sleep
 import random
@@ -33,7 +32,7 @@ class Server_test_can(Server_test):
         self.stop()
 
 class Server_test_ui(Server_test):
-    def __init__(self, ip='127.0.0.1', port=7769):
+    def __init__(self, ip='127.0.0.1', port=7774):
         super(self.__class__, self).__init__(ip, port)
         
     def tests(self):

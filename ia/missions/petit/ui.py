@@ -13,8 +13,6 @@ class UIMission(Mission):
         self.state = "repos"
         
     def process_event(self, event):
-        print("received %s" % event)
-        print(type(event))
         if self.state == "repos":
             if event.name == "ui":
                 if event.type == "calibrate":
