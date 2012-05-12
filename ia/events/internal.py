@@ -21,3 +21,13 @@ class MoveEvent(Event):
     def __init__(self, type):
         super(self.__class__,self).__init__()
         self.type = type
+
+
+class RoutingEvent(Event):
+    '''Permet d'effectuer du routage d'event
+    Si le dispatcher voit un event RoutingEvent, il transmet l'event
+    RoutingEvent.event à la mission RoutingEvent.mission'''
+    def __init__(self, event, mission):
+        super(self.__class__,self).__init__()
+        self.event   = event
+        self.mission = mission # doit être une instance de TrucMission

@@ -3,6 +3,8 @@
 import logging
 
 class Event:
+    '''Tous les events fils doivent appeller le constructeur de Event 
+    pour initialiser leur attribut "name"'''
     def __init__(self):
         '''En théorie cmd_to_event nous passe une commande avec 2 ou plus arguments'''
         self.logger = logging.getLogger("event")

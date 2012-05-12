@@ -3,7 +3,7 @@
 import logging
 import threading
 
-from events.internal import StartEvent, TimerEvent
+from events.internal import StartEvent, TimerEvent, RoutingEvent
 
 class Mission:
     def __init__(self, robot, can, ui):
@@ -45,6 +45,12 @@ class Mission:
         self.state = 0
 
     def create_timer(self, duration):
-        '''Créé un timer qui va envoyer un évènement Timer_end à la fin'''
-        t = threading.Timer(duration/1000, self.process_event, [TimerEvent()]) #TODO: vérifier que le thread se termine bien après le process_event
+        '''Créé un timer qui va envoyer un évènement Timer_end à la fin
+        self.dispatch.add_event se termine immédiatement après l'ajout dans la queue
+        donc le thread du Timer s'arrête après l'execution du add_event()
+        donc il n'y a pas de problème d'execution concurrente entre le thread du timer
+        et le dispatcher'''
+        t = threading.Timer(duration/1000, self.dispatch.add_event, \
+                            [RoutingEvent(TimerEvent(), self)])
         t.start()
+        print("timer created !!!!!!!!!!!!!!!!!!")
