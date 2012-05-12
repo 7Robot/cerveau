@@ -17,8 +17,6 @@ class UI(Comm):
             self.logger.warning("No more data on socket.")
             return None
         words = cmd.lower().split()
-        if len(words) < 2:
-            raise CmdError("All command require at least 2 arguments")
         event = None
         try:
             m = __import__("events.ui")

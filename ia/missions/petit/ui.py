@@ -15,6 +15,7 @@ class UIMission(Mission):
     def process_event(self, event):
         if self.state == "repos":
             if event.name == "ui":
+                
                 if event.type == "calibrate":
                     if "calibrate_rangefinder" in self.missions:
                         self.missions["calibrate_rangefinder"].start(event.id)
@@ -27,7 +28,16 @@ class UIMission(Mission):
                         self.ui.send("answer %s" % (ans.__str__()))
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
+                
+                elif event.type == "message":
+                    self.logger.info("UI says: %s" % event.message) 
                         
+                        
+                elif event.type == "positioning":
+                    if "positioning" in self.missions:
+                        self.missions["positioning"].start()
+                    else:
+                        self.logger.error("The mission 'positioning' is not loaded")
                         
                 elif event.type == "set":
                     if event.mission in self.missions:
@@ -41,12 +51,10 @@ class UIMission(Mission):
                             self.ui.send("answer Attribut changé avec succès.")
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
-
-                elif event.type == "positioning":
-                    if "positioning" in self.missions:
-                        self.missions["positioning"].start()
-                    else:
-                        self.logger.error("The mission 'positioning' is not loaded")
+                        
+                elif event.type == "test":
+                    if event.test == "forward":
+                        self.missions["move"].forward(self, 1000)
                         
                         
         
