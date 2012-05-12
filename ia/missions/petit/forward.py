@@ -89,7 +89,7 @@ class ForwardMission(Mission):
             if event.name == "asserv" and event.type == "done":
                 # on a pu aller là où on voulait aller
                 self.state = "repos"
-                self.dispatch.add_event(MoveEvent("done"))
+                self.move.process_event(MoveEvent("done"))
         elif self.state == "pausing":
             if event.name == "asserv" and event.type == "int_dist":
                 self.state = "waiting"
