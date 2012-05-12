@@ -8,7 +8,7 @@ class PositioningMission(Mission):
 
     def start(self):
         if self.state == 0:
-            self.move.rotate(self, 9000)
+            self.move.rotate(self, -9000)
             self.state += 1
 
     def process_event(self, e):
@@ -24,32 +24,37 @@ class PositioningMission(Mission):
                     
         elif self.state == 3:
             if e.name == "timer":
-                # self.robot.set_y(self.robot.dim_b - 10000)
-                self.state += 1
+                self.state += 0.5
                 self.move.stop(self)
 
-        elif self.state == 4:
+        elif self.state == 3.5:
             if e.name == "move" and e.type == "done":
+                self.state += 0.5
+                self.odo.set(self, **{"y": self.robot.dimensions["back"] - 10000, "rot": 27000})
+
+        elif self.state == 4:
+            if e.name == "odo" and e.type == "done":
                 self.state += 1
                 self.move.forward(self, 1500)
                     
         elif self.state == 5:
             if e.name == "move" and e.type == "done":
                 self.state += 1
-                self.move.rotate(self, -9000)
+                self.move.rotate(self, 9000)
                     
         elif self.state == 6:
             if e.name == "move" and e.type == "done":
                 self.state += 1
-                print(self.move.state)
                 self.move.speed(-20, -20)
-                print(self.move.state)
 
         elif self.state == 7:
             if e.name == "bump" and e.state == "close":
-                self.state += 1
-                #self.robot.set_x(self.robot.dim_b - 15000)
-                #self.robot.theta = 0
+                self.state += 0.5
+                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": 0})
+
+        elif self.state == 7.5:
+            if e.name == "odo" and e.type == "done":
+                self.state += 0.5
                 self.create_timer(700)
                     
         elif self.state == 8:
@@ -67,7 +72,6 @@ class PositioningMission(Mission):
                 self.state += 1
                 self.create_timer(20000) # FIXME à mesurer
                 self.logger.info("Petit en attente de positionnement de gros")
-
 
         elif self.state == 11:
             if e.name == "robot":

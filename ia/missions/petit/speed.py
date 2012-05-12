@@ -20,6 +20,7 @@ class SpeedMission(Mission):
             self.left = left
             self.right = right
             self.state = "run"
+            self.can.send("asserv ticks reset")
             self.can.send("asserv speed %d %d" %(left, right))
 
     def stop(self):

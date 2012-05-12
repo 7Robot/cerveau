@@ -22,6 +22,11 @@ class MoveEvent(Event):
         super(self.__class__,self).__init__()
         self.type = type
 
+class OdoEvent(Event):
+    def __init__(self, type):
+        super(self.__class__,self).__init__()
+        self.type = type
+
 
 class RoutingEvent(Event):
     '''Permet d'effectuer du routage d'event

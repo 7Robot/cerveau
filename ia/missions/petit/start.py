@@ -18,8 +18,18 @@ class StartMission(Mission):
             self.can.send("rangefinder 8 threshold 2800")
             self.can.send("turret unmute")
             self.can.send("turret on")
-            #self.can.send("odo unmute")
-            self.missions["positioning"].start()
+            self.odo.broadcast()
+            self.odo.set(self, **{"x": self.robot.pos.x, "y": self.robot.pos.y,
+                "rot": self.robot.rot})
+
+        if self.state == 1:
+            if event.name == "odo" and event.type == "done":
+                self.missions["positioning"].start()
+
+
+
+
+
             #self.missions["forward"].start(15000)
             #self.move.forward(self, 5000)
             #self.missions["rotate"].start(9000)

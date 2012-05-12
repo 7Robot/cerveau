@@ -21,7 +21,7 @@ class Dispatcher(Thread):
         # instancier toutes les missions 
         self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
         self.queue    = Queue()
-        self.logger.info("Loading all missions …")
+        self.logger.info("––––– Loading all missions –––––")
         self._load_all_missions(robot.name)
         self.logger.info("––––– All missions loaded –––––")
             
@@ -49,6 +49,12 @@ class Dispatcher(Thread):
                 self.missions[mission].move = self.missions["move"]
         else:
             self.logger.critical("MoveMission not found")
+
+        if "odo" in self.missions:
+            for mission in self.missions:
+                self.missions[mission].odo = self.missions["odo"]
+        else:
+            self.logger.critical("OdoMission not found")
 
         if "start" in self.missions:
             self.missions["start"].start()

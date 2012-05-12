@@ -53,4 +53,3 @@ class Mission:
         t = threading.Timer(duration/1000, self.dispatch.add_event, \
                             [RoutingEvent(TimerEvent(), self)])
         t.start()
-        print("timer created !!!!!!!!!!!!!!!!!!")

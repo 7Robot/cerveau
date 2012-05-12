@@ -24,6 +24,8 @@ class MoveMission(Mission):
         # initialement, on est à priori là où on veut être
         self.target_pos = self.robot.pos
         self.target_rot = self.robot.rot
+
+        self.odo = None # pas de recalibration en cours
         
         '''
         opération en cours d'execution
@@ -72,7 +74,8 @@ class MoveMission(Mission):
         if self.mission == None:
             self.callback = callback
             self.mission = "rotate"
-            angle = angle_normalize(angle)
+            self.target_rot += angle
+            angle = angle_normalize(self.target_rot - self.rot)
             self.missions["rotate"].start(angle)
 
     def speed(self, left, right, curt = False):
@@ -90,17 +93,11 @@ class MoveMission(Mission):
     ### FIN DES MISSIONS ###
 
     def process_event(self, event):
-        # events gérés quelque soit l'état
-        if event.name == "odo":
-            if event.type == "pos":
-                # màj de la position actuelle
-                self.pos = event.pos
-                self.rot = event.rot
-
-        # events gérés suivant l'état
         if self.mission == "forward" or self.mission == "rotate" \
                 or (self.mission == "speed" and self.state == "stopping"):
             if event.name == "move" and event.type == "done":
+                if self.mission == "speed":
+                    self.target_pos += Vertex(abs(event.value) * cos(self.rot/18000*pi), abs(event.value) * sin(self.rot/18000*pi))
                 self.mission = None
                 if self.state != None: # c'est pour pas produire de log inutile
                     self.state = None
