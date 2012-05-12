@@ -43,7 +43,7 @@ int can_write(int fd, can_t packet)
 
 	int send = 1;
 
-	if ((carte & 2) == 2) { // CAPTEURS -----------------------------
+	if (((carte & 2) == 2) || (carte == 1 && ((id & 7) == 7))) { // CAPTEURS -----------------------------
         if ((id & 64) == 64) { // rangefinder
             if ((id & 32) == 32) { // value
                 sprintf(output, "RANGEFINDER %d VALUE %hu %s %s\n",
@@ -361,7 +361,11 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                 printf(errmsg);
                 send = 0;
             } else {
-                packet.id += rfid - 1;
+                if (rfid > 0 && rfid < 8) {
+                    packet.id += rfid - 1;
+                } else if (rfid == 8) {
+                    packet.id = 199;
+                }
                 if (!strcasecmp(buffer, "value")) {
                     packet.id += 32;
                     errmsg = "Warning: « rangefinder %d value » must be followed by a distance value, then « under » or « other », then optionally « edge »\n";
