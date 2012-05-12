@@ -9,6 +9,7 @@ import sys
 from comm.can import Can
 from comm.ui  import UI
 from dispatcher import Dispatcher
+from robots.robot import Robot
 
 
 class IA:
@@ -26,6 +27,7 @@ class IA:
         module = __import__("robots."+name)
         self.robot = getattr(getattr(module, name), name.capitalize()+"Robot")()
         
+        Robot.copy_from(self.robot)
         
         # On écrase les attributs du robot par ceux passés ici en argument, utiles pour le testing
         for argument in kargs:

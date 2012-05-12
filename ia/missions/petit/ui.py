@@ -4,8 +4,7 @@ Created on 6 mai 2012
 '''
 
 from missions.mission import Mission
-
-
+from robots.robot import Robot
 
 class UIMission(Mission):
     def __init__(self, robot, can, ui):
@@ -51,6 +50,10 @@ class UIMission(Mission):
                             self.ui.send("answer Attribut changé avec succès.")
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
+                        
+                elif event.type == "start":
+                    Robot.side = event.side
+                    self.ui.send("answer done")
                         
                 elif event.type == "test":
                     if event.test == "forward":

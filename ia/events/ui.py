@@ -6,6 +6,7 @@ Created on 5 mai 2012
 from events.event import Event
 from events.event import CmdError
 
+
 class UIEvent(Event):
     def __init__(self, cmd):
         # précondition : len(cmd) >= 2
@@ -16,8 +17,7 @@ class UIEvent(Event):
                 # rangefinder_calibrate <id>
                 self.id = self.parse_int(cmd[1])
             else:
-                raise CmdError("« %s » takes 2 arguments"
-                 %(cmd[0]))
+                raise CmdError("« %s » takes 2 arguments" %(cmd[0]))
             
         elif self.type == "get":
             # get <mission> <attribut>
@@ -50,10 +50,20 @@ class UIEvent(Event):
             else:
                 raise CmdError("« %s » takes 4 arguments"
                  %(cmd[0]))
-                
+        
+        
+        elif self.type == "start":
+            # start <violet|red>
+            if len(cmd) == 2:
+                self.side = cmd[1]
+                if self.side not in ["red", "violet"]:
+                    raise CmdError("Unknown side « %s »." %(cmd[1]))
+            else:
+                raise CmdError("« %s » takes 2 arguments" %(cmd[0]))       
                 
         elif self.type == "test":
-            self.test = cmd[1]
+            if len(cmd) == 2:
+                self.test = cmd[1]
             
         elif self.type not in ["positioning"]:
             raise CmdError("« Unknown command %s %s"

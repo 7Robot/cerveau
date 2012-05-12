@@ -7,6 +7,9 @@ class GrosRobot:
     def __init__(self):
 
         self.name = "gros"
+        
+        # Zone de départ : violet|red
+        self.side = "violet"
 
         # dimension du robot
         self.dimensions = { "left": 1500, "right": 1500,
