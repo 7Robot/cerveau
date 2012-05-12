@@ -33,5 +33,5 @@ class StartMission(Mission):
             #self.missions["forward"].start(15000)
             #self.move.forward(self, 5000)
             #self.missions["rotate"].start(9000)
-            #self.move.rotate(self, 9000)
-            #self.missions["speed"].start(20, 20)
+            self.move.rotate(self, 9000)
+            #self.missions["speed"].start(40, 20)

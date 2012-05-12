@@ -47,7 +47,7 @@ class UIMission(Mission):
                         except AttributeError as e:
                             self.ui.send("exception %s" % e)
                         else:
-                            self.ui.send("answer Attribut changé avec succès.")
+                            self.ui.send("answer done")
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
                         
@@ -58,6 +58,7 @@ class UIMission(Mission):
                 elif event.type == "test":
                     if event.test == "forward":
                         self.missions["move"].forward(self, 1000)
+                        self.ui.send("answer done")
                         
                         
         
