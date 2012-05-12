@@ -2,15 +2,15 @@
 
 from mathutils.types import Vertex
 
-class PetitRobot:
+class GrosRobot:
 
     def __init__(self):
 
         self.name = "gros"
 
         # dimension du robot
-        self.dimensions = { "left": 1290, "right": 1290,
-                "front": 1190, "back": 920 }
+        self.dimensions = { "left": 1500, "right": 1500,
+                "front": 1950, "back": 1050 }
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)
@@ -18,7 +18,7 @@ class PetitRobot:
         self.rot = 0
 
         # paramètre de la tourelle
-        self.turret = { "left": 12, "right": 8, "front": 40 }
+        self.turret = { "left": 17, "right": 15, "front": 70 }
 
         # paramètre par défaut des sockets
         # (utilisé par IA si pas de valeur spécifié)

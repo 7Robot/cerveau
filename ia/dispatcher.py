@@ -5,7 +5,6 @@ from queue import Queue
 from threading import Thread
 import os
 
-from events.internal import RoutingEvent
 from missions.mission import Mission
 from tools.class_manager import class_loader 
 
@@ -64,9 +63,10 @@ class Dispatcher(Thread):
         while True:
             event = self.queue.get(True, None) # block=True, timeout=None
             self.logger.debug("Process event : %s", event.__str__())
-            if isinstance(event, RoutingEvent):
-                # Routage de l'event à une mission
-                event.mission.process_event(event.event)
+            if event.dests != []:
+                # Routage de l'event aux destinataires
+                for dest in event.dests:
+                    dest.process_event(event)
             else:
                 # On dispatch l'event à toutes les missions
                 for missions in self.missions.values():

@@ -2,7 +2,7 @@
 
 from missions.mission import Mission
 
-class PositioningMission(Mission):
+class BottleMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 

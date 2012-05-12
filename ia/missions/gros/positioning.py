@@ -30,11 +30,13 @@ class PositioningMission(Mission):
         elif self.state == 3.5:
             if e.name == "move" and e.type == "done":
                 self.state += 0.5
+                self.can.send("asserv off")
                 self.odo.set(self, **{"y": self.robot.dimensions["back"] - 10000, "rot": 27000})
 
         elif self.state == 4:
             if e.name == "odo" and e.type == "done":
                 self.state += 1
+                self.can.send("asserv on")
                 self.move.forward(self, 1500)
                     
         elif self.state == 5:
@@ -60,29 +62,16 @@ class PositioningMission(Mission):
         elif self.state == 8:
             if e.name == "move" and e.type == "done":
                 self.state += 1
+                self.can.send("asserv off")
                 self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": 0})
 
         elif self.state == 9:
             if e.name == "odo" and e.type == "done":
                 self.state += 1
-                self.move.forward(self, 5000)
+                self.can.send("asserv on")
+                self.move.forward(self, 500)
 
         elif self.state == 10:
             if e.name == "move" and e.type == "done":
-                self.state += 1
-                self.create_timer(20000) # FIXME à mesurer
-                self.logger.info("Petit en attente de positionnement de gros")
-
-        elif self.state == 11:
-            if e.name == "robot":
-                self.state += 1
-                self.move.forward(self, -2500)
-            elif e.name == "timer":
-                self.state += 1
-                self.logger.warning("Pas de réponse de gros !")
-                self.move.forward(self, -2500)
-
-        elif self.state == 12:
-            if e.name == "move" and e.type == "done":
                 self.state = 0
-                self.logger.info("Petit en position !")
+                self.logger.info("Gros en position !")

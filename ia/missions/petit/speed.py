@@ -3,10 +3,8 @@
 Created on 5 mai 2012
 '''
 
-from math import pi
 
 from events.internal import MoveEvent
-from mathutils.geometry import angle
 
 from missions.mission import Mission
 class SpeedMission(Mission):
@@ -23,8 +21,9 @@ class SpeedMission(Mission):
             self.can.send("asserv ticks reset")
             self.can.send("asserv speed %d %d" %(left, right))
 
-    def stop(self):
+    def stop(self, callback):
         if self.state == "run":
+            self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
 
@@ -37,7 +36,7 @@ class SpeedMission(Mission):
         if self.state == "stopped":
             if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
                 self.state = "repos"
-                doneEvent = MoveEvent("done")
+                doneEvent = MoveEvent("done", [self.callback])
                 doneEvent.value = event.value
-                self.move.process_event(doneEvent)
+                self.send_event(doneEvent)
                 

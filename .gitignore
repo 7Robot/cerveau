@@ -4,3 +4,8 @@ pkg
 build
 *.py[co]
 scripts/log
+ia/.pydevproject
+ia/.project
+ia/.settings
+*.tar
+.settings

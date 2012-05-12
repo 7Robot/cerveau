@@ -3,12 +3,8 @@
 Created on 30 avr. 2012
 '''
 
-from events.internal import MoveEvent 
-from math import cos, sin, pi, copysign
 
 from missions.mission import Mission
-from mathutils.types import Vertex
-from mathutils.geometry import angle_normalize
 from events.internal import OdoEvent
 
 
@@ -43,10 +39,13 @@ class OdoMission(Mission):
                 for axe in self.value:
                     if axe == "x":
                         event.pos.x = self.value["x"]
+                        self.move.target_pos.x = self.value["x"]
                     elif axe == "y": 
                         event.pos.y = self.value["y"]
+                        self.move.target_pos.y = self.value["y"]
                     elif axe == "rot":
                         event.rot = self.value["rot"]
+                        self.move.target_rot = self.value["rot"]
 
                 self.move.pos = event.pos
                 self.move.rot = event.rot
@@ -57,6 +56,3 @@ class OdoMission(Mission):
             else:
                 self.move.pos = event.pos
                 self.move.rot = event.rot
-                self.logger.debug("Position : %d %d, Direction : %d"
-                        %(self.move.pos.x, self.move.pos.y, self.move.rot))
-

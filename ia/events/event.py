@@ -5,9 +5,12 @@ import logging
 class Event:
     '''Tous les events fils doivent appeller le constructeur de Event 
     pour initialiser leur attribut "name"'''
-    def __init__(self):
+    def __init__(self, dests=[]):
         '''En théorie cmd_to_event nous passe une commande avec 2 ou plus arguments'''
         self.logger = logging.getLogger("event")
+        if not isinstance(dests,list):
+            dests = [dests]
+        self.dests   = dests
         '''Raccourci de nommage pour récupérer le type d'un event'''
         name = self.__class__.__name__
         if name[-5:] == "Event":

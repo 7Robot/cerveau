@@ -3,7 +3,7 @@
 import logging
 import threading
 
-from events.internal import StartEvent, TimerEvent, RoutingEvent
+from events.internal import StartEvent, TimerEvent
 
 class Mission:
     def __init__(self, robot, can, ui):
@@ -51,5 +51,8 @@ class Mission:
         donc il n'y a pas de problème d'execution concurrente entre le thread du timer
         et le dispatcher'''
         t = threading.Timer(duration/1000, self.dispatch.add_event, \
-                            [RoutingEvent(TimerEvent(), self)])
+                            [TimerEvent([self])])
         t.start()
+
+    def send_event(self, event):
+        self.dispatch.add_event(event)
