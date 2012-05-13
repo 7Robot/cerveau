@@ -8,6 +8,7 @@ class PositioningMission(Mission):
 
     def start(self):
         if self.state == 0:
+            self.logger.info("Positionnement de Gros")
             self.move.rotate(self, -9000)
             self.state += 1
 
@@ -20,7 +21,7 @@ class PositioningMission(Mission):
         elif self.state == 2:
             if e.name == "bump" and e.state == "close":
                 self.state += 1
-                self.create_timer(700)
+                self.create_timer(400)
                     
         elif self.state == 3:
             if e.name == "timer":
@@ -37,7 +38,7 @@ class PositioningMission(Mission):
             if e.name == "odo" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv on")
-                self.move.forward(self, 1500)
+                self.move.forward(self, 1300)
                     
         elif self.state == 5:
             if e.name == "move" and e.type == "done":
@@ -52,7 +53,7 @@ class PositioningMission(Mission):
         elif self.state == 7:
             if e.name == "bump" and e.state == "close":
                 self.state += 0.5
-                self.create_timer(700)
+                self.create_timer(400)
 
         elif self.state == 7.5:
             if e.name == "timer":

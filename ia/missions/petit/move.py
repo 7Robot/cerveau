@@ -54,7 +54,7 @@ class MoveMission(Mission):
     pos = property(_get_pos, _set_pos)
 
     def _set_target_pos(self, target_pos):
-        self.logger.debug("[target] pos: %d %d" %(target_pos.x, target_pos.y))
+        self.logger.info("[target] pos: %d %d" %(target_pos.x, target_pos.y))
         self._target_pos = target_pos
     def _get_target_pos(self):
         return self._target_pos
@@ -68,7 +68,7 @@ class MoveMission(Mission):
     rot = property(_get_rot, _set_rot)
 
     def _set_target_rot(self, target_rot):
-        self.logger.debug("[target] rot: %d" %target_rot)
+        self.logger.info("[target] rot: %d" %target_rot)
         self._target_rot = target_rot
     def _get_target_rot(self):
         return self._target_rot

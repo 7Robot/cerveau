@@ -11,7 +11,7 @@ class TurretEvent(Event):
         self.dist   = []
 
         if self.type == "answer":
-            if len(cmd) < 7:
+            if len(cmd) < 11:
                 values  = list(map(self.parse_int,cmd[2:])) 
                 for i in range(len(values)):
                     if i%2 == 0:
@@ -20,7 +20,7 @@ class TurretEvent(Event):
                         self.angle.append(values[i])
             else:
                 raise CmdError("« turret answer » must be followed by "
-                        +" a maximum of four integers")
+                        +" a maximum of height integers")
         
         elif self.type in ["request", "mute", "unmute", "on", "off"]:
             if len(cmd) != 2:

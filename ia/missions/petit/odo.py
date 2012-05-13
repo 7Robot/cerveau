@@ -27,7 +27,7 @@ class OdoMission(Mission):
         self.state = "calibrating"
         self.callback = callback
         self.value = value
-        if not self.broadcast:
+        if not self.brd:
             self.can.send("odo request")
 
     def process_event(self, event):
