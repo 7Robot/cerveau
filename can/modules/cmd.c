@@ -155,7 +155,7 @@ int can_write(int fd, can_t packet)
 			sprintf(output, "ASSERV DIST %+d\n", distance);
 		} else if (id == 2) {
 			int angle;
-            if (((int16_t*)packet.b)[0] > 0) {
+            if (((int16_t*)packet.b)[0] < 0) {
                 angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-pos");
             } else {
                 angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-neg");
@@ -179,7 +179,7 @@ int can_write(int fd, can_t packet)
 			sprintf(output, "ASSERV INT DIST %hd\n", distance);
 		} else if (id == 18) {
 			int angle;
-            if (((int16_t*)packet.b)[0] > 0) {
+            if (((int16_t*)packet.b)[0] < 0) {
                 angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-pos");
             } else {
                 angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-neg");
