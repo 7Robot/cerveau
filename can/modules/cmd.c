@@ -146,10 +146,20 @@ int can_write(int fd, can_t packet)
 		}
 	} else if (carte == 8) { // ASSERV ------------------------------
 		if (id == 1) {
-			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", "forward");
+            int distance;
+            if (((int16_t*)packet.b)[0] > 0) {
+    			distance = ((int16_t*)packet.b)[0] / getValue("asserv", "fwd-pos");
+            } else {
+    			distance = ((int16_t*)packet.b)[0] / getValue("asserv", "fwd-neg");
+            }
 			sprintf(output, "ASSERV DIST %+d\n", distance);
 		} else if (id == 2) {
-			int angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rotate");
+			int angle;
+            if (((int16_t*)packet.b)[0] > 0) {
+                angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-pos");
+            } else {
+                angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-neg");
+            }
 			sprintf(output, "ASSERV ROT %+d°\n", angle);
 		} else if ((id & 126) == 8) {
 			sprintf(output, "ASSERV SPEED %+hhd %+hhd %s\n",
@@ -160,17 +170,32 @@ int can_write(int fd, can_t packet)
 		} else if (id  == 16) {
 			sprintf(output, "ASSERV DONE\n");
 		} else if (id == 17) {
-			int distance = ((int16_t*)packet.b)[0] / getValue("asserv", "forward");
+            int distance;
+            if (((int16_t*)packet.b)[0] > 0) {
+    			distance = ((int16_t*)packet.b)[0] / getValue("asserv", "fwd-pos");
+            } else {
+    			distance = ((int16_t*)packet.b)[0] / getValue("asserv", "fwd-neg");
+            }
 			sprintf(output, "ASSERV INT DIST %hd\n", distance);
 		} else if (id == 18) {
-			int angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rotate");
+			int angle;
+            if (((int16_t*)packet.b)[0] > 0) {
+                angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-pos");
+            } else {
+                angle = ((int16_t*)packet.b)[0] / getValue("asserv", "rot-neg");
+            }
 			sprintf(output, "ASSERV INT ROT %hd\n", angle);
         } else if (id == 19) {
             sprintf(output, "ASSERV TICKS RESET\n");
         } else if (id == 20) {
             sprintf(output, "ASSERV TICKS REQUEST\n");
         } else if (id == 21) {
-            int distance = ((int32_t*)packet.b)[0] / getValue("asserv", "forward");
+            int distance;
+            if (((int32_t*)packet.b)[0] > 0) {
+    			distance = ((int32_t*)packet.b)[0] / getValue("asserv", "fwd-pos");
+            } else {
+    			distance = ((int32_t*)packet.b)[0] / getValue("asserv", "fwd-neg");
+            }
             sprintf(output, "ASSERV TICKS ANSWER %d\n", distance);
         } else if (id == 127) {
             sprintf(output, "ASSERV STOP\n");
@@ -262,7 +287,12 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     printf("Warning: bag arguments for « asserv dist »\n");
                     send = 0;
                 }
-                dist = atoi(buffer) * getValue("asserv", "forward");
+                dist = atoi(buffer);
+                if (dist > 0) {
+                    dist *= getValue("asserv", "fwd-pos");
+                } else {
+                    dist *= getValue("asserv", "fwd-neg");
+                }
                 packet.length = 2;
                 packet.b[0] = ((char*)&dist)[0];
                 packet.b[1] = ((char*)&dist)[1];
@@ -275,7 +305,12 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                     printf("Warning: bag arguments for « asserv rot »\n");
                     send = 0;
                 }
-                angle = atoi(buffer) * getValue("asserv", "rotate");
+                angle = atoi(buffer);
+                if (angle > 0) {
+                    angle *= getValue("asserv", "rot-pos");
+                } else {
+                    angle *= getValue("asserv", "rot-neg");
+                }
                 packet.length = 2;
                 packet.b[0] = ((char*)&angle)[0];
                 packet.b[1] = ((char*)&angle)[1];
@@ -319,7 +354,20 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                         printf("%s", errmsg);
                         send = 0;
                     }
-                    int value = atoi(buffer) * getValue("asserv", packet.id==1041?"forward":"rotate");
+                    int value = atoi(buffer);
+                    if (packet.id == 1041) {
+                        if (value > 0) {
+                            value *= getValue("asserv", "fwd-pos");
+                        } else {
+                            value *= getValue("asserv", "fwd-neg");
+                        }
+                    } else {
+                        if (value > 0) {
+                            value *= getValue("asserv", "rot-pos");
+                        } else {
+                            value *= getValue("asserv", "rot-neg");
+                        }
+                    }
                     packet.length = 2;
                     packet.b[0] = ((uint8_t*)&value)[0];
                     packet.b[1] = ((uint8_t*)&value)[1];
@@ -338,7 +386,12 @@ void can_listen(FILE * stream, void(*receiv)(unsigned int, can_t))
                         printf("Warning: « asserv ticks answer » need an integer argument\n");
                         send = 0;
                     }
-                    int answer = atoi(buffer) * getValue("asserv", "forward");
+                    int answer = atoi(buffer);
+                    if (answer > 0) {
+                        answer *= getValue("asserv", "fwd-pos");
+                    } else {
+                        answer *= getValue("asserv", "fwd-neg");
+                    }
                     int i;
                     for (i = 0; i < 4 ; i++) {
                         packet.b[i] = ((int8_t*)&answer)[i];
