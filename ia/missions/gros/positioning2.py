@@ -3,23 +3,24 @@
 from missions.mission import Mission
 
 from events.event import Event
-from robots.robot import Robot
 
-class Positioning1Mission(Mission):
+class Positioning2Mission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 
-    def start(self):
+    def start(self, callback):
         if self.state == 0:
-            self.state += 1
-            self.logger.info("Positionnement de Gros")
-            self.send_event(Event("start", None, self))
+            self.state = 1
+            self.callback = callback
+            self.logger.info("Re-positionnement de Gros")
+            self.move.rotate(self, 9000)
 
     def process_event(self, e):
-        if self.state == 1 and e.name == "start":
-            self.state += 1
-            self.move.speed(-20, -20)
-            
+        if self.state == 1:
+            if e.name == "move" and e.type == "done":
+                self.state += 1
+                self.move.speed(-20, -20)
+
         elif self.state == 2:
             if e.name == "bump" and e.state == "close":
                 self.state += 1
@@ -34,7 +35,7 @@ class Positioning1Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 0.5
                 self.can.send("asserv off")
-                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + self.robot.vrille})
+                self.odo.set(self, **{"y": self.robot.dimensions["back"] - 10000, "rot": 27000})
 
         elif self.state == 4:
             if e.name == "odo" and e.type == "done":
@@ -78,4 +79,4 @@ class Positioning1Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state = 0
                 self.logger.info("Gros en position !")
-                self.send_event(Event("positioning", "done"))
+                self.send_event(Event("positioning", "done", self.callback))

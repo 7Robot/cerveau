@@ -3,7 +3,6 @@
 Created on 13 mai 2012
 '''
 
-from robots.robot import Robot
 from events.event import Event
 
 from missions.mission import Mission
@@ -15,17 +14,18 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5700) # on sort du dpart
+                self.move.forward(self, 5600) # on sort du dpart
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, -9000 - Robot.vrille) # on tourne vers les bouteilles
+                self.move.rotate(self, 27000, False) # on tourne vers les bouteilles
 
         elif self.state == 2:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.forward(self, 4500) # on avance vers le totem
+                #self.move.forward(self, 4700) # on avance vers le totem
+                self.move.reach_y(self, 3000)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
@@ -56,10 +56,11 @@ class Totem1Mission(Mission):
         elif self.state == 7:
             if event.name == "timer":
                 self.state += 1
-                self.missions["speedrotate"].start("gauche", 30)
+                self.missions["speedrotate"].start("gauche", 20)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
+                print("Odo, angle: %d" %event.rot)
                 if event.rot > 18000 and event.rot < 30000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
@@ -79,4 +80,4 @@ class Totem1Mission(Mission):
             if event.name == "timer":
                 self.state += 1
                 self.can.send("ax 2 angle set 0")
-                self.send_event(Event("totem", "done", callback))
+                self.send_event(Event("totem", "done"))

@@ -9,13 +9,14 @@ class GrosRobot:
         self.name = "gros"
         
         # Zone de dpart : violet|red  oui c'est con
+        #self.side = "red"
         self.side = "violet"
 
         # dimension du robot
         self.dimensions = { "left": 1500, "right": 1500,
                 "front": 1950, "back": 1050 }
 
-        self.vrille = 500
+        self._vrille = 500
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)
@@ -38,3 +39,14 @@ class GrosRobot:
         # socket inter-robot
         self.inter_ip = "gros"
         self.inter_port = 7780
+
+    def _set_vrille(self, vrille):
+        self._vrille = vrille
+
+    def _get_vrille(self):
+        if self.side == "red":
+            return -self._vrille
+        else:
+            return self._vrille
+
+    vrille = property(_get_vrille, _set_vrille)

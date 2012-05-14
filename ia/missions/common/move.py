@@ -98,11 +98,29 @@ class MoveMission(Mission):
                     * Vertex(20*cos(self.rot/18000*pi), 20*sin(self.rot/18000*pi)))
             self.missions["forward"].start(self, distance)
 
-    def rotate(self, callback, angle):
+    def reach_y(self, callback, y):
+        if self.mission == None:
+            self.callback = callback
+            self.mission = "forward"
+            dy = abs(y - self.pos.y)
+            dtheta = abs(self.rot)
+            dist = -dy/sin(dtheta/18000*pi)
+            print("rot: %d, target_rot: %d, dtheta: %d" %(self.rot,
+                self.target_rot, dtheta))
+            print("pos: ", self.pos)
+            print("target: ", self.target_pos)
+            self.target_pos += Vertex(dist * cos(self.rot/18000*pi), dist * sin(self.rot/18000*pi))
+            print("target: ", self.target_pos)
+            self.missions["forward"].start(self, dist)
+
+    def rotate(self, callback, angle, relative = True):
         if self.mission == None:
             self.callback = callback
             self.mission = "rotate"
-            self.target_rot += angle
+            if relative:
+                self.target_rot += angle
+            else:
+                self.target_rot = angle
             #print("Angle: %d" %angle)
             realangle = angle_normalize(self.target_rot - self.rot)
             #print("Pos: %d, Target: %d, Rotate: %d"%(self.rot, self.target_rot,

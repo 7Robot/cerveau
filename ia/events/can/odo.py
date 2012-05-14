@@ -20,7 +20,7 @@ class OdoEvent(Event):
             on fait croire  l'ia et l'odo que notre orientation 
             initiale est 0'''
             self.pos.x = -self.pos.x
-            self.rot   = -self.rot + 18000 
+            self.rot   = (-self.rot + 54000) % 36000 
         except ValueError as e:
           raise CmdError(e.__str__())
       else:
