@@ -11,9 +11,9 @@ class Robot:
     
     @classmethod
     def copy_from(self, robot):
-        '''inconvénient de cette méthode : c'est une copie à l'instant t
-        de robot. Si une instance de robot est modifiée par erreur,
-        les attributs de classe de Robot ne sont plus à jour'''
+        '''inconvnient de cette mthode : c'est une copie  l'instant t
+        de robot. Si une instance de robot est modifie par erreur,
+        les attributs de classe de Robot ne sont plus  jour'''
         for attr in robot.__dict__:
             if attr[0] != "_":
                 setattr(Robot, attr, robot.__dict__[attr])

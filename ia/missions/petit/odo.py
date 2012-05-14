@@ -31,7 +31,7 @@ class OdoMission(Mission):
             self.can.send("odo request")
 
     def process_event(self, event):
-        # events gérés quelque soit l'état
+        # events grs quelque soit l'tat
         if event.name == "odo" and event.type == "pos":
             if self.state == "calibrating":
                 self.state = None

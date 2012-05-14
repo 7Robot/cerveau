@@ -1,0 +1,1 @@
+ -*- coding: utf-8 -*-\\n\'\'\\nreated on 10 mai 2012\\n\'\'\\n\\nrom ia import IA\\n\\n\\nf __name__ == "__main__":\\n   ia = IA("petit", **{"can_ip" : "localhost", "ui_ip": "localhost"})\\n \

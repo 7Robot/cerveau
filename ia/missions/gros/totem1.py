@@ -12,7 +12,7 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5700) # on sort du départ
+                self.move.forward(self, 5700) # on sort du dpart
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":

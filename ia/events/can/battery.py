@@ -14,7 +14,7 @@ class BatteryEvent(Event):
                 except ValueError as e:
                     raise CmdError(e.__str__())
             else:
-                raise CmdError("« %s %s » takes a float argument")
+                raise CmdError(" %s %s  takes a float argument")
         elif len(cmd) != 2:
-            raise CmdError("« %s %s » takes no argument"
+            raise CmdError(" %s %s  takes no argument"
                 %(cmd[0], cmd[1]))

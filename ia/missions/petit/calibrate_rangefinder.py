@@ -21,7 +21,7 @@ class Calibrate_rangefinderMission(Mission):
                 self.logger.debug("Start calibration rangefinder %d" % self.id)
                     
         if self.state == "calibrate rangefinder measurements":
-            # on prend les 16 premières valeurs
+            # on prend les 16 premires valeurs
             if event.name == "rangefinder" and event.id == self.id \
                      and event.type == "value":
                 if len(self.measurements) < self.nb_mesures:
@@ -38,4 +38,4 @@ class Calibrate_rangefinderMission(Mission):
                     
     def start(self, id):
         self.id = id
-        super(self.__class__, self).start()
+        super(self.__class__, self).start

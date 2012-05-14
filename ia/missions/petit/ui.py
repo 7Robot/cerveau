@@ -19,7 +19,7 @@ class UIMission(Mission):
                     if "calibrate_rangefinder" in self.missions:
                         self.missions["calibrate_rangefinder"].start(event.id)
                     else:
-                        self.logger.error("The mission 'calibrate_rangefinder' is not loaded")
+                        self.logger.error("The mission \'calibrate_rangefinder\' is not loaded")
                     
                 elif event.type == "get":
                     if event.mission in self.missions:
@@ -40,7 +40,7 @@ class UIMission(Mission):
                     if "positioning" in self.missions:
                         self.missions["positioning"].start()
                     else:
-                        self.logger.error("The mission 'positioning' is not loaded")
+                        self.logger.error("The mission \'positioning\' is not loaded")
                         
                 elif event.type == "set":
                     if event.mission in self.missions:
@@ -62,4 +62,4 @@ class UIMission(Mission):
                         self.ui.send("answer done")
                         
                         
-        
+      

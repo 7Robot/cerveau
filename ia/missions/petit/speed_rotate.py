@@ -13,15 +13,21 @@ class SpeedMission(Mission):
         self.state = "repos"
 
     # s'orienter dans la direction rot_target
-    def start(self, speed, curt = False):
+    def forward(self, speed):
         if self.state == "repos":
             self.speed = speed
-            self.state = "run"
+            self.state = "forward"
             self.can.send("asserv ticks reset")
             self.can.send("asserv speed %d %d" %(speed, speed))
+            
+    def rotate(self, sens, speed, callback = None, angle = 0):
+        self.speed = speed
+        self.state = "rotate"
+        if sens == "gauche":
+            self.
 
     def stop(self, callback):
-        if self.state == "run":
+        if self.state == "speed" or self.state == "rotate":
             self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")

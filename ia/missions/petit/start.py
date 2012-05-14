@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: ascii -*-
 '''
 Created on 27 avr. 2012
 '''
@@ -60,7 +60,7 @@ class StartMission(Mission):
 #                    self.can.send("rangefinder %d threshold %d"
 #                            % (i, self.robot.rangefinder[i]))
 #                self.logger.info("Beggining of the match !")
-#                # On indique à l'UI que le match a commencé
+#                # On indique  l'UI que le match a commenc
 #                self.ui.send("start")
 #                self.missions["end_match"].start()
 #                self.missions["forward"].start(15000)

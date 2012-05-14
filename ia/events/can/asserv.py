@@ -13,19 +13,19 @@ class AsservEvent(Event):
             if len(cmd) == 3:
                 self.value = cmd[2]
             else:
-                raise CmdError("« %s %s » takes exactly 1 argument"
+                raise CmdError(" %s %s  takes exactly 1 argument"
                         %(cmd[0], cmd[1]))
                 self.value = self.parse_int(self.value)
             
         # Interruption de consigne
         # ex: asserv int dist 586 (10e de mm)
-        # ex : asserv int rot 55132 (centidegré)
+        # ex : asserv int rot 55132 (centidegr)
         elif self.type == "int":
             if len(cmd) == 4:
                 self.type += "_" + cmd[2]
                 self.value = self.parse_int(cmd[3])
             else:
-                raise CmdError("« %s %s » takes exactly 4 argument"
+                raise CmdError(" %s %s  takes exactly 4 argument"
                         %(cmd[0], cmd[1]))
                 self.value = self.parse_int(self.value)
             
@@ -39,10 +39,10 @@ class AsservEvent(Event):
                     if cmd[4] == "curt":
                         self.curt = True
                     else:
-                        raise CmdError("expected « curt » or nothing as fifth "
-                                + "argument, got « %s »" %cmd[4])
+                        raise CmdError("expected  curt  or nothing as fifth "
+                                + "argument, got  %s " %cmd[4])
             else:
-                raise CmdError("« %s %s » takes exactly 2 or 3 arguments"
+                raise CmdError(" %s %s  takes exactly 2 or 3 arguments"
                         %(cmd[0], cmd[1]))
 
         # asserv ticks
@@ -53,14 +53,14 @@ class AsservEvent(Event):
                 self.cmd = "answer"
                 self.value = self.parse_int(cmd[3])
             else:
-                raise CmdError("« asserv ticks » must be followed by "
-                        + "« reset », « request » or « answer <dist> »")
+                raise CmdError(" asserv ticks  must be followed by "
+                        + " reset ,  request  or  answer <dist> ")
                 
         # asserv stop/on/off/done
         elif self.type in ["stop", "on", "off", "done"]:
             if len(cmd) != 2:
-                raise CmdError("« %s %s » takes no argument"
+                raise CmdError(" %s %s  takes no argument"
                          %(cmd[0], cmd[1]))
         else:
-            raise CmdError("« %s » can't be followed by « %s »"
+            raise CmdError(" %s  can\'t be followed by  %s "
                     %(cmd[0], cmd[1]))

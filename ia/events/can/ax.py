@@ -18,10 +18,10 @@ class AxEvent(Event):
            
             # ax 1 angle request
             # ax 1 angle answer 22
-            # ax 1 angle set 45 (-90 à 90)
+            # ax 1 angle set 45 (-90  90)
             if self.type == "answer" or self.type == "set":
                 if len(cmd) == 4:
                     self.value = self.parse_int(cmd[3])
                 else:
-                    raise CmdError("« ax <id> <angle/torque> <answer/set> "
+                    raise CmdError(" ax <id> <angle/torque> <answer/set> "
                             +"must be followed by an integer")

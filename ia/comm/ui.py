@@ -11,7 +11,7 @@ class UI(Comm):
         self.logger = logging.getLogger("ui")
         
     def cmd_to_event(self, cmd):
-        # si on utilise Comm.cmd_to_event, il faut préfixer toutes les 
+        # si on utilise Comm.cmd_to_event, il faut prfixer toutes les 
         # commandes par "ui "
         if cmd == "":
             self.logger.warning("No more data on socket.")
@@ -22,7 +22,7 @@ class UI(Comm):
             m = __import__("events.ui")
             event = getattr(getattr(m,"ui"), "UIEvent")(words)
         except ImportError:
-            raise CmdError("No module called « ui » found")
+            raise CmdError("No module called  ui  found")
         return event
 
                     

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# -*-coding:UTF-8 -*
+# -*-coding: ascii -*
 
 from logging import getLogger
 from logging.config import fileConfig
@@ -21,7 +21,7 @@ class IA:
         fileConfig(f)
         f.close()
 
-        self.logger.info("Starting « %s » robot" % name)
+        self.logger.info("Starting  %s  robot" % name)
         assert(name in ["petit", "gros"])
         
         module = __import__("robots."+name)
@@ -29,7 +29,7 @@ class IA:
         
         Robot.copy_from(self.robot)
         
-        # On écrase les attributs du robot par ceux passés ici en argument, utiles pour le testing
+        # On crase les attributs du robot par ceux passs ici en argument, utiles pour le testing
         for argument in kargs:
             setattr(self.robot, argument, kargs[argument])
             
@@ -48,7 +48,7 @@ class IA:
         self.can.dispatcher = self.dispatcher
         self.ui.dispatcher  = self.dispatcher
         
-        self.dispatcher.start() # Mieux si démarré avant can et ui
+        self.dispatcher.start() # Mieux si dmarr avant can et ui
         self.can.start()
         self.ui.start()
 
@@ -59,8 +59,8 @@ if __name__ == "__main__":
     default = "petit"
     
     if len(sys.argv) < 2:
-        print("Usage: %s nom_robot" %sys.argv[0])
-        print("Run default robot « %s » …", default)
+        print("Usage: %s <nom_robot>" %sys.argv[0])
+        print("Run default robot  %s  ", default)
     else:
         default = sys.argv[1]
     

@@ -8,7 +8,7 @@ class GrosRobot:
 
         self.name = "gros"
         
-        # Zone de départ : violet|red ← oui c'est con
+        # Zone de dpart : violet|red  oui c'est con
         self.side = "red"
 
         # dimension du robot
@@ -22,11 +22,11 @@ class GrosRobot:
         # direction *initial* du robot
         self.rot = 0
 
-        # paramètre de la tourelle
+        # paramtre de la tourelle
         self.turret = { "left": 17, "right": 15, "front": 70 }
 
-        # paramètre par défaut des sockets
-        # (utilisé par IA si pas de valeur spécifié)
+        # paramtre par dfaut des sockets
+        # (utilis par IA si pas de valeur spcifi)
         self.rangefinder = { 1: 2800, 2: 2800, 8: 2800 }
 
         # socket can

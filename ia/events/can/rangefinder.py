@@ -18,7 +18,7 @@ class RangefinderEvent(Event):
             
             types = ["mute", "unmute", "value", "threshold", "request"]
             if self.type not in types:
-                raise CmdError("« %s » third argument must be in list "%cmd[0] + types.__str__())
+                raise CmdError(" %s  third argument must be in list "%cmd[0] + types.__str__())
             
             # rangefinder <id:int> threshold <valeur:int>
             if self.type == "threshold":
@@ -35,8 +35,8 @@ class RangefinderEvent(Event):
                     self.edge = True
                     
                 if self.pos not in pos:
-                    raise CmdError("« %s » second argument must be in list "%cmd[0] + pos.__str__())
-                # On inverse les ordres si on démarrage en position rouge
+                    raise CmdError(" %s  second argument must be in list "%cmd[0] + pos.__str__())
+                # On inverse les ordres si on dmarrage en position rouge
                 if Robot.side == "red":
                     if self.id == 1:
                         self.id = 2
@@ -45,4 +45,4 @@ class RangefinderEvent(Event):
         
 
         else:
-            raise CmdError("« %s » takes exactly 3 or more arguments"%(cmd[0]))
+            raise CmdError(" %s  takes exactly 3 or more arguments"%(cmd[0]))

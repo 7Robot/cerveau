@@ -2,7 +2,7 @@
 '''
 Created on 5 mai 2012
 
-Liste des états :
+Liste des tats :
     repos
     forwarding
     pausing
@@ -20,11 +20,11 @@ from missions.mission import Mission
 class CaptorMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
-        # boolean représentant la présence d'obstacle à l'avant et à l'arrière
-        # au démarrage, on considère qu'il n'y a pas d'obstacle
+        # boolean reprsentant la prsence d'obstacle  l'avant et  l'arrire
+        # au dmarrage, on considre qu'il n'y a pas d'obstacle
         self._front = False
         self._back = False
-        # boolean représentant la présence d'obstacle en face d'un capteur
+        # boolean reprsentant la prsence d'obstacle en face d'un capteur
         self.captor = { 0: False, 1: False, 2: False, 8: False }
 
     def _get_front(self):
@@ -102,7 +102,7 @@ class CaptorMission(Mission):
             self.captor[0] = False
             for i in range(len(event.angle)):
                 event.dist[i] -= 8
-                obs_x = event.dist[i]*cos(event.angle[i]/180*pi) # les angles de turret sont en degré
+                obs_x = event.dist[i]*cos(event.angle[i]/180*pi) # les angles de turret sont en degr
                 obs_y = event.dist[i]*sin(event.angle[i]/180*pi)
                 if    obs_x < self.robot.turret["right"]+8*hysteresis \
                   and obs_x > -self.robot.turret["left"]-8*hysteresis \

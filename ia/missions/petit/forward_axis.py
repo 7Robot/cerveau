@@ -12,7 +12,7 @@ class ForwardDistMission(Mission):
         self.state = "repos"
         
     def move_until_x(self, value):
-        '''Précondition : on avance selon l'axe des X'''
+        '''Prcondition : on avance selon l'axe des X'''
         dist   = abs(value - self.move.pos.x)
         dtheta = abs(self.rot)
         dist   = dist/cos(dtheta)
@@ -21,4 +21,4 @@ class ForwardDistMission(Mission):
         
         
     
-    
+  

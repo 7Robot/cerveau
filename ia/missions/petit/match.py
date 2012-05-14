@@ -12,7 +12,7 @@ class MatchMission(Mission):
 
     def process_event(self, event):
         if self.state == "repos":
-            if event.name == "start": #FIXME : personne l'envoie
+            if event.name == "start": #FIXME : personne l\'envoie
                 self.state = "match started"
                 self.ui.send("start")
                 self.create_timer(90000)

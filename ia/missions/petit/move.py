@@ -15,26 +15,26 @@ class MoveMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
          
-        # dernière position connu du robot
-        # determiné soit par l'odo, soit par le biais connu du robot
+        # dernire position connu du robot
+        # determin soit par l'odo, soit par le biais connu du robot
         self._pos = self.robot.pos # position initial
         self._rot = self.robot.rot # orientation initial
 
-        # position demandé du robot
-        # initialement, on est à priori là où on veut être
+        # position demand du robot
+        # initialement, on est  priori l o on veut tre
         self._target_pos = self.robot.pos
         self._target_rot = self.robot.rot
 
         self.odo = None # pas de recalibration en cours
         
         '''
-        opération en cours d'execution
+        opration en cours d'execution
         valeurs possibles :
         * None
         * running
-        * stopping (demande d'arrêt de speed)
+        * stopping (demande d'arrt de speed)
         '''
-        self.state = None # pas d'opération en cours
+        self.state = None # pas d'opration en cours
 
         '''
         mission en cours
@@ -75,7 +75,7 @@ class MoveMission(Mission):
     target_rot = property(_get_target_rot, _set_target_rot)
 
     def _set_mission(self, mission):
-        self.logger.info("[mission] %s → %s"
+        self.logger.info("[mission] %s  %s"
                 %(self.mission, mission))
         self._mission = mission
     def _get_mission(self):
@@ -84,9 +84,9 @@ class MoveMission(Mission):
 
     ### MISSIONS DISPONIBLE ###
     
-    # avancer d'une distance donné
+    # avancer d'une distance donn
     def forward(self, callback, dist):
-        '''Le fait de raisonner sur target permet de corriger les imprécisions
+        '''Le fait de raisonner sur target permet de corriger les imprcisions
         de l'asserv, car target="l'endroit ou l'asserv aurait du nous ammener"'''
         if self.mission == None:
             self.target_pos += Vertex(dist * cos(self.rot/18000*pi), dist * sin(self.rot/18000*pi))
@@ -132,7 +132,7 @@ class MoveMission(Mission):
             self.state = "stopping"
             self.missions["speed"].stop(self)
 
-    ### FIN DES MISSIONS ###
+    ### FINDESMISSIONS ###
 
     def process_event(self, event):
         if self.mission == "forward" or self.mission == "rotate" \

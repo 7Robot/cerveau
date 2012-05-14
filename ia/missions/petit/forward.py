@@ -2,7 +2,7 @@
 '''
 Created on 5 mai 2012
 
-Liste des états :
+Liste des tats :
     repos
     forwarding
     pausing
@@ -28,12 +28,16 @@ class ForwardMission(Mission):
         '''Interromp la mission en cours'''
         self.aborting = True
         self.callback = callback
-        self.pause(callback)
+        if self.state = pausing:
+            self.state = "repos"
+            self.send_event(MoveEvent("aborted", self.callback))
+        else:
+	    self.pause(callback)
             
         
 
     def start(self, callback, order):
-        '''C'est moveMission qui va mettre à jour target et nous dire de combien avancer'''
+        '''C'est moveMission qui va mettre  jour target et nous dire de combien avancer'''
         if self.state == "repos":
             self.abort = False
             self.order = int(order)
@@ -61,10 +65,10 @@ class ForwardMission(Mission):
                 self.free_way = False
                 self.pause()
 
-        # events triés suivant l'état
+        # events tris suivant l'tat
         if self.state == "forwarding":
             if event.name == "asserv" and event.type == "done":
-                # on a pu aller là où on voulait aller
+                # on a pu aller l o on voulait aller
                 self.state = "repos"
                 self.send_event(MoveEvent("done", self.callback))
         elif self.state == "pausing":

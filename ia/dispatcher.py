@@ -18,15 +18,15 @@ class Dispatcher(Thread):
         self.can = can
         self.ui = ui
         # instancier toutes les missions 
-        self.missions = {} #TODO : utiliser une classe spécialisée qui rattrappe les exceptions "key not found"
+        self.missions = {} #TODO : utiliser une classe spcialise qui rattrappe les exceptions "key not found"
         self.queue    = Queue()
-        self.logger.info("––––– Loading all missions –––––")
+        self.logger.info(" Loading all missions ")
         self._load_all_missions(robot.name)
-        self.logger.info("––––– All missions loaded –––––")
+        self.logger.info(" All missions loaded ")
             
         
     def _load_all_missions(self, missions_prefix):
-        '''Créér et charge les instances de toutes les missions du package
+        '''Crr et charge les instances de toutes les missions du package
         missions.missions_prefix'''
         path             = os.path.join(os.getcwd(),"missions", missions_prefix)
         classes_missions = class_loader(path)
@@ -39,7 +39,7 @@ class Dispatcher(Thread):
                 
     
     def add_event(self, event):
-        '''Inutile, sauf si on change d'implémentation'''
+        '''Inutile, sauf si on change d'implmentation'''
         self.queue.put(event, True, None) # block=True, timeout=None
     
     def run(self):
@@ -68,6 +68,6 @@ class Dispatcher(Thread):
                 for dest in event.dests:
                     dest.process_event(event)
             else:
-                # On dispatch l'event à toutes les missions
+                # On dispatch l'event  toutes les missions
                 for missions in self.missions.values():
                     missions.process_event(event)

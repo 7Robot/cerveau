@@ -33,7 +33,7 @@ class Server_test(threading.Thread):
                 if cmd == "":
                     keep_on = False
                 else:
-                    print ("Test server received \t", cmd)
+                    print ("Test server received \\t", cmd)
             except (socket.timeout,socket.error) as message:
                 print ("recv_cmd : socket error", message) #TODO: logger.fatal
                 keep_on = False
@@ -42,7 +42,7 @@ class Server_test(threading.Thread):
         
     def send_cmd(self, cmd):
         try:
-            self.conn.send(bytes(cmd+'\n', "utf-8"))
+            self.conn.send(bytes(cmd+\'\\n\', "utf-8"))
         except (socket.timeout,socket.error) as message:
             print ("send_cmd : timout", message) #TODO: logger.fatal
         
@@ -59,4 +59,4 @@ class Server_test(threading.Thread):
         pass
         
 
-        
+      

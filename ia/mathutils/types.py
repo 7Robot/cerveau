@@ -124,7 +124,7 @@ class Segment:
         
     
 class SegmentEq:
-    '''Représentation paramétrique d'un segment
+    '''Representation paramterique d'un segment
     x(t) = ax * t + bx
     y(t) = ay * t + by
     t \in [0..1]

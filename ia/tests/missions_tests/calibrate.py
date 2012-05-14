@@ -53,4 +53,4 @@ if __name__ == '__main__':
     
     sleep(0.3)
     ia        = IA("petit", **{"can_ip" : "localhost", "can_port" : port,
-                                "ui_ip": "localhost", "ui_port" : port+1} )
+                                "ui_ip": "localhost", "ui_port" : port+1}

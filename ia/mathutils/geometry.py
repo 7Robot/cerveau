@@ -14,7 +14,7 @@ def angle(v1, v2):
     return angle
 
 def angle_normalize(angle):
-    '''Normalise un angle en centidegré'''
+    '''Normalise un angle en centidegr'''
     if angle < -18000:
         return angle+36000
     elif angle > 18000:
@@ -26,7 +26,7 @@ def dot_product(v1,  v2):
     return v1.x*v2.x + v1.y*v2.y
     
 def det(v1,  v2):
-    '''Déterminant'''
+    '''Dterminant'''
     return v1.x*v2.y-v1.y*v2.x
 
 def distance(v1, v2):
@@ -34,9 +34,9 @@ def distance(v1, v2):
     return (v2-v1).norm()
 
 def orientation(o, a, b):
-    ''' 1 si le vecteur ob est à gauche de oa, 0 si alignés, -1 sinon
+    ''' 1 si le vecteur ob est  gauche de oa, 0 si aligns, -1 sinon
     @param o,a,b : Vector
-    @return : un entier signé \in {-1,0,1}
+    @return : un entier sign \in {-1,0,1}
     '''
     oa2  = Vector(-a.y+o.y,a.x-o.x)
     ob   = Vector(b.x-o.x,  b.y-o.y)
@@ -49,7 +49,7 @@ def orientation(o, a, b):
         return -1
     
 def inSector(ab, ad, at):
-    ''' Indique si le vecteur at est dans le secteur définit par (ab, ad)
+    ''' Indique si le vecteur at est dans le secteur dfinit par (ab, ad)
     @param ab, ad, at: Vector
     @return: Boolean 
     '''
@@ -78,7 +78,7 @@ def segment_intersection(seg1, seg2):
     
 def is_segment_intersection(seg1, seg2):
     '''Renvoie True si seg1 et seg2 ont un point d'intersection
-    mais ne calcule pas ce moint d'intersection (plus coûteux)'''
+    mais ne calcule pas ce moint d'intersection (plus coteux)'''
     a, b, c, t = seg1.vert1, seg1.vert2, seg2.vert1, seg2.vert2
     if (orientation(a,t,c)>=0):
         return (orientation(a,b,c)!=orientation(a,b,t)) and (orientation(b,a,t)>0) and (orientation(b,c,t)>0)
@@ -86,7 +86,7 @@ def is_segment_intersection(seg1, seg2):
         return (orientation(a, b, c) != orientation(a, b, t)) and (orientation(b, a, t) <= 0) and (orientation(b, c, t) <= 0)
     
 def distance2_vertex_segment(vert, seg):
-    ''' Retourne la distance AU CARRÉ entre vert et seg
+    ''' Retourne la distance AU CARR entre vert et seg
     Segment [a,b], vert=v'''
     av = Vector()
     bv = Vector()
@@ -96,9 +96,9 @@ def distance2_vertex_segment(vert, seg):
     abav = ab * av
     abbv = ab * bv
     if abav*abbv >= 0:
-        # Projection de v sur (a,b) n'appartient pas à [a,b]
+        # Projection de v sur (a,b) n'appartient pas  [a,b]
         return min(av*av, bv*bv)
     else:
         return av*av - abav**2/(ab*ab) 
         
-    
+  

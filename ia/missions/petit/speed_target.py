@@ -3,7 +3,7 @@
 Created on 12 mai 2012
 '''
 
-#FIXME  est ce que si l'odo est mute quelqu'un fait des requests périodiques ?
+#FIXME  est ce que si l'odo est mute quelqu'un fait des requests priodiques ?
 
 from math import pi
 
@@ -12,7 +12,7 @@ from mathutils.geometry import angle
 
 from missions.mission import Mission
 class Speed_targetMission(Mission):
-    '''Ralentit quand on arrive à une certaine distance (20cm)
+    '''Ralentit quand on arrive  une certaine distance (20cm)
     de self.move.target'''
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
@@ -34,7 +34,7 @@ class Speed_targetMission(Mission):
             if event.name == "odo" and event.type == "pos":
                 distance_restante = (self.move.target_pos-event.pos).norm()
                 if distance_restante <= 2000:
-                    # à 20cm de la target on ralentit
+                    #  20cm de la target on ralentit
                     self.missions["speed"].change(self.missions["speed"].left/2, self.missions["speed"].right/2)
                     self.state = "slow down"
                     

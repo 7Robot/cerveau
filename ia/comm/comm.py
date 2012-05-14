@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: ascii -*-
 
 from threading import Thread
 from events.event import CmdError
@@ -24,10 +24,10 @@ class Comm(Thread):
         event = None
         
         try:
-            m = __import__("events."+self.__class__.__name__.lower()+"."+words[0]) # à tester
+            m = __import__("events."+self.__class__.__name__.lower()+"."+words[0]) #  tester
             event = getattr(getattr(getattr(m, self.__class__.__name__.lower()),words[0]), w)(words)
         except ImportError:
-            raise CmdError("No module called « %s » found" %w)
+            raise CmdError("No module called  %s  found" %w)
         return event
 
                     
@@ -52,7 +52,7 @@ class Comm(Thread):
                     try:
                         event = self.cmd_to_event(cmd)
                     except CmdError as e:
-                        self.logger.error("Failed to parse « %s »" %(cmd.strip()))
+                        self.logger.error("Failed to parse  %s " %(cmd.strip()))
                         self.logger.error("\tMessage: %s" %e)
                     else:
                         if event == None:
@@ -64,7 +64,7 @@ class Comm(Thread):
 
     def send(self, message):
         try:
-            return self.socket.send(bytes(message+"\n", "utf-8"))
+            return self.socket.send(bytes(message+"\n", "ascii"))
         except socket.timeout as message:
             self.logger.error ("Sender : timout %s" % message)
             return None

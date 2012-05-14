@@ -8,7 +8,7 @@ class PetitRobot:
 
         self.name = "petit"
         
-        # Zone de départ : violet|red (attribut de classe)
+        # Zone de dpart : violet|red (attribut de classe)
         self.side = "violet"
 
         # dimension du robot
@@ -22,11 +22,11 @@ class PetitRobot:
         # direction *initial* du robot
         self.rot = 0
 
-        # paramètre de la tourelle
+        # paramtre de la tourelle
         self.turret = { "left": 12, "right": 10, "front": 60 }
 
-        # paramètre par défaut des sockets
-        # (utilisé par IA si pas de valeur spécifié)
+        # paramtre par dfaut des sockets
+        # (utilis par IA si pas de valeur spcifi)
         self.rangefinder = { 1: 2800, 2: 2800, 8: 2800 }
 
         # socket can
