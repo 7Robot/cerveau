@@ -2,7 +2,7 @@
 
 from missions.mission import Mission
 
-from events.internal import MoveEvent
+from events.event import Event
 
 class Positioning2Mission(Mission):
     def __init__(self, robot, can, ui):
@@ -79,4 +79,4 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state = 0
                 self.logger.info("Gros en position !")
-                self.send_event(MoveEvent("done", self.callback))
+                self.send_event(Event("positioning", "done", self.callback))

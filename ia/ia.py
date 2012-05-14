@@ -60,8 +60,9 @@ if __name__ == "__main__":
     
     if len(sys.argv) < 2:
         print("Usage: %s <nom_robot>" %sys.argv[0])
-        print("Run default robot  %s  ", default)
+        print("Run default robot '%s'" %default)
     else:
         default = sys.argv[1]
     
-    ia = IA(default, **{"ui_ip": "r2d2", "inter_ip": "r2d2"})
+    #ia = IA(default, **{"ui_ip": "r2d2", "inter_ip": "r2d2"})
+    ia = IA(default)

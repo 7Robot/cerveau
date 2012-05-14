@@ -3,7 +3,7 @@
 import logging
 import threading
 
-from events.internal import StartEvent, TimerEvent
+from events.event import Event
 
 class Mission:
     def __init__(self, robot, can, ui):
@@ -18,7 +18,7 @@ class Mission:
         self.logger = logging.getLogger("mission")
         if name[-7:] == "Mission":
             self.name = name[0:-7].lower()
-            self.logger.info("Mission  %s  loaded" %self.name)
+            self.logger.info("Mission '%s' loaded" %self.name)
         else:
             self.logger.warning("Warning: convention de nommage non respecte pour %s" %name)
             self.name = name.lower()
@@ -29,14 +29,14 @@ class Mission:
         return self._state
 
     def _set_state(self, state):
-        self.logger.info("[state] %s  %s" %(self._state, state))
+        self.logger.info("[state] %s -> %s" %(self._state, state))
         self._state = state
 
     state = property(_get_state, _set_state)
 
 
     def start(self):
-        self.process_event(StartEvent())
+        self.process_event(Event("start"))
 
     def process_event(self, event):
         pass
@@ -51,7 +51,7 @@ class Mission:
         donc il n'y a pas de problme d'execution concurrente entre le thread du timer
         et le dispatcher'''
         t = threading.Timer(duration/1000, self.dispatch.add_event, \
-                            [TimerEvent([self])])
+                            [Event("timer", "timeout", self)])
         t.start()
 
     def send_event(self, event):

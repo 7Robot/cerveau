@@ -7,7 +7,7 @@ Created on 12 mai 2012
 
 from math import pi
 
-from events.internal import MoveEvent
+from events.event import Event
 from mathutils.geometry import angle
 
 from missions.mission import Mission

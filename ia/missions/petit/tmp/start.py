@@ -3,7 +3,6 @@
 Created on 27 avr. 2012
 '''
 
-from events.internal import StartEvent
 from missions.mission import Mission
 from robots.robot import Robot 
 

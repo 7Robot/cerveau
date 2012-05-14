@@ -4,7 +4,7 @@ Created on 5 mai 2012
 '''
 
 
-from events.internal import MoveEvent
+from events.event import Event
 
 from missions.mission import Mission
 class SpeedMission(Mission):
@@ -13,21 +13,15 @@ class SpeedMission(Mission):
         self.state = "repos"
 
     # s'orienter dans la direction rot_target
-    def forward(self, speed):
+    def start(self, speed, curt = False):
         if self.state == "repos":
             self.speed = speed
-            self.state = "forward"
+            self.state = "run"
             self.can.send("asserv ticks reset")
             self.can.send("asserv speed %d %d" %(speed, speed))
-            
-    def rotate(self, sens, speed, callback = None, angle = 0):
-        self.speed = speed
-        self.state = "rotate"
-        if sens == "gauche":
-            self.
 
     def stop(self, callback):
-        if self.state == "speed" or self.state == "rotate":
+        if self.state == "run":
             self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
@@ -41,7 +35,5 @@ class SpeedMission(Mission):
         if self.state == "stopped":
             if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
                 self.state = "repos"
-                doneEvent = MoveEvent("done", [self.callback])
-                doneEvent.value = event.value
-                self.send_event(doneEvent)
+                self.send_event(Event("speed", "done", self.callback, **{"value": event.value}))
                 
