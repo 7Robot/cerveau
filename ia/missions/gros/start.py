@@ -28,7 +28,7 @@ class StartMission(Mission):
         elif self.state == 3:
             if event.name == "bump" and event.state == "close":
                 self.state += 1
-                self.missions["positioning1"].start(self)
+                self.missions["positioning1"].start()
 
         elif self.state == 4:
             if event.name == "positioning" and event.type == "done":
@@ -38,12 +38,11 @@ class StartMission(Mission):
             if event.name == "bump" and event.pos == "leash" \
                     and event.state == "open":
                 self.state += 1
-                # self.can.send("turret on") FIXME  ractiver
+                # self.can.send("turret on") FIXME  reactiver
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold %d"
                             %(i, self.robot.rangefinder[i]))
                 self.logger.info("Beggining of the match !")
-                # On indique  l'UI que le match a commenc
                 self.missions["match"].start()
                 self.missions["totem1"].start()
 
