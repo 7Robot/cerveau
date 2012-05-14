@@ -19,8 +19,8 @@ class OdoEvent(Event):
 						'''On inverse pas les x car quand on démarre de rouge
 						on fait croire à l'ia et l'odo que notre orientation 
 						initiale est 0°'''
-						self.pos.y = -self.pos.y
-						self.rot   = -self.rot + 36000 
+						self.pos.x = -self.pos.x
+						self.rot   = -self.rot + 18000 
 				except ValueError as e:
 					raise CmdError(e.__str__())
 			else:

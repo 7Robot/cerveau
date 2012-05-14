@@ -17,3 +17,15 @@ class Robot:
         for attr in robot.__dict__:
             if attr[0] != "_":
                 setattr(Robot, attr, robot.__dict__[attr])
+
+
+    #def _set_vrille(self, vrille):
+    #    Robot._vrille = vrille
+
+    #def _get_vrille(self):
+    #    if Robot.side == "red":
+    #        return -Robot._vrille
+    #    else:
+    #        return Robot._vrille
+
+    #vrille = property(_get_vrille, _set_vrille)

@@ -18,6 +18,7 @@ class Can(Comm):
     def send(self, message):
         if Robot.side == "red":
             cmds = message.lower().split()
+            self.logger.debug("[old] %s" % message)
             if cmds[0] == "asserv":
                 if len(cmds) == 3 and cmds[1] == "rot":
                     cmds[2] = str(-int(cmds[2]))
@@ -25,5 +26,16 @@ class Can(Comm):
                     left = cmds[2]
                     cmds[2] = cmds[3]
                     cmds[3] = left # old left = new right
-                message = " ".join(cmds)
+            elif cmds[0] == "odo":
+                if len(cmds) > 4:
+                    cmds[2] = str(-int(cmds[2]))
+                    cmds[4] = str((-int(cmds[4])+54000)%36000)
+            elif cmds[0] == "ax":
+                if len(cmds) >= 3 and cmds[2] == "angle" and cmds[3] == "set":
+                    if cmds[1] == "2":
+                        cmds[1] = "1"
+                    else:
+                        cmds[1] = "2"
+            message = " ".join(cmds)
+            self.logger.debug("[new] %s" % message)
         return self.queued_sender.add_action(message)

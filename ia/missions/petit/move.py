@@ -75,8 +75,8 @@ class MoveMission(Mission):
     target_rot = property(_get_target_rot, _set_target_rot)
 
     def _set_mission(self, mission):
-        self.logger.info("[%s] (mission)%s → (mission)%s"
-                %(self.name, self.mission, mission))
+        self.logger.info("[mission] %s → %s"
+                %(self.mission, mission))
         self._mission = mission
     def _get_mission(self):
         return self._mission
@@ -96,15 +96,23 @@ class MoveMission(Mission):
             # FIXME: y'a sans doute plus simple
             distance *=  copysign(1, (self.target_pos - self.pos)
                     * Vertex(20*cos(self.rot/18000*pi), 20*sin(self.rot/18000*pi)))
-            self.missions["forward"].start(distance)
+            self.missions["forward"].start(self, distance)
 
     def rotate(self, callback, angle):
         if self.mission == None:
             self.callback = callback
             self.mission = "rotate"
             self.target_rot += angle
-            angle = angle_normalize(self.target_rot - self.rot)
-            self.missions["rotate"].start(angle)
+            print("Angle: %d" %angle)
+            realangle = angle_normalize(self.target_rot - self.rot)
+            print("Pos: %d, Target: %d, Rotate: %d"%(self.rot, self.target_rot,
+                realangle))
+            if realangle > 17000 and angle < 0:
+                realangle = realangle - 36000
+            elif realangle < -17000 and angle > 0:
+                realangle = realangle + 36000
+            print("Rectified angle: %d" %realangle)
+            self.missions["rotate"].start(self, realangle)
 
     def speed(self, left, right, curt = False):
         if self.mission == None:

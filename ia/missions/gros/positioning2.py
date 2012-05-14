@@ -2,26 +2,29 @@
 
 from missions.mission import Mission
 
-class PositioningMission(Mission):
+from events.internal import MoveEvent
+
+class Positioning2Mission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 
-    def start(self):
+    def start(self, callback):
         if self.state == 0:
-            self.logger.info("Positionnement de Gros")
-            self.move.rotate(self, -9000)
-            self.state += 1
+            self.state = 1
+            self.callback = callback
+            self.logger.info("Re-positionnement de Gros")
+            self.move.rotate(self, 9000)
 
     def process_event(self, e):
         if self.state == 1:
             if e.name == "move" and e.type == "done":
                 self.state += 1
                 self.move.speed(-20, -20)
-                                    
+
         elif self.state == 2:
             if e.name == "bump" and e.state == "close":
                 self.state += 1
-                self.create_timer(400)
+                self.create_timer(300)
                     
         elif self.state == 3:
             if e.name == "timer":
@@ -53,7 +56,7 @@ class PositioningMission(Mission):
         elif self.state == 7:
             if e.name == "bump" and e.state == "close":
                 self.state += 0.5
-                self.create_timer(400)
+                self.create_timer(300)
 
         elif self.state == 7.5:
             if e.name == "timer":
@@ -76,3 +79,4 @@ class PositioningMission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state = 0
                 self.logger.info("Gros en position !")
+                self.send_event(MoveEvent("done", self.callback))

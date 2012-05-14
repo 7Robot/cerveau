@@ -28,6 +28,15 @@ class UIEvent(Event):
                 raise CmdError("« %s » takes 3 arguments"
                  %(cmd[0]))
                 
+        elif self.type == "init":
+            # init <violet|red>
+            if len(cmd) == 2:
+                self.side = cmd[1]
+                if self.side not in ["red", "violet"]:
+                    raise CmdError("Unknown side « %s »." %(cmd[1]))
+            else:
+                raise CmdError("« %s » takes 2 arguments" %(cmd[0])) 
+                
         elif self.type == "message":
             # message <message:string>
             self.message = " ".join(cmd[1:])
@@ -51,15 +60,6 @@ class UIEvent(Event):
                 raise CmdError("« %s » takes 4 arguments"
                  %(cmd[0]))
         
-        
-        elif self.type == "start":
-            # start <violet|red>
-            if len(cmd) == 2:
-                self.side = cmd[1]
-                if self.side not in ["red", "violet"]:
-                    raise CmdError("Unknown side « %s »." %(cmd[1]))
-            else:
-                raise CmdError("« %s » takes 2 arguments" %(cmd[0]))       
                 
         elif self.type == "test":
             if len(cmd) == 2:

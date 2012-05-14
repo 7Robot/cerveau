@@ -29,7 +29,7 @@ class Mission:
         return self._state
 
     def _set_state(self, state):
-        self.logger.info("[%s] %s → %s" %(self.name, self._state, state))
+        self.logger.info("[state] %s → %s" %(self._state, state))
         self._state = state
 
     state = property(_get_state, _set_state)

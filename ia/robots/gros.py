@@ -8,12 +8,14 @@ class GrosRobot:
 
         self.name = "gros"
         
-        # Zone de départ : violet|red
-        self.side = "violet"
+        # Zone de départ : violet|red ← oui c'est con
+        self.side = "red"
 
         # dimension du robot
         self.dimensions = { "left": 1500, "right": 1500,
                 "front": 1950, "back": 1050 }
+
+        self.vrille = 500
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)
@@ -25,6 +27,7 @@ class GrosRobot:
 
         # paramètre par défaut des sockets
         # (utilisé par IA si pas de valeur spécifié)
+        self.rangefinder = { 1: 2800, 2: 2800, 8: 2800 }
 
         # socket can
         self.can_ip = "gros"

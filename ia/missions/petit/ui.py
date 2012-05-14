@@ -27,6 +27,10 @@ class UIMission(Mission):
                         self.ui.send("answer %s" % (ans.__str__()))
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
+                        
+                elif event.type == "init":
+                    Robot.side = event.side
+                    self.ui.send("answer done")
                 
                 elif event.type == "message":
                     self.logger.info("UI says: %s" % event.message) 
@@ -51,9 +55,6 @@ class UIMission(Mission):
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
                         
-                elif event.type == "start":
-                    Robot.side = event.side
-                    self.ui.send("answer done")
                         
                 elif event.type == "test":
                     if event.test == "forward":

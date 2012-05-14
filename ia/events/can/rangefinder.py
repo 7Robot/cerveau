@@ -2,6 +2,7 @@
 
 from events.event import Event
 from events.event import CmdError
+from robots.robot import Robot
 
 class RangefinderEvent(Event):
     def __init__(self, cmd):
@@ -35,6 +36,12 @@ class RangefinderEvent(Event):
                     
                 if self.pos not in pos:
                     raise CmdError("« %s » second argument must be in list "%cmd[0] + pos.__str__())
+                # On inverse les ordres si on démarrage en position rouge
+                if Robot.side == "red":
+                    if self.id == 1:
+                        self.id = 2
+                    elif self.id == 2:
+                        self.id = 1
         
 
         else:

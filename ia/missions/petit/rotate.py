@@ -14,13 +14,14 @@ class RotateMission(Mission):
         self.state = "repos"
 
     # s'orienter dans la direction rot_target
-    def start(self, order):
+    def start(self, callback, order):
         if self.state == "repos":
             self.state = "rotate"
+            self.callback = callback
             self.can.send("asserv rot %d" %order)
 
     def process_event(self, event):
         if self.state == "rotate":
             if event.name == "asserv" and event.type == "done":
                 self.state = "repos"
-                self.move.process_event(MoveEvent("done"))
+                self.send_event(MoveEvent("done", self.callback))

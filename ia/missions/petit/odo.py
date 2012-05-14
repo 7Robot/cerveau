@@ -39,9 +39,13 @@ class OdoMission(Mission):
                 for axe in self.value:
                     if axe == "x":
                         event.pos.x = self.value["x"]
+                        self.logger.info("[target] pos.x: %d" %self.value["x"])
+                        # TODO remove le logger
                         self.move.target_pos.x = self.value["x"]
                     elif axe == "y": 
                         event.pos.y = self.value["y"]
+                        self.logger.info("[target] pos.y: %d" %self.value["y"])
+                        # TODO remove le logger
                         self.move.target_pos.y = self.value["y"]
                     elif axe == "rot":
                         event.rot = self.value["rot"]
@@ -50,9 +54,10 @@ class OdoMission(Mission):
                 self.move.pos = event.pos
                 self.move.rot = event.rot
                 self.can.send("odo set %d %d %d"
-                        % (event.pos.x/10, event.pos.y/10, event.rot))
+                        % (event.pos.x/10, event.pos.y/10,
+                            (event.rot+72000)%36000))
 
-                self.callback.process_event(OdoEvent("done"))
+                self.send_event(OdoEvent("done", self.callback))
             else:
                 self.move.pos = event.pos
                 self.move.rot = event.rot
