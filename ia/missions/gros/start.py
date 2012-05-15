@@ -19,7 +19,7 @@ class StartMission(Mission):
                 self.state += 1
                 self.odo.broadcast()
                 self.can.send("turret unmute")
-                self.odo.set(self, **{"x": 0, "y": 0, "rot": 0})
+                self.odo.set(self, **{"x": 0, "y": 0, "rot": 27000})
 
         elif self.state == 2:
             if event.name == "odo" and event.type == "done":
@@ -50,6 +50,11 @@ class StartMission(Mission):
             if event.name == "totem" and event.type == "done":
                 self.state += 1
                 self.missions["positioning2"].start()
+
+        elif self.state == 7:
+            if event.name == "positioning" and event.type == "done":
+                self.state += 1
+                #self.missions["reorganisation"].start()
             
             #self.missions["forward"].start(15000)
             #self.move.forward(self, 5000)

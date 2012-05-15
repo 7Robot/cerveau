@@ -15,6 +15,11 @@ class OdoMission(Mission):
         self.state = None # pas de recalibration en cour
         self.brd = False # par defaut, pas de broadcast de l'odo
 
+        self.pos = self.robot.pos
+        self.rot = self.robot.rot
+        self.target_pos = self.robot.pos
+        self.target_rot = self.robot.rot
+
     def broadcast(self, state = True):
         if state != self.brd:
             self.brd = state
@@ -34,30 +39,42 @@ class OdoMission(Mission):
         # events geres quelque soit l'etat
         if event.name == "odo" and event.type == "pos":
             if self.state == "calibrating":
-                self.state = None
-
+                self.state = "calibrated"
+                #print("Calibrating")
+                #print("Old pos: %s %d" %(self.move.pos,
+                #    self.move.rot))
+                #print("Old target: %s %d" %(self.move.target_pos,
+                #    self.target_rot))
                 for axe in self.value:
                     if axe == "x":
                         event.pos.x = self.value["x"]
-                        self.logger.info("[target] pos.x: %d" %self.value["x"])
+                        #self.logger.info("[target] pos.x: %d" %self.value["x"])
                         # TODO remove le logger
-                        self.move.target_pos.x = self.value["x"]
+                        self.target_pos.x = self.value["x"]
                     elif axe == "y": 
                         event.pos.y = self.value["y"]
-                        self.logger.info("[target] pos.y: %d" %self.value["y"])
+                        #self.logger.info("[target] pos.y: %d" %self.value["y"])
                         # TODO remove le logger
-                        self.move.target_pos.y = self.value["y"]
+                        self.target_pos.y = self.value["y"]
                     elif axe == "rot":
                         event.rot = self.value["rot"]
-                        self.move.target_rot = self.value["rot"]
+                        self.target_rot = self.value["rot"]
 
-                self.move.pos = event.pos
-                self.move.rot = event.rot
+                #print(self.move)
+                self.pos = event.pos
+                self.rot = event.rot
+                #print("New pos: %s %d" %(self.move.pos,
+                #    self.move.rot))
+                #print("New target: %s %d" %(self.move.target_pos,
+                #    self.move.target_rot))
                 self.can.send("odo set %d %d %d"
                         % (event.pos.x/10, event.pos.y/10,
                             (event.rot+72000)%36000))
 
+                #self.send_event(Event("odo", "done", self.callback))
+            elif self.state == "calibrated":
+                self.state = None
                 self.send_event(Event("odo", "done", self.callback))
             else:
-                self.move.pos = event.pos
-                self.move.rot = event.rot
+                self.pos = event.pos
+                self.rot = event.rot

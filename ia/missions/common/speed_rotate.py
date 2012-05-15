@@ -3,6 +3,7 @@
 Created on 5 mai 2012
 '''
 
+# TODO a passer dans move, nottament pour la gestion de l'odo
 
 from events.event import Event
 
@@ -36,10 +37,12 @@ class SpeedRotateMission(Mission):
         elif self.state == "stopping":
             if event.name == "asserv" and event.type == "done":
                 self.state = "stopped"
-                self.can.send("asserv ticks request")
+                if not self.missions["odo"].brd:
+                    self.can.send("odo request")
 
         elif self.state == "stopped":
-            if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
+            #if event.name == "asserv" and event.tpos "ticks" and event.cmd == "answer":
+            if event.name == "odo" and event.type == "pos":
                 self.state = "repos"
-                self.send_event(Event("speedrotate", "done", self.callback, **{"value": event.value}))
-                
+                self.odo.target_rot = event.rot
+                self.send_event(Event("speedrotate", "done", self.callback))

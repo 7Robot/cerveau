@@ -14,23 +14,24 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5600) # on sort du dpart
+                self.can.send("turret on")
+                self.move.forward(self, 5800) # on sort du dpart
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 27000, False) # on tourne vers les bouteilles
+                self.move.rotate(self, 27000, True) # on tourne vers les bouteilles
 
         elif self.state == 2:
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 #self.move.forward(self, 4700) # on avance vers le totem
-                self.move.reach_y(self, 3000)
+                self.move.reach_y(self, 3050)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 9000) # on tourne vers le totem
+                self.move.rotate(self, 0, True) # on tourne vers le totem
 
         elif self.state == 4:
             if event.name == "move" and event.type == "done":
@@ -56,28 +57,40 @@ class Totem1Mission(Mission):
         elif self.state == 7:
             if event.name == "timer":
                 self.state += 1
-                self.missions["speedrotate"].start("gauche", 20)
+                self.missions["speedrotate"].start("gauche", 30)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                print("Odo, angle: %d" %event.rot)
-                if event.rot > 18000 and event.rot < 30000:
+                if event.rot > 18500 and event.rot < 30000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
-                self.state += 1
-                self.missions["forward"].start(self, 10000)
+                if self.odo.rot < 21000 and self.odo.rot > 19000:
+                    self.state += 2
+                    self.move.reach_x(self, -12000)
+                else:
+                    self.state += 1
+                    self.logger.info("Bad orientation, adjusting ...")
+                    self.move.rotate(self, 22000, True)
 
         elif self.state == 10:
-            if event.name == "forward" and event.type == "done":
+            if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.can.send("ax 2 angle set 1023")
-                self.create_timer(1500) 
+                self.move.reach_x(self, -12500)
 
         elif self.state == 11:
-            if event.name == "timer":
+            if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.can.send("ax 2 angle set 0")
+                self.move.forward(self, 800)
+
+        elif self.state == 12:
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.rotate(self, 27000, True)
+
+        elif self.state == 13:
+            if event.name == "move" and event.type:
+                self.state += 1
                 self.send_event(Event("totem", "done"))
