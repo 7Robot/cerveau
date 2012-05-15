@@ -14,7 +14,7 @@ class StartMission(Mission):
         if self.state == 0:
             self.state +=1
             self.can.send("reset")
-            self.create_timer(3000)
+            self.create_timer(3000) # FIXME 30000 !!!!!!!!!!!!!!!
             
 
         elif self.state == 1:
@@ -22,26 +22,38 @@ class StartMission(Mission):
                 self.state += 1
                 self.can.send("turret on")
                 self.can.send("turret unmute")
-                for i in [1, 2, 8]:
-                    self.can.send("rangefinder %d threshold %d"
-                            % (i, Robot.rangefinder[i]))
-                self.can.send("asserv dist 3000") # Fake recalibration
+                
+                self.ui.send("ia ready")
+#                self.missions["positioning"].start()
+#                self.missions["bottle"].start()
+#                self.missions["double_chemin"].start(self, 14200)
+#                self.missions["calibraterotation"].start()
+#                self.can.send("asserv dist 3000") # Fake recalibration
 #                self.odo.broadcast()
 #                self.can.send("turret unmute")
 #                self.odo.set(self, **{"x": 0, "y": 0, "rot": 90})
 #
         elif self.state == 2:
-            if event.name == "asserv" and event.type == "done":
+            if event.name == "positioning" and event.type == "done":
+                for i in [1, 2, 8]:
+                    self.can.send("rangefinder %d threshold %d"
+                            % (i, Robot.rangefinder[i]))
                 self.state += 1
-                self.missions["bottle"].start()
+                
+                
 #                self.missions["forward"].start(self, 9000)
                 print("Gooooooooooooooooo")
 #            if event.name == "odo" and event.type == "done":
 #                self.state += 1
 #
-#        elif self.state == 3:
-#            if event.name == "bump" and event.state == "close":
-#                self.state += 1
+        elif self.state == 3:
+            if event.name == "bump" and event.state == "open" \
+                    and event.pos == "leash":
+                self.state += 1
+                self.missions["match"].start()
+                self.missions["bottle"].start()
+                
+                
 ##                self.missions["positioning"].start()
 #                print("GO !!!!!!!!!!")
 ##                self.missions["test"].start()

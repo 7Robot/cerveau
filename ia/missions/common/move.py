@@ -133,7 +133,9 @@ class MoveMission(Mission):
             self.missions["rotate"].start(self, realangle)
 
     def speed(self, speed, curt = False):
+        print('speed !!!!')
         if self.mission == None:
+            print('speedyyyyy !!!!')
             self.mission = "speed"
             self.state = "running"
             self.missions["speed"].start(speed, curt)
@@ -148,7 +150,7 @@ class MoveMission(Mission):
         if self.mission == "speed":
             self.callback = callback
             self.state = "stopping"
-            self.missions["speed"].stop(self)
+            self.missions["speed"].stop(callback)
 
     ### FINDESMISSIONS ###
 
