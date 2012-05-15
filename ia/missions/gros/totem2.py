@@ -6,7 +6,7 @@ Created on 13 mai 2012
 from events.event import Event
 
 from missions.mission import Mission
-class Totem1Mission(Mission):
+class Totem2Mission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         
@@ -14,7 +14,7 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5800) # on sort du depart
+                self.move.forward(self, 5000) # on sort du depart
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":
@@ -24,7 +24,7 @@ class Totem1Mission(Mission):
         elif self.state == 2:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.reach_y(self, -3020)
+                self.move.reach_y(self, -3000)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
@@ -41,7 +41,7 @@ class Totem1Mission(Mission):
                 self.move.speed(35)
 
         elif self.state == 5:
-            if event.name == "odo" and event.type == "pos":
+            if event.name == "odo" and event.type == "answer":
                 if event.pos.x > -1500:
                     self.state += 1
                     self.can.send("rangefinder 2 threshold %d"
@@ -62,20 +62,20 @@ class Totem1Mission(Mission):
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 17000 and event.rot < 33000:
+                if event.rot < 16000 and event.rot > 9000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
-                if self.odo.rot < 22800 and self.odo.rot > 21000:
+                if self.odo.rot < 13000 and self.odo.rot > 11000:
                     self.state += 3
-                    self.move.reach_x(self, -12700)
+                    self.move.reach_x(self, -12500)
                 else:
                     self.state += 1
                     self.logger.info("Bad orientation (%d), adjusting ..."
                             %self.odo.rot)
-                    self.move.rotate(self, 2200, True)
+                    self.move.rotate(self, 12000, True)
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":

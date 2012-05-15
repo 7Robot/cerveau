@@ -71,14 +71,13 @@ class ForwardMission(Mission):
                 self.free_way = False
                 self.pause()
 
-        # events tris suivant l'tat
-        if self.state == "forwarding":
-            if event.name == "asserv" and event.type == "done":
-                # on a pu aller l o on voulait aller
+        elif event.name == "asserv" and event.type == "done":
+            if self.state == "forwarding" or self.state == "pausing":
+                # on a pu aller on voulait aller
                 self.state = "repos"
                 self.send_event(Event("forward", "done", self.callback))
-        elif self.state == "pausing":
-            if event.name == "asserv" and event.type == "int_dist":
+        elif event.name == "asserv" and event.type == "int_dist":
+            if self.state == "pausing":
                 self.state = "waiting"
                 self.remaining -= event.value
                 if not self.abort:

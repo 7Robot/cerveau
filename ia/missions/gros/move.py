@@ -109,12 +109,12 @@ class MoveMission(Mission):
 
             elif self.fonction == "reach_y":
                 self.mission = "forward"
-                #print("Position actuelle : %s %d" %(event.pos, event.rot))
-                #print("Consigne: y=%d" %self.value["y"])
+                print("Position actuelle : %s %d" %(event.pos, event.rot))
+                print("Consigne: y=%d" %self.value["y"])
                 dy = self.value["y"] - event.pos.y
                 dtheta = event.rot
                 dist = dy/sin(dtheta/18000*pi)
-                #print("dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
+                print("dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
                 self.odo.target_pos += Vertex(dist * cos(self.odo.rot/18000*pi), dist * sin(self.odo.rot/18000*pi))
                 self.missions["forward"].start(self, dist)
 
