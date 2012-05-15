@@ -23,6 +23,7 @@ class StartMission(Mission):
                 self.can.send("turret unmute")
                 self.can.send("ax 1 torque set 800")
                 self.can.send("ax 2 torque set 800")
+                self.can.send("turret on")
                 self.odo.set(self, **{"x": 0, "y": 0, "rot": 27000})
 
         # ODO SET OK
@@ -45,14 +46,18 @@ class StartMission(Mission):
         elif self.state == 5:
             if event.name == "bump" and event.pos == "leash" \
                     and event.state == "open":
-                self.state += 1
-                # Set des threshold
-                #for i in [1, 2, 8]:
-                #    self.can.send("rangefinder %d threshold %d"
-                #            %(i, self.robot.rangefinder[i]))
+                self.state += 0.5
+                Set des threshold
+                for i in [1, 2, 8]:
+                    self.can.send("rangefinder %d threshold %d"
+                            %(i, self.robot.rangefinder[i]))
                 self.logger.info("Beggining of the match !")
                 self.missions["match"].start()
-                #self.can.send("turret on")
+                self.create_timer(3000)
+
+        elif self.state == 5.5:
+            if event.name == "timer":
+                self.state += 0.5
                 self.missions["totem1"].start()
 
         elif self.state == 6:
