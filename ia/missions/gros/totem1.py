@@ -69,8 +69,6 @@ class Totem1Mission(Mission):
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
-                if not self.odo.brd:
-                    self.can.send("odo mute")
                 if self.odo.rot < 20800 and self.odo.rot > 19000:
                     self.state += 3
                     self.move.reach_x(self, -12700)
@@ -82,24 +80,38 @@ class Totem1Mission(Mission):
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
-                self.state += 2
-                self.move.reach_x(self, -12700)
+                self.state += 1
+                self.move.reach_x(self, -12500)
 
-        #elif self.state == 11:
-        #    if event.name == "move" and event.type == "done":
-        #        self.state += 1
-        #        self.move.forward(self, -1000)
+        elif self.state == 11:
+            if event.name == "move" and event.type == "done":
+                self.state += 1
+                self.move.forward(self, -2000)
 
         elif self.state == 12:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 27000, True)
+                self.missions["speedrotate"].start(-50, -25)
 
         elif self.state == 13:
-            if event.name == "move" and event.type:
-                self.state += 1
-                self.move.reach_y(self, 1000)
+            if event.name == "odo" and event.type == "pos":
+                if event.rot < 20000:
+                    self.state += 1
+                    self.missions["speedrotate"].stop(self)
 
         elif self.state == 14:
+            if event.name == "speedrotate" and event.type == "done":
+                if not self.odo.brd:
+                    self.can.send("odo mute")
+                if self.odo.rot < 17000 and self.odo.rot > 19000:
+                    self.send_event(Event("totem", "done"))
+                    self.state = 0
+                else:
+                    self.state += 1
+                    self.logger.info("Bad orientation (%d), adjusting ..."
+                            %self.odo.rot)
+                    self.move.rotate(self, 18000, True)
+
+        elif self.state == 15:
             if event.name == "move" and event.type:
                 self.send_event(Event("totem", "done"))

@@ -21,6 +21,7 @@ class SpeedMission(Mission):
             self.send_event(Event("start", None, self))
             
     def change(self, speed):
+        self.speed = speed
         if self.state == "run":
             self.can.send("asserv speed %d %d curt" %(speed, speed))
 
@@ -29,6 +30,12 @@ class SpeedMission(Mission):
             self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
+
+    def pause(self):
+        pass
+
+    def resume(self):
+        pass
 
     def process_event(self, event):
         if self.state == "repos" and event.name == "start":
