@@ -45,7 +45,7 @@ class Positioning1Mission(Mission):
         elif self.state == 5:
             if e.name == "move" and e.type == "done":
                 self.state += 1
-                self.move.rotate(self, 0, True)
+                self.move.rotate(self, 9000)
                     
         elif self.state == 6:
             if e.name == "move" and e.type == "done":

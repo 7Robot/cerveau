@@ -108,12 +108,12 @@ class MoveMission(Mission):
         if self.mission == None:
             self.callback = callback
             self.mission = "forward"
-            #print("Position actuelle : %s %d" %(self.odo.pos, self.odo.rot))
-            #print("Consigne: x=%d" %x)
+            print("Position actuelle : %s %d" %(self.odo.pos, self.odo.rot))
+            print("Consigne: x=%d" %x)
             dx = x - self.odo.pos.x
             dtheta = self.odo.rot
             dist = dx/cos(dtheta/18000*pi)
-            #print("dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
+            print("dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
             self.odo.target_pos += Vertex(dist * cos(self.odo.rot/18000*pi), dist * sin(self.odo.rot/18000*pi))
             self.missions["forward"].start(self, dist)
 

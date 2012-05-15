@@ -28,5 +28,4 @@ class RotateMission(Mission):
         elif self.state == "rotate":
             if event.name == "asserv" and event.type == "done":
                 self.state = "repos"
-                print("Fin de rotation, cap: %d" %self.odo.rot)
                 self.send_event(Event("rotate", "done", self.callback))

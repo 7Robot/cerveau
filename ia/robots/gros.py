@@ -9,14 +9,14 @@ class GrosRobot:
         self.name = "gros"
         
         # Zone de dpart : violet|red  oui c'est con
-        self.side = "red"
-        #self.side = "violet"
+        #self.side = "red"
+        self.side = "violet"
 
         # dimension du robot
         self.dimensions = { "left": 1500, "right": 1500,
                 "front": 1950, "back": 1050 }
 
-        self._vrille = 350
+        self._vrille = 300
 
         self.pos_timer = 100
         self.pos_speed = 15

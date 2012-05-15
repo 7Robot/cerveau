@@ -72,7 +72,7 @@ class Positioning2Mission(Mission):
             if e.name == "odo" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv on")
-                self.move.forward(self, -500)
+                self.move.forward(self, 500)
 
         elif self.state == 10:
             if e.name == "move" and e.type == "done":

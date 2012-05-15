@@ -69,7 +69,7 @@ class Totem1Mission(Mission):
             if event.name == "speedrotate" and event.type == "done":
                 if self.odo.rot < 21000 and self.odo.rot > 19000:
                     self.state += 2
-                    self.move.reach_x(self, -12000)
+                    self.move.reach_x(self, -13000)
                 else:
                     self.state += 1
                     self.logger.info("Bad orientation, adjusting ...")
@@ -78,12 +78,12 @@ class Totem1Mission(Mission):
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.reach_x(self, -12500)
+                self.move.reach_x(self, -13000)
 
         elif self.state == 11:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.forward(self, 800)
+                self.move.forward(self, -1000)
 
         elif self.state == 12:
             if event.name == "move" and event.type == "done":
