@@ -14,6 +14,8 @@ class OdoMission(Mission):
          
         self.state = None # pas de recalibration en cour
         self.brd = False # par defaut, pas de broadcast de l'odo
+        self.req = False # une requête d'odo est en cour
+        self.dest = [] # dest des request
 
         self.pos = self.robot.pos
         self.rot = self.robot.rot
@@ -32,12 +34,24 @@ class OdoMission(Mission):
         self.state = "calibrating"
         self.callback = callback
         self.value = value
-        if not self.brd:
+        self.request()
+
+    def request(self, callback = None):
+        if callback != None:
+            self.dest.append(callback)
+        if not self.req and not self.brd:
+            self.req = True
             self.can.send("odo request")
+            self.create_timer(500)
 
     def process_event(self, event):
+        if event.name == "timer":
+            if self.req:
+                self.can.send("odo request")
+                self.create_timer(500)
+        
         # events geres quelque soit l'etat
-        if event.name == "odo" and event.type == "pos":
+        elif event.name == "odo" and event.type == "pos":
             if self.state == "calibrating":
                 if not self.brd:
                     self.state = None
@@ -83,3 +97,11 @@ class OdoMission(Mission):
             else:
                 self.pos = event.pos
                 self.rot = event.rot
+            self.req = False
+
+            if len(self.dest) > 0:
+                event.dest = self.dest
+                event.type = "answer"
+                self.send_event(event)
+                #self.send_event(Event("odo", "pos", self.dest, **{"pos":
+                #    event.pos, "rot": event.rot}))

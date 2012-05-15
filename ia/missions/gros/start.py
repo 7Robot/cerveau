@@ -21,6 +21,8 @@ class StartMission(Mission):
                 self.state += 1
                 #self.odo.broadcast()
                 self.can.send("turret unmute")
+                self.can.send("ax 1 torque set 800")
+                self.can.send("ax 2 torque set 800")
                 self.odo.set(self, **{"x": 0, "y": 0, "rot": 27000})
 
         # ODO SET OK

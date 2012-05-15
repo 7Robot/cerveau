@@ -39,7 +39,7 @@ class Totem1Mission(Mission):
                 self.can.send("rangefinder 2 threshold 0")
                 if not self.odo.brd:
                     self.can.send("odo unmute")
-                self.move.speed(20, 20)
+                self.move.speed(35)
 
         elif self.state == 5:
             if event.name == "odo" and event.type == "pos":
@@ -59,11 +59,11 @@ class Totem1Mission(Mission):
         #elif self.state == 7:
         #    if event.name == "timer":
         #        self.state += 1
-                self.missions["speedrotate"].start("gauche", 40)
+                self.missions["speedrotate"].start("gauche", 80)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 18000 and event.rot < 32000:
+                if event.rot > 16000 and event.rot < 32000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
@@ -71,9 +71,9 @@ class Totem1Mission(Mission):
             if event.name == "speedrotate" and event.type == "done":
                 if not self.odo.brd:
                     self.can.send("odo mute")
-                if self.odo.rot < 21000 and self.odo.rot > 19000:
-                    self.state += 2
-                    self.move.reach_x(self, -12500)
+                if self.odo.rot < 20800 and self.odo.rot > 19000:
+                    self.state += 3
+                    self.move.reach_x(self, -12700)
                 else:
                     self.state += 1
                     self.logger.info("Bad orientation (%d), adjusting ..."
@@ -82,13 +82,13 @@ class Totem1Mission(Mission):
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
-                self.state += 1
+                self.state += 2
                 self.move.reach_x(self, -12700)
 
-        elif self.state == 11:
-            if event.name == "move" and event.type == "done":
-                self.state += 1
-                self.move.forward(self, -1000)
+        #elif self.state == 11:
+        #    if event.name == "move" and event.type == "done":
+        #        self.state += 1
+        #        self.move.forward(self, -1000)
 
         elif self.state == 12:
             if event.name == "move" and event.type == "done":
