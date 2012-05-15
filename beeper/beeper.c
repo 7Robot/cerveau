@@ -7,35 +7,45 @@
 #include <linux/input.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 
+// http://wingston.workshopindia.com/wingz/qt-application-to-play-music-on-the-mini2440s-beeper/
 
-static int ring_bell(int val)
+void ring_bell(int freq)
 {
     ssize_t s;
     struct input_event ev;
     int fd = open("/dev/input/beeper", O_WRONLY);
     
-    /* ev.time = ??; TODO */
     ev.type = EV_SND;
     ev.code = SND_TONE;
-    ev.value = val; /* enable (ring) the bell */
+    ev.value = freq;
 
     s = write(fd, &ev, sizeof (ev));
     if (s == -1) {
-        perror("Writing bell event");
-        return -1;
+        perror("Error writing bell event.");
+        return;
     }
-
-    close(fd);
-    return 1;
+    
+	close(fd);
 }
 
 int main(int argc, char **argv)
-{
-	ring_bell(500);
-	return 0;
+{	
+	if(argc != 3) {
+		perror("Usage : beeper <frequence> <duration>");
+		return EXIT_FAILURE;
+	}
+	else {
+		int frequence = atoi(argv[1]);
+		int duration = atoi(argv[1]);
+		
+		ring_bell(frequence);
+		usleep(1000 * duration);
+		ring_bell(0);
+		
+		return EXIT_SUCCESS;
+	}
 }
