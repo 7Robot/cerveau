@@ -14,7 +14,6 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.can.send("turret on")
                 self.move.forward(self, 5800) # on sort du dpart
 
         elif self.state == 1:
@@ -38,6 +37,8 @@ class Totem1Mission(Mission):
                 self.state += 1
                 self.can.send("ax 2 angle set 508")
                 self.can.send("rangefinder 2 threshold 0")
+                if not self.odo.brd:
+                    self.can.send("odo unmute")
                 self.move.speed(20, 20)
 
         elif self.state == 5:
@@ -57,13 +58,15 @@ class Totem1Mission(Mission):
         elif self.state == 7:
             if event.name == "timer":
                 self.state += 1
-                self.missions["speedrotate"].start("gauche", 30)
+                self.missions["speedrotate"].start("gauche", 40)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 18500 and event.rot < 30000:
+                if event.rot > 17000 and event.rot < 30000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
+                    if not self.odo.brd:
+                        self.can.send("odo mute")
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":

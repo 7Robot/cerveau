@@ -18,8 +18,8 @@ class GrosRobot:
 
         self._vrille = 300
 
-        self.pos_timer = 100
-        self.pos_speed = 15
+        self.pos_timer = 300
+        self.pos_speed = 20
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)

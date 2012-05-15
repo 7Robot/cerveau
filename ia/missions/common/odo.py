@@ -39,7 +39,11 @@ class OdoMission(Mission):
         # events geres quelque soit l'etat
         if event.name == "odo" and event.type == "pos":
             if self.state == "calibrating":
-                self.state = "calibrated"
+                if not self.brd:
+                    self.state = None
+                    self.send_event(Event("odo", "done", self.callback))
+                else:
+                    self.state = "calibrated"
                 #print("Calibrating")
                 #print("Old pos: %s %d" %(self.move.pos,
                 #    self.move.rot))
@@ -70,6 +74,7 @@ class OdoMission(Mission):
                 self.can.send("odo set %d %d %d"
                         % (event.pos.x/10, event.pos.y/10,
                             (event.rot+72000)%36000))
+
 
                 #self.send_event(Event("odo", "done", self.callback))
             elif self.state == "calibrated":
