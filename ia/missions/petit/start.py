@@ -25,7 +25,7 @@ class StartMission(Mission):
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold %d"
                             % (i, Robot.rangefinder[i]))
-                self.missions["positioning"].start()
+#                self.missions["positioning"].start()
 #                self.missions["bottle"].start()
 #                self.missions["double_chemin"].start(self, 14200)
 #                self.missions["calibraterotation"].start()
@@ -37,16 +37,20 @@ class StartMission(Mission):
         elif self.state == 2:
             if event.name == "positioning" and event.type == "done":
                 self.state += 1
-                self.missions["bottle"].start()
+                
                 
 #                self.missions["forward"].start(self, 9000)
                 print("Gooooooooooooooooo")
 #            if event.name == "odo" and event.type == "done":
 #                self.state += 1
 #
-#        elif self.state == 3:
-#            if event.name == "bump" and event.state == "close":
-#                self.state += 1
+        elif self.state == 3:
+            if event.name == "bump" and event.state == "open" \
+                    and event.pos == "leash":
+                self.state += 1
+                self.missions["match"].start()
+                self.missions["bottle"].start()
+                
 ##                self.missions["positioning"].start()
 #                print("GO !!!!!!!!!!")
 ##                self.missions["test"].start()

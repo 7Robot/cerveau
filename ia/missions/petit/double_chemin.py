@@ -13,6 +13,7 @@ class Double_CheminMission(Mission):
 
     def start(self, callback, dist):
         self.missions["captor"].dist_y = 9999999
+        self.missions["captor"].largeur = -6
         self.callback = callback
         self.dist     = dist
         self.state    +=1
@@ -43,7 +44,8 @@ class Double_CheminMission(Mission):
                 
             elif e.name == "forward" and e.type == "done":
                 self.state = 100
-                self.missions["captor"].dist_y = 0
+                self.missions["captor"].dist_y  = 0
+                self.missions["captor"].largeur = 0
                 self.send_event(Event("double_chemin", "done", self.callback))
                 
         elif self.state == 3:

@@ -31,6 +31,7 @@ class UIMission(Mission):
                 elif event.type == "init":
                     Robot.side = event.side
                     self.ui.send("answer done")
+                    self.missions["positioning"].start()
                 
                 elif event.type == "message":
                     self.logger.info("UI says: %s" % event.message) 
