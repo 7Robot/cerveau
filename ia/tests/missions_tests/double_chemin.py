@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 '''
+Created on 15 mai 2012
+'''
+# -*- coding: utf-8 -*-
+'''
 Created on 6 mai 2012
 '''
 
@@ -24,36 +28,19 @@ class Server_test_can(Server_test):
         super(self.__class__, self).__init__(ip, port)
         
     def tests(self):
-        self.running.wait(1)
+        self.running.wait(2)
         self.send_cmd("rangefinder 1 value 15 under edge")
-        self.running.wait(0.5)
+        
         self.send_cmd("asserv int dist 300")
-        self.running.wait(1)
-        print("asserv done")
-        self.send_cmd("asserv done")
-        self.running.wait(1)
-        print("asserv done")
-        self.send_cmd("asserv done")
         self.running.wait(0.3)
         self.send_cmd("rangefinder 1 value 15 under edge")
-        
-        self.send_cmd("rangefinder 1 value 100 over edge")
-        
-        self.send_cmd("rangefinder 1 value 15 under edge")
-        self.send_cmd("asserv int dist 200")
-        
-        self.send_cmd("rangefinder 1 value 15 over edge")
+        self.send_cmd("asserv int dist 300")
         
         self.send_cmd("asserv done")
         self.running.wait(3)
         
         print("------------------------------------------")
         print("Expected result:")
-        print("asserv dist 1000")
-        print("asserv stop")
-        print("asserv dist 700")
-        print("asserv stop")
-        print("asserv dist 500")
         print("------------------------------------------")
         self.stop()
 
@@ -71,5 +58,5 @@ if __name__ == '__main__':
 
     
     sleep(0.1)
-    ia        = IA("petit", **{"can_ip" : "localhost", "can_port" : port,
-                                "ui_ip": "localhost", "ui_port" : port+1}
+    ia        = IA("petit", **{"can_ip" : "localhost", "can_port" : port, \
+                                "ui_ip": "localhost", "ui_port" : port+1})

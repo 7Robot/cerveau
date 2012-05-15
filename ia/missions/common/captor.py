@@ -25,6 +25,7 @@ class CaptorMission(Mission):
         self._back = False
         # boolean reprsentant la prsence d'obstacle en face d'un capteur
         self.captor = { 0: False, 1: False, 2: False, 8: False }
+        self.dist_y = 0 # customisable
 
     def _get_front(self):
         return self._front
@@ -109,7 +110,8 @@ class CaptorMission(Mission):
                 obs_y = event.dist[i]*sin(event.angle[i]/180*pi)
                 if    obs_x < self.robot.turret["right"]+8*hysteresis \
                   and obs_x > -self.robot.turret["left"]-8*hysteresis \
-                  and obs_y < self.robot.turret["front"]+4*hysteresis:
+                  and obs_y < self.robot.turret["front"]+4*hysteresis + self.dist_y:
+                    print("dy", self.dist_y)
                     if hysteresis == 0:
                         self.logger.info("Laser STOP !")
                         self.front = True
