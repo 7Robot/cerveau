@@ -36,10 +36,12 @@ class BottleMission(Mission):
         elif self.state == 3.5:
             if e.name == "timer":
                 self.state += 0.5
+                self.create_timer(3000)
                 self.missions["speed"].change(60)
                     
         elif self.state == 4:
-            if e.name == "bump" and e.state=="close":
+            if (e.name == "bump" and e.state=="close") \
+                    or e.name == "timer":
                 self.state += 1
                 self.create_timer(500)
                 
@@ -85,20 +87,30 @@ class BottleMission(Mission):
         elif self.state == 11:
             if e.name == "rotate" and e.type == "done":
                 self.state += 1
-                print('avance !!!!!!!!!!!!!!!!!!!')
+                self.create_timer(3000)
                 self.missions["speed"].start(40)
-                print("fait !!!!")
+
                 
         elif self.state == 12:
-            if e.name == "bump" and e.state=="close":
+            if (e.name == "bump" and e.state=="close") \
+                    or e.name == "timer":
                 self.state += 1
                 self.create_timer(500)
         
         elif self.state == 13:
             if e.name == "timer":
                 self.state += 1
-                self.missions["lingot_milieu"].start()
-#                self.missions["speed"].stop(self)
+                self.missions["speed"].stop(self)
+                
+        elif self.state == 14:
+            if e.name == "speed" and e.type == "done":        
+                if not(self.missions["double_chemin"].went_B):
+                    print("Lingot milieu")
+                    self.missions["lingot_milieu"].start()
+                else:
+                    print("rase totem ")
+                    self.missions["rase_totem"].start()
+#                
                 
 #        elif self.state == 14:
 #            if e.name == "speed" and e.type == "done":

@@ -19,6 +19,8 @@ class SpeedMission(Mission):
             self.speed = speed
             self.can.send("asserv ticks reset")
             self.send_event(Event("start", None, self))
+        else:
+            print("Je peux pas avancer !!!!!!!!!!!!!!!!!!!!")
             
     def change(self, speed):
         if self.state == "run":

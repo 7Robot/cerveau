@@ -25,6 +25,7 @@ class StartMission(Mission):
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold %d"
                             % (i, Robot.rangefinder[i]))
+                self.ui.send("ia ready")
 #                self.missions["positioning"].start()
 #                self.missions["bottle"].start()
 #                self.missions["double_chemin"].start(self, 14200)
@@ -50,6 +51,7 @@ class StartMission(Mission):
                 self.state += 1
                 self.missions["match"].start()
                 self.missions["bottle"].start()
+                
                 
 ##                self.missions["positioning"].start()
 #                print("GO !!!!!!!!!!")

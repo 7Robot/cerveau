@@ -19,6 +19,7 @@ class Double_CheminMission(Mission):
         self.state    +=1
         self.path     = "A"
         self.process_event(Event("start"))
+        self.went_B = False
         
         
     def process_event(self, e):
@@ -36,6 +37,7 @@ class Double_CheminMission(Mission):
                 self.dist = self.missions["forward"].remaining 
                 if self.path == "A":
                     self.path = "B"
+                    self.went_B = True
                     self.missions["rotate"].start(self, -9000)
                 else:
                     self.path = "A"
@@ -54,7 +56,7 @@ class Double_CheminMission(Mission):
                 self.state += 1
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold 0" % i)
-                self.missions["forward"].start(self, -4400)
+                self.missions["forward"].start(self, -4900)
                 # on se décale de 60 cm
                 
         elif self.state == 4:
