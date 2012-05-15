@@ -21,23 +21,26 @@ class ForwardMission(Mission):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos" # repos | forwarding | pausing | waiting
         self.free_way = True 
-        self.aborting = False
         self.callback = None
+        self.abort = False
         
-    def abort(self, callback):
-        '''Interrompre la mission en cours'''
-        self.aborting = True
-        self.callback = callback
-        if self.state == "waiting":
-            self.state = "repos"
-            self.send_event(Event("forward", "aborted", self.callback))
-        else:
-	        self.pause(callback)
+#    def abort(self, callback):
+#        '''Interrompre la mission en cours'''
+#        self.aborting = True
+#        self.callback = callback
+#        if self.state == "waiting":
+#            print("abort 1111111111111111")
+#            self.state = "repos"
+#            self.send_event(Event("forward", "aborted", self.callback))
+#        else:
+#            print("abort 2222222222222222222")
+#            self.pause(callback)
 
-    def start(self, callback, order):
+    def start(self, callback, order, abort=False):
         '''C'est moveMission qui va mettre  jour target et nous dire de combien avancer'''
         if self.state == "repos":
-            self.abort = False
+            self.abort = abort
+#            self.abort = False
             self.order = int(order)
             self.callback = callback
             self.remaining = self.order
@@ -56,9 +59,17 @@ class ForwardMission(Mission):
         
     def process_event(self, event):
         if event.name == "captor" and event.pos == "front":
+            print("FORWARD  CAPTOR !!!!!!!!!!!!!!")
             if event.state == "start":
                 self.free_way = True
-                self.resume()
+                if not self.abort:
+                    print("resume !!!")
+                    self.resume()
+                else:
+                    print("ABORT !!!!!")
+                    self.state = "repos"
+                    self.abort = False
+                    self.send_event(Event("forward", "aborted", self.callback))
             else:
                 self.free_way = False
                 self.pause()
@@ -73,8 +84,13 @@ class ForwardMission(Mission):
             if event.name == "asserv" and event.type == "int_dist":
                 self.state = "waiting"
                 self.remaining -= event.value
-                if not self.aborting:
+                if not self.abort:
+                    print("resume2 !!!")
                     self.resume()
                 else:
+                    print("abort 2")
+                    self.state = "repos"
+                    self.abort = False
                     self.send_event(Event("forward", "aborted", self.callback))
+                    print("sent")
                 

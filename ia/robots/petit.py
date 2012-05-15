@@ -9,7 +9,7 @@ class PetitRobot:
         self.name = "petit"
         
         # Zone de dpart : violet|red (attribut de classe)
-        self.side = "violet"
+        self.side = "red"
 
         # dimension du robot
         self.dimensions = { "left": 1290, "right": 1290,

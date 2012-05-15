@@ -42,7 +42,7 @@ class Server_test(threading.Thread):
         
     def send_cmd(self, cmd):
         try:
-            self.conn.send(bytes(cmd+\'\\n\', "utf-8"))
+            self.conn.send(bytes(cmd+'\n', "utf-8"))
         except (socket.timeout,socket.error) as message:
             print ("send_cmd : timout", message) #TODO: logger.fatal
         
