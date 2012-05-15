@@ -6,7 +6,7 @@ Created on 13 mai 2012
 from events.event import Event
 
 from missions.mission import Mission
-class Totem1Mission(Mission):
+class Totem2Mission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         
@@ -14,18 +14,18 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5500) # on sort du depart
+                self.move.forward(self, 2000)
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.rotate(self, 27000, True) # on tourne vers les bouteilles
+                self.move.rotate(self, 2000)
 
         elif self.state == 2:
             if event.name == "move" and event.type == "done":
-                self.state += 1
-                #self.move.forward(self, 4700) # on avance vers le totem
-                self.move.reach_y(self, 3020)
+                self.state = 0
+                self.move.forward(self, 5000)
+                #self.move.reach_y(self, 3020)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
@@ -59,7 +59,7 @@ class Totem1Mission(Mission):
         #elif self.state == 7:
         #    if event.name == "timer":
         #        self.state += 1
-                self.missions["speedrotate"].start(0, 80)
+                self.missions["speedrotate"].start("gauche", 80)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
