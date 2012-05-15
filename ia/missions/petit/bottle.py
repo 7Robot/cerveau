@@ -97,16 +97,20 @@ class BottleMission(Mission):
         elif self.state == 13:
             if e.name == "timer":
                 self.state += 1
-                self.missions["speed"].stop(self)
+                self.missions["lingot_milieu"].start()
+#                self.missions["speed"].stop(self)
                 
-        elif self.state == 14:
-            if e.name == "speed" and e.type == "done":
-                self.state += 1        
-                self.missions["forward"].start(self, -2000)
+#        elif self.state == 14:
+#            if e.name == "speed" and e.type == "done":
+#                self.state += 1        
+#                self.missions["forward"].start(self, -2000)
+#                
+#        elif self.state == 15:
+#            if e.name == "forward" and e.type == "done":
+#                self.state += 1
+#                self.missions["rotate"].start(self, -9500)
                 
-        elif self.state == 15:
-            if e.name == "forward" and e.type == "done":
-                self.state += 1
-                self.missions["rotate"].start(self, -9500)
+        
+                
                 
       
