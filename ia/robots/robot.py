@@ -14,11 +14,17 @@ class Robot:
         '''inconvnient de cette mthode : c'est une copie  l'instant t
         de robot. Si une instance de robot est modifie par erreur,
         les attributs de classe de Robot ne sont plus  jour'''
+
         for attr in robot.__dict__:
             if attr[0] != "_":
                 setattr(Robot, attr, robot.__dict__[attr])
 
-
+        # Access a vrille
+        if robot.side == "red":
+            Robot.vrille = -robot.__dict__['_vrille']
+        else:
+            Robot.vrille = robot.__dict__['_vrille']
+        
     #def _set_vrille(self, vrille):
     #    Robot._vrille = vrille
 

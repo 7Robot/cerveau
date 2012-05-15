@@ -3,6 +3,7 @@
 from missions.mission import Mission
 
 from events.event import Event
+from robots.robot import Robot
 
 class Positioning2Mission(Mission):
     def __init__(self, robot, can, ui):
@@ -34,7 +35,7 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 0.5
                 self.can.send("asserv off")
-                self.odo.set(self, **{"y": self.robot.dimensions["back"] - 4800, "rot": 27000 + self.robot.vrille })
+                self.odo.set(self, **{"y": self.robot.dimensions["back"] - 4800, "rot": 27000 + Robot.vrille })
 
         elif self.state == 4:
             if e.name == "odo" and e.type == "done":
@@ -66,7 +67,7 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv off")
-                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": self.robot.vrille})
+                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": Robot.vrille})
 
         elif self.state == 9:
             if e.name == "odo" and e.type == "done":
