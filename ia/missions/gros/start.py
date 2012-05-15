@@ -47,7 +47,7 @@ class StartMission(Mission):
             if event.name == "bump" and event.pos == "leash" \
                     and event.state == "open":
                 self.state += 0.5
-                Set des threshold
+                # Set des threshold
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold %d"
                             %(i, self.robot.rangefinder[i]))
@@ -68,7 +68,7 @@ class StartMission(Mission):
         elif self.state == 7:
             if event.name == "positioning" and event.type == "done":
                 self.state += 1
-                #self.missions["reorganisation"].start()
+                self.missions["totem2"].start()
             
             #self.missions["forward"].start(15000)
             #self.move.forward(self, 5000)

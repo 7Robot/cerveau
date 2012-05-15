@@ -14,10 +14,10 @@ class SpeedRotateMission(Mission):
         self.state = "repos"
 
     # s'orienter dans la direction rot_target
-    def start(self, sens, speed):
+    def start(self, left, right):
         if self.state == "repos":
-            self.speed = speed
-            self.sens = sens
+            self.left = left
+            self.right = right
             self.send_event(Event("start", None, self))
 
     def stop(self, callback):
@@ -29,10 +29,7 @@ class SpeedRotateMission(Mission):
     def process_event(self, event):
         if self.state == "repos" and event.name == "start":
             self.state = "run"
-            if self.sens == "droite":
-                self.can.send("asserv speed %d 0" %self.speed)
-            else:
-                self.can.send("asserv speed 0 %d" %self.speed)
+            self.can.send("asserv speed %d %d" %(self.left, self.right))
                 
         elif self.state == "stopping":
             if event.name == "asserv" and event.type == "done":

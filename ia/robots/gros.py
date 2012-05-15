@@ -9,8 +9,8 @@ class GrosRobot:
         self.name = "gros"
         
         # Zone de dpart : violet|red  oui c'est con
-        #self.side = "red"
-        self.side = "violet"
+        self.side = "red"
+        #self.side = "violet"
 
         # dimension du robot
         self.dimensions = { "left": 1500, "right": 1500,
@@ -18,8 +18,8 @@ class GrosRobot:
 
         self._vrille = 320
 
-        self.pos_timer = 300
-        self.pos_speed = 30
+        self.pos_timer = 100
+        self.pos_speed = 25
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)

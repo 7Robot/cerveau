@@ -85,36 +85,36 @@ class MoveMission(Mission):
         if event.name == "odo" and event.type == "answer" and self.mission == None:
             if self.fonction == "forward":
                 self.mission = "forward"
-                print("Position actuelle : %s %d" %(event.pos, event.rot))
-                print("Target actuelle : %s %d" %(self.odo.target_pos, self.odo.target_rot))
+                #print("Position actuelle : %s %d" %(event.pos, event.rot))
+                #print("Target actuelle : %s %d" %(self.odo.target_pos, self.odo.target_rot))
                 deplacement = Vertex(self.value["dist"] * cos(self.odo.target_rot/18000*pi), self.value["dist"] * sin(self.odo.target_rot/18000*pi))
-                print("Distance : %d" %self.value["dist"])
-                print("Vecteur de deplacement : %s" %deplacement)
+                #print("Distance : %d" %self.value["dist"])
+                #print("Vecteur de deplacement : %s" %deplacement)
                 self.odo.target_pos += deplacement
-                print("Nouvelle target : %s %d" %(self.odo.target_pos, self.odo.target_rot))
+                #print("Nouvelle target : %s %d" %(self.odo.target_pos, self.odo.target_rot))
                 distance = copysign(deplacement.norm(), self.value["dist"])
-                print("Consigne : %d" %distance)
+                #print("Consigne : %d" %distance)
                 self.missions["forward"].start(self, distance)
 
             elif self.fonction == "reach_x":
                 self.mission = "forward"
-                print("Position actuelle : %s %d" %(self.odo.pos, event.rot))
-                print("Consigne: x=%d" %self.value["x"])
+                #print("Position actuelle : %s %d" %(self.odo.pos, event.rot))
+                #print("Consigne: x=%d" %self.value["x"])
                 dx = self.value["x"] - event.pos.x
                 dtheta = event.rot
                 dist = dx/cos(dtheta/18000*pi)
-                print("dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
+                #print("dx: %d, dtheta: %d, dist: %d" %(dx, dtheta, dist))
                 self.odo.target_pos += Vertex(dist * cos(event.rot/18000*pi), dist * sin(event.rot/18000*pi))
                 self.missions["forward"].start(self, dist)
 
             elif self.fonction == "reach_y":
                 self.mission = "forward"
-                print("Position actuelle : %s %d" %(event.pos, event.rot))
-                print("Consigne: y=%d" %self.value["y"])
+                #print("Position actuelle : %s %d" %(event.pos, event.rot))
+                #print("Consigne: y=%d" %self.value["y"])
                 dy = self.value["y"] - event.pos.y
                 dtheta = event.rot
                 dist = dy/sin(dtheta/18000*pi)
-                print("dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
+                #print("dy: %d, dtheta: %d, dist: %d" %(dy, dtheta, dist))
                 self.odo.target_pos += Vertex(dist * cos(self.odo.rot/18000*pi), dist * sin(self.odo.rot/18000*pi))
                 self.missions["forward"].start(self, dist)
 
@@ -124,14 +124,14 @@ class MoveMission(Mission):
                     self.odo.target_rot = self.value["angle"]
                 else:
                     self.odo.target_rot += self.value["angle"]
-                print("Angle: %d" %self.value["angle"])
+                #print("Angle: %d" %self.value["angle"])
                 realangle = angle_normalize(self.odo.target_rot - event.rot)
-                print("Pos: %d, Target: %d, Rotate: %d"%(event.rot, self.odo.target_rot, realangle))
+                #print("Pos: %d, Target: %d, Rotate: %d"%(event.rot, self.odo.target_rot, realangle))
                 if realangle > 17000 and self.angle < 0:
                     realangle = realangle - 36000
                 elif realangle < -17000 and self.angle > 0:
                     realangle = realangle + 36000
-                print("Rectified angle: %d" %realangle)
+                #print("Rectified angle: %d" %realangle)
                 self.missions["rotate"].start(self, realangle)
 
         elif event.name == self.mission and event.type == "done":
