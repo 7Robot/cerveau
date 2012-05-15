@@ -63,7 +63,7 @@ class Totem1Mission(Mission):
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 16000 and event.rot < 32000:
+                if event.rot > 15000 and event.rot < 32000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
 
