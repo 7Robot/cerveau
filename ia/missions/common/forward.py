@@ -59,14 +59,11 @@ class ForwardMission(Mission):
         
     def process_event(self, event):
         if event.name == "captor" and event.pos == "front":
-            print("FORWARD  CAPTOR !!!!!!!!!!!!!!")
             if event.state == "start":
                 self.free_way = True
                 if not self.abort:
-                    print("resume !!!")
                     self.resume()
                 else:
-                    print("ABORT !!!!!")
                     self.state = "repos"
                     self.abort = False
                     self.send_event(Event("forward", "aborted", self.callback))
@@ -85,12 +82,9 @@ class ForwardMission(Mission):
                 self.state = "waiting"
                 self.remaining -= event.value
                 if not self.abort:
-                    print("resume2 !!!")
                     self.resume()
                 else:
-                    print("abort 2")
                     self.state = "repos"
                     self.abort = False
                     self.send_event(Event("forward", "aborted", self.callback))
-                    print("sent")
                 

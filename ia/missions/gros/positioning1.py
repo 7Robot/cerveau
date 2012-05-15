@@ -18,12 +18,12 @@ class Positioning1Mission(Mission):
     def process_event(self, e):
         if self.state == 1 and e.name == "start":
             self.state += 1
-            self.move.speed(-20, -20)
+            self.move.speed(-self.robot.pos_speed)
             
         elif self.state == 2:
             if e.name == "bump" and e.state == "close":
                 self.state += 1
-                self.create_timer(300)
+                self.create_timer(self.robot.pos_timer)
                     
         elif self.state == 3:
             if e.name == "timer":
@@ -50,12 +50,12 @@ class Positioning1Mission(Mission):
         elif self.state == 6:
             if e.name == "move" and e.type == "done":
                 self.state += 1
-                self.move.speed(-20, -20)
+                self.move.speed(-self.robot.pos_speed)
 
         elif self.state == 7:
             if e.name == "bump" and e.state == "close":
                 self.state += 0.5
-                self.create_timer(300)
+                self.create_timer(self.robot.pos_timer)
 
         elif self.state == 7.5:
             if e.name == "timer":
@@ -66,13 +66,13 @@ class Positioning1Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv off")
-                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": 0})
+                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": self.robot.vrille})
 
         elif self.state == 9:
             if e.name == "odo" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv on")
-                self.move.forward(self, 500)
+                self.move.forward(self, 300)
 
         elif self.state == 10:
             if e.name == "move" and e.type == "done":

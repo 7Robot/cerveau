@@ -31,7 +31,7 @@ class PositioningMission(Mission):
         elif self.state == 4:
             if e.name == "speed" and e.type == "done":
                 self.state += 1
-                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000})
+                #self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000})
                 self.missions["forward"].start(self, 1800)
 
 #        elif self.state == 4:
@@ -62,7 +62,7 @@ class PositioningMission(Mission):
         elif self.state == 8:
             if e.name == "speed" and e.type == "done":
                 self.state += 2
-                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": 0})
+                #self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": 0})
                 self.missions["forward"].start(self, 6000)
 
 #        elif self.state == 9:
