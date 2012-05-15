@@ -34,16 +34,19 @@ void ring_bell(int freq)
 
 int main(int argc, char **argv)
 {	
-	if(argc != 3) {
-		perror("Usage : beeper <frequence> <duration>");
+	if(argc < 3) {
+		perror("Usage : beeper <frequence> <duration> ... ");
 		return EXIT_FAILURE;
 	}
 	else {
-		int frequence = atoi(argv[1]);
-		int duration = atoi(argv[1]);
-		
-		ring_bell(frequence);
-		usleep(1000 * duration);
+		int i = 1;
+		while(i + 1 < argc) {
+			int frequence = atoi(argv[i++]);
+			int duration = atoi(argv[i++]);
+			
+			ring_bell(frequence);
+			usleep(1000 * duration);
+		}
 		ring_bell(0);
 		
 		return EXIT_SUCCESS;
