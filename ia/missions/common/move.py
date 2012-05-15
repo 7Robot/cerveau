@@ -26,6 +26,8 @@ class MoveMission(Mission):
         #self._target_rot = self.robot.rot
 
         #self.odo = None # pas de recalibration en cours
+
+        self.request = False
         '''
         mission en cours
         valeur possible :
@@ -87,7 +89,9 @@ class MoveMission(Mission):
     # Elle demmare sur un odo pos pour avoir une valeur a jour
 
     def run(self):
-        if not self.odo.brd:
+        if not self.odo.brd and not self.request:
+            self.request = True
+            self.create_timer(500)
             self.can.send("odo request")
     
     # avancer de dist
@@ -141,7 +145,14 @@ class MoveMission(Mission):
     ### FIN DES FONCTIONS ###
 
     def process_event(self, event):
-        if event.name == "odo" and event.type == "pos" and self.mission == None:
+        if event.name == "timer":
+            if self.request:
+                self.can.send("odo request")
+                self.create_timer(500)
+                print("ODO REQUEST ####################################")
+            
+        elif event.name == "odo" and event.type == "pos" and self.mission == None:
+            self.request = False
             self.odo.pos = event.pos
             self.odo.rot = event.rot
             if self.fonction == "forward":

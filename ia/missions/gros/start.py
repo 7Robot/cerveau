@@ -50,7 +50,7 @@ class StartMission(Mission):
                 #            %(i, self.robot.rangefinder[i]))
                 self.logger.info("Beggining of the match !")
                 self.missions["match"].start()
-                self.can.send("turret on")
+                #self.can.send("turret on")
                 self.missions["totem1"].start()
 
         elif self.state == 6:

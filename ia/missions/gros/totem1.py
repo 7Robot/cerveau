@@ -14,7 +14,7 @@ class Totem1Mission(Mission):
         if self.state == 0:
             if event.name == "start":
                 self.state += 1
-                self.move.forward(self, 5800) # on sort du dpart
+                self.move.forward(self, 5500) # on sort du depart
 
         elif self.state == 1:
             if event.name == "move" and event.type == "done":
@@ -25,7 +25,7 @@ class Totem1Mission(Mission):
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 #self.move.forward(self, 4700) # on avance vers le totem
-                self.move.reach_y(self, 3050)
+                self.move.reach_y(self, 3020)
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
@@ -51,37 +51,39 @@ class Totem1Mission(Mission):
 
         elif self.state == 6:
             if event.name == "move" and event.type == "done":
-                self.state += 1
+        #        self.state += 1
+                self.state += 2
                 self.can.send("ax 2 angle set 0")
-                self.create_timer(1000)
+        #        self.create_timer(1000)
                 
-        elif self.state == 7:
-            if event.name == "timer":
-                self.state += 1
+        #elif self.state == 7:
+        #    if event.name == "timer":
+        #        self.state += 1
                 self.missions["speedrotate"].start("gauche", 40)
 
         elif self.state == 8:
             if event.name == "odo" and event.type == "pos":
-                if event.rot > 17000 and event.rot < 30000:
+                if event.rot > 18000 and event.rot < 32000:
                     self.state += 1
                     self.missions["speedrotate"].stop(self)
-                    if not self.odo.brd:
-                        self.can.send("odo mute")
 
         elif self.state == 9:
             if event.name == "speedrotate" and event.type == "done":
+                if not self.odo.brd:
+                    self.can.send("odo mute")
                 if self.odo.rot < 21000 and self.odo.rot > 19000:
                     self.state += 2
-                    self.move.reach_x(self, -13000)
+                    self.move.reach_x(self, -12500)
                 else:
                     self.state += 1
-                    self.logger.info("Bad orientation, adjusting ...")
-                    self.move.rotate(self, 22000, True)
+                    self.logger.info("Bad orientation (%d), adjusting ..."
+                            %self.odo.rot)
+                    self.move.rotate(self, 20000, True)
 
         elif self.state == 10:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.reach_x(self, -13000)
+                self.move.reach_x(self, -12700)
 
         elif self.state == 11:
             if event.name == "move" and event.type == "done":
@@ -96,4 +98,8 @@ class Totem1Mission(Mission):
         elif self.state == 13:
             if event.name == "move" and event.type:
                 self.state += 1
+                self.move.reach_y(self, 1000)
+
+        elif self.state == 14:
+            if event.name == "move" and event.type:
                 self.send_event(Event("totem", "done"))
