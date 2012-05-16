@@ -69,5 +69,4 @@ if __name__ == "__main__":
     else:
         default = sys.argv[1]
     
-    ia = IA(default, **{"can_ip": "localhost", "ui_ip": "localhost", "inter_ip": "localhost"})
-    #ia = IA(default)
+    ia = IA(default)

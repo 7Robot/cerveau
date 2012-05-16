@@ -34,6 +34,7 @@ class StartMission(Mission):
 
         # Demarrage de la mission positioning 1 sur bump back
         elif self.state == 3:
+            print("event: ", event)
             if event.name == "ui" and event.type == "start":
                 self.state += 1 
                 self.missions["positioning1"].start()

@@ -5,7 +5,7 @@ from missions.mission import Mission
 from events.event import Event
 from robots.robot import Robot
 
-class Positionin1Mission(Mission):
+class Positioning1Mission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 

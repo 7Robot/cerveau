@@ -30,16 +30,15 @@ class UIMission(Mission):
                 elif event.type == "init":
                     Robot.side = event.side
                     self.ui.send("answer done")
-                    self.missions["positioning"].start()
+                    self.send_event(Event("ui", "start", self.missions["start"]))
                 
                 elif event.type == "message":
                     self.logger.info("UI says: %s" % event.message) 
                         
                         
                 elif event.type == "positioning":
-                    if "positioning" in self.missions:
-                        self.send_event(Event("ui", "start", self.missions["start"]))
-                        #self.missions["positioning"].start()
+                    if "positioning1" in self.missions:
+                        self.missions["positioning1"].start()
                     else:
                         self.logger.error("The mission \'positioning\' is not loaded")
                         

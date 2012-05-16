@@ -52,7 +52,6 @@ class Totem1Mission(Mission):
         elif self.state == 6:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.state += 2
                 self.can.send("ax 2 angle set 0")
                 self.create_timer(200)
                 
@@ -86,7 +85,7 @@ class Totem1Mission(Mission):
         elif self.state == 11:
             if event.name == "move" and event.type == "done":
                 self.state += 1
-                self.move.forward(self, -2000)
+                self.move.forward(self, -3700)
 
         elif self.state == 12:
             if event.name == "move" and event.type == "done":
@@ -103,7 +102,7 @@ class Totem1Mission(Mission):
             if event.name == "speedrotate" and event.type == "done":
                 if not self.odo.brd:
                     self.can.send("odo mute")
-                if self.odo.rot < 26000 and self.odo.rot > 28000:
+                if self.odo.rot < 25500 and self.odo.rot > 28500:
                     self.send_event(Event("totem", "done"))
                     self.state = 0
                 else:
