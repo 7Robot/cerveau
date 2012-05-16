@@ -2,7 +2,7 @@
 '''
 Created on 6 mai 2012
 '''
-
+from events.event import Event
 from missions.mission import Mission
 from robots.robot import Robot
 
@@ -38,7 +38,8 @@ class UIMission(Mission):
                         
                 elif event.type == "positioning":
                     if "positioning" in self.missions:
-                        self.missions["positioning"].start()
+                        self.send_event(Event("ui", "start", self.missions["start"]))
+                        #self.missions["positioning"].start()
                     else:
                         self.logger.error("The mission \'positioning\' is not loaded")
                         

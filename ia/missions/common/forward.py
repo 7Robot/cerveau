@@ -21,21 +21,8 @@ class ForwardMission(Mission):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos" # repos | forwarding | pausing | waiting
         self.free_way = True 
-        self.callback = None
         self.abort = False
         
-#    def abort(self, callback):
-#        '''Interrompre la mission en cours'''
-#        self.aborting = True
-#        self.callback = callback
-#        if self.state == "waiting":
-#            print("abort 1111111111111111")
-#            self.state = "repos"
-#            self.send_event(Event("forward", "aborted", self.callback))
-#        else:
-#            print("abort 2222222222222222222")
-#            self.pause(callback)
-
     def start(self, callback, order, abort=False):
         '''C'est moveMission qui va mettre  jour target et nous dire de combien avancer'''
         if self.state == "repos":
@@ -58,7 +45,9 @@ class ForwardMission(Mission):
             self.can.send("asserv dist %d" %self.remaining)
         
     def process_event(self, event):
-        if event.name == "captor" and event.pos == "front":
+        if event.name == "captor" \
+                and ((event.pos == "front" and self.dist > 0) \
+                  or (event.pos == "back"  and self.dist < 0)):
             if event.state == "start":
                 self.free_way = True
                 if not self.abort:

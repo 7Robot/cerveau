@@ -19,7 +19,7 @@ class StartMission(Mission):
 
         elif self.state == 1:
             if event.name == "timer":
-                self.state += 1
+                self.state += 0.5
                 self.can.send("turret on")
                 self.can.send("turret unmute")
                 
@@ -33,6 +33,11 @@ class StartMission(Mission):
 #                self.can.send("turret unmute")
 #                self.odo.set(self, **{"x": 0, "y": 0, "rot": 90})
 #
+        elif self.state == 1.5:
+            if event.name == "ui" and event.type == "start":
+                self.state += 0.5
+                self.missions["positioning"].start()
+
         elif self.state == 2:
             if event.name == "positioning" and event.type == "done":
                 for i in [1, 2, 8]:

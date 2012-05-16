@@ -34,9 +34,12 @@ class StartMission(Mission):
 
         # Demarrage de la mission positioning 1 sur bump back
         elif self.state == 3:
-            if event.name == "bump" and event.pos == "back" and event.state == "close":
+            if event.name == "ui" and event.type == "start":
+                self.state += 1 
+                self.missions["positioning1"].start()
+            elif event.name == "bump" and event.pos == "back" and event.state == "close":
                 self.state += 1
-                #self.missions["positioning"].start()
+                self.missions["positioning1"].start()
 
         # Fin de la premiere mission de positionnement
         elif self.state == 4:

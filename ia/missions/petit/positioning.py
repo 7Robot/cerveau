@@ -22,6 +22,9 @@ class PositioningMission(Mission):
             if e.name == "bump" and e.state == "close":
                 self.state += 1
                 self.create_timer(700)
+            elif e.name == "bump" and e.pos "alim" \
+                    and e.state == "close":
+                self.missions["speed"].start(-20)
                     
         elif self.state == 3:
             if e.name == "timer":

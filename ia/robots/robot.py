@@ -21,10 +21,7 @@ class Robot:
             if attr[0] != "_":
                 setattr(Robot, attr, robot.__dict__[attr])
    
-        if robot.side == "red":
-            Robot._vrille = -robot.__dict__['_vrille']
-        else:
-            Robot._vrille = robot.__dict__['_vrille']
+        Robot._vrille = robot.__dict__['_vrille']
 
     
     def vrille():

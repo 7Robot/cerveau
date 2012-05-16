@@ -11,15 +11,23 @@ class SpeedMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
         self.state = "repos"
+        self.free_way = True
+
 
     # s'orienter dans la direction rot_target
-    def start(self, speed, curt = False):
+    def start(self, speed, curt = False, callback_autoabort = None):
         if self.state == "repos":
             self.curt = curt
-            self.speed = speed
+            self.speed = speeda
+            callback = callback_autoabort
+            self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
-            self.send_event(Event("start", None, self))
-            
+            self.state = "run"
+            if self.curt:
+                self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
+            else:
+                self.can.send("asserv speed %d %d" %(self.speed, self.speed))
+             
     def change(self, speed):
         self.speed = speed
         if self.state == "run":
@@ -32,23 +40,43 @@ class SpeedMission(Mission):
             self.can.send("asserv stop")
 
     def pause(self):
-        pass
+        if self.state == "run":
+            self.state = "pausing"
+            self.can.send("asserv stop")
 
     def resume(self):
-        pass
-
-    def process_event(self, event):
-        if self.state == "repos" and event.name == "start":
-            self.state = "run"
+        if self.state == "waiting" and self.freeway:
+            self.state == "run"
             if self.curt:
                 self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
             else:
                 self.can.send("asserv speed %d %d" %(self.speed, self.speed))
-                
-        elif self.state == "stopping":
+             
+
+    def process_event(self, event):
+        if event.name == "captor" \
+                and ((event.pos == "front" and self.dist > 0) \
+                  or (event.pos == "back"  and self.dist < 0)):
+            if event.state == "start":
+                self.free_way = True
+                if not self.autoabort:
+                    self.resume()
+                else:
+                    self.state = "repos"
+                    self.send_event(Event("speed", "aborted", self.callback))
+            else:
+                self.free_way = False
+                self.pause()
+
+
+        elif event.name == "asserv" and event.type == "done":
+            if self.state == "run" or self.state == " # FIXME a finir
+
             if event.name == "asserv" and event.type == "done":
                 self.state = "stopped"
                 self.can.send("asserv ticks request")
+
+        elif self.state == "pausing
 
         elif self.state == "stopped":
             if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
