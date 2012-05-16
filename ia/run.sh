@@ -1,3 +1,3 @@
 export PYTHONPATH=".":$PYTHONPATH
 
-python3 ./ia.py $HOST
+python3 ./ia.py `hostname`

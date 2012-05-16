@@ -35,7 +35,7 @@ class Totem2Mission(Mission):
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 self.can.send("ax 1 angle set 508")
-                self.can.send("rangefinder 2 threshold 0")
+                self.missions["threshold"].activate(1, False)
                 if not self.odo.brd:
                     self.can.send("odo unmute")
                 self.move.speed(35)
@@ -44,8 +44,7 @@ class Totem2Mission(Mission):
             if event.name == "odo" and event.type == "answer":
                 if event.pos.x > -1500:
                     self.state += 1
-                    self.can.send("rangefinder 2 threshold %d"
-                            % self.robot.rangefinder[2])
+                    self.missions["threshold"].activate(1, True)
                     self.move.stop(self)
 
         elif self.state == 6:

@@ -7,6 +7,7 @@ Created on 5 mai 2012
 from events.event import Event
 
 from missions.mission import Mission
+from robots.robot import Robot
 class SpeedMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
@@ -39,7 +40,7 @@ class SpeedMission(Mission):
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
-            self.state = "run"
+            self.missions["threshold"].sensivity(50 * abs(self.speed))
             if self.curt:
                 self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
             else:
@@ -51,10 +52,15 @@ class SpeedMission(Mission):
             self.can.send("asserv speed %d %d curt" %(speed, speed))
 
     def stop(self, callback):
+        self.callback = callback
         if self.state == "run":
-            self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
+        elif self.state == "aborting" or self.state == "pausing":
+            self.state = "stopping"
+        elif self.state == "paused":
+            self.can.send("asserv ticks request")
+            self.state = "stopped"
 
     def pause(self):
         if self.state == "run":
@@ -69,13 +75,11 @@ class SpeedMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.speed > 0) \
                     or (self.free_way["back"] and self.speed < 0)):
-#                self.state = "run"
-                self.state = "repos" #FIXME a enlever
-                # FIXME a enlever !
-#                if self.curt:
-#                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
-#                else:
-#                    self.can.send("asserv speed %d %d" %(self.speed, self.speed)) 
+                self.state = "run"
+                if self.curt:
+                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
+                else:
+                    self.can.send("asserv speed %d %d" %(self.speed, self.speed))
 
     def process_event(self, event):
         if event.name == "captor":
@@ -91,6 +95,7 @@ class SpeedMission(Mission):
         elif event.name == "asserv" and event.type == "done":
             if self.state == "pausing":
                 self.state = "paused"
+                self.resume()
             elif self.state == "stopping":
                 self.state = "stopped"
                 self.can.send("asserv ticks request")
@@ -101,7 +106,10 @@ class SpeedMission(Mission):
         if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
             if self.state == "stopped":
                 self.state = "repos"
+                self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speed", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speed", "aborted", self.callback, **{"value": event.value}))

@@ -5,6 +5,7 @@ Created on 5 mai 2012
 
 
 from events.event import Event
+from robots.robot import Robot
 
 from missions.mission import Mission
 class SpeedRotateMission(Mission):
@@ -38,23 +39,29 @@ class SpeedRotateMission(Mission):
             self.right = right
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
-            self.can.send("asserv ticks reset")
             self.state = "run"
-            if self.curt:
-                self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
-            else:
-                self.can.send("asserv speed %d %d" %(self.speed, self.speed))
+            self.missions["threshold"].sensivity(100 * \
+                    abs(self.left+self.right))
+            self.can.send("asserv speed %d %d" %(self.left, self.right))
              
     def change(self, speed):
-        self.speed = speed
-        if self.state == "run":
-            self.can.send("asserv speed %d %d" %(self.left, self.right))
+        if self.state != "repos":
+            self.speed = speed 
+            self.missions["threshold"].sensivity(100 * \
+                    abs(self.left+self.right))
+            if self.state == "run":
+                self.can.send("asserv speed %d %d" %(self.left, self.right))
 
     def stop(self, callback):
+        self.callback = callback
         if self.state == "run":
-            self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
+        elif self.state == "aborting" or self.state == "pausing":
+            self.state = "stopping"
+        elif self.state == "paused":
+            self.can.send("asserv ticks request")
+            self.state = "stopped"
 
     def pause(self):
         if self.state == "run":
@@ -67,18 +74,18 @@ class SpeedRotateMission(Mission):
     def resume(self):
         # FIXME il est peut-être possible de redémarrer sans attendre le asserv done
         if self.state == "paused":
-            if ((self.free_way["front"] and self.speed > 0) \
-                    or (self.free_way["back"] and self.speed < 0)):
-#                self.state = "run"
-                self.state = "repos" #FIXME a enlever
-#                self.can.send("asserv speed %d %d" %(self.left, self.right))
+            if ((self.free_way["front"] and abs(self.left+self.right) > 0) \
+                    or (self.free_way["back"] and abs(self.left+self.right) < 0)):
+                self.state = "run"
+#                self.state = "repos" #FIXME a enlever
+                self.can.send("asserv speed %d %d" %(self.left, self.right))
                 
     def process_event(self, event):
         if event.name == "captor":
             self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
-                if ((event.pos == "front" and self.speed > 0) \
-                        or (event.pos == "back" and self.speed < 0)):
+                if ((event.pos == "front" and abs(self.left+self.right) > 0) \
+                        or (event.pos == "back" and abs(self.left+self.right) < 0)):
                     if event.state == "start":
                         self.resume()
                     else:
@@ -87,6 +94,7 @@ class SpeedRotateMission(Mission):
         elif event.name == "asserv" and event.type == "done":
             if self.state == "pausing":
                 self.state = "paused"
+                self.resume()
             elif self.state == "stopping":
                 self.state = "stopped"
                 self.can.send("asserv ticks request")
@@ -97,7 +105,9 @@ class SpeedRotateMission(Mission):
         if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
             if self.state == "stopped":
                 self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "aborted", self.callback, **{"value": event.value}))

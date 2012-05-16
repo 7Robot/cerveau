@@ -16,6 +16,8 @@ from mathutils.types import Vertex
 from math import cos, sin, pi, copysign
 
 from missions.mission import Mission
+from robots.robot import Robot
+
 class ForwardMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
@@ -31,6 +33,7 @@ class ForwardMission(Mission):
             self.callback = callback
             self.remaining = self.order
             self.state = "run"
+            self.missions["threshold"].sensivity(1.5)
             self.can.send("asserv dist %d" % self.remaining)
 
     def pause(self):
@@ -49,9 +52,9 @@ class ForwardMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.order > 0) \
                     or (self.free_way["back"] and self.order < 0)):
-#                self.state = "run"
-                self.state = "repos" #FIXME a enlever
-#                self.can.send("asserv dist %d" %self.remaining) # FIXME a enlever
+                self.state = "run" # FIXME mode non-fhomologation
+#                self.state = "repos" # FIXME mode homologation
+                self.can.send("asserv dist %d" %self.remaining) # FIXME mode non-homologation
         
     def process_event(self, event):
         if event.name == "captor":
@@ -68,6 +71,7 @@ class ForwardMission(Mission):
             if self.state != "repos":
                 # on a pu aller on voulait aller
                 self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("forward", "done", self.callback))
         elif event.name == "asserv" and event.type == "int_dist":
             if self.state == "pausing":
@@ -78,5 +82,6 @@ class ForwardMission(Mission):
                 self.resume()
             elif self.state == "stopping":
                 self.state = "repos"
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("forward", "aborted", self.callback))
                 
