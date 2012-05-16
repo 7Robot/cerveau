@@ -73,6 +73,8 @@ class ForwardMission(Mission):
             if self.state == "pausing":
                 self.state = "paused"
                 self.remaining -= event.value
+                self.logger.info("Distance remaining: %d/%d"
+                        %(self.remaining, self.order))
                 self.resume()
             elif self.state == "stopping":
                 self.state = "repos"

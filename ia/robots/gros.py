@@ -31,7 +31,7 @@ class GrosRobot:
 
         # paramtre par dfaut des sockets
         # (utilis par IA si pas de valeur spcifi)
-        self.rangefinder = { 1: 2800, 2: 2800, 8: 2800 }
+        self.rangefinder = { 1: 4000, 2: 4000, 8: 4000 }
 
         # socket can
         self.can_ip = "gros"
