@@ -40,6 +40,9 @@ class SpeedMission(Mission):
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
             self.state = "run"
+            for i in Robot.rangefinder.keys():
+                self.can.send("rangefinder %d threshold %d" \
+                        %(i, Robot.rangefinder[i]) / 50 * self.speed)
             if self.curt:
                 self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
             else:
@@ -74,13 +77,11 @@ class SpeedMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.speed > 0) \
                     or (self.free_way["back"] and self.speed < 0)):
-                self.state = "run" ##
-                #self.state = "repos" #FIXME a enlever
-                # FIXME a enlever !
-                if self.curt: ##
-                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed)) ##
-                else: ##
-                    self.can.send("asserv speed %d %d" %(self.speed, self.speed)) ##
+                self.state = "run"
+                if self.curt:
+                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
+                else:
+                    self.can.send("asserv speed %d %d" %(self.speed, self.speed))
 
     def process_event(self, event):
         if event.name == "captor":
@@ -107,7 +108,14 @@ class SpeedMission(Mission):
         if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
             if self.state == "stopped":
                 self.state = "repos"
+                self.state = "repos"
+                for i in Robot.rangefinder.keys():
+                    self.can.send("rangefinder %d threshold %d" \
+                            %(i, Robot.rangefinder[i]))
                 self.send_event(Event("speed", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
+                for i in Robot.rangefinder.keys():
+                    self.can.send("rangefinder %d threshold %d" \
+                            %(i, Robot.rangefinder[i]))
                 self.send_event(Event("speed", "aborted", self.callback, **{"value": event.value}))

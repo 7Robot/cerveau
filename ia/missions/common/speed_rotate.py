@@ -39,12 +39,19 @@ class SpeedRotateMission(Mission):
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.state = "run"
+            for i in Robot.rangefinder.keys():
+                self.can.send("rangefinder %d threshold %d" \
+                        %(i, Robot.rangefinder[i]) / 100 * (self.left+self.right))
             self.can.send("asserv speed %d %d" %(self.left, self.right))
              
     def change(self, speed):
-        self.speed = speed
-        if self.state == "run":
-            self.can.send("asserv speed %d %d" %(self.left, self.right))
+        if self.state != "repos":
+            self.speed = speed 
+            for i in Robot.rangefinder.keys():
+                self.can.send("rangefinder %d threshold %d" \
+                        %(i, Robot.rangefinder[i]) / 100 * (self.left+self.right))
+            if self.state == "run":
+                self.can.send("asserv speed %d %d" %(self.left, self.right))
 
     def stop(self, callback):
         self.callback = callback
@@ -99,7 +106,13 @@ class SpeedRotateMission(Mission):
         if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
             if self.state == "stopped":
                 self.state = "repos"
+                for i in Robot.rangefinder.keys():
+                    self.can.send("rangefinder %d threshold %d" \
+                            %(i, Robot.rangefinder[i]))
                 self.send_event(Event("speedrotate", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
+                for i in Robot.rangefinder.keys():
+                    self.can.send("rangefinder %d threshold %d" \
+                            %(i, Robot.rangefinder[i]))
                 self.send_event(Event("speedrotate", "aborted", self.callback, **{"value": event.value}))
