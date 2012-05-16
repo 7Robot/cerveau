@@ -47,10 +47,15 @@ class SpeedRotateMission(Mission):
             self.can.send("asserv speed %d %d" %(self.left, self.right))
 
     def stop(self, callback):
+        self.callback = callback
         if self.state == "run":
-            self.callback = callback
             self.state = "stopping"
             self.can.send("asserv stop")
+        elif self.state == "aborting" or self.state == "pausing":
+            self.state = "stopping"
+        elif self.state == "paused":
+            self.can.send("asserv ticks request")
+            self.state = "stopped"
 
     def pause(self):
         if self.state == "run":
