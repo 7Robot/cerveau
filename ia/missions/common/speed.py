@@ -69,13 +69,13 @@ class SpeedMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.speed > 0) \
                     or (self.free_way["back"] and self.speed < 0)):
-#                self.state = "run"
-                self.state = "repos" #FIXME a enlever
+                self.state = "run" ##
+                #self.state = "repos" #FIXME a enlever
                 # FIXME a enlever !
-#                if self.curt:
-#                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
-#                else:
-#                    self.can.send("asserv speed %d %d" %(self.speed, self.speed)) 
+                if self.curt: ##
+                    self.can.send("asserv speed %d %d curt" %(self.speed, self.speed)) ##
+                else: ##
+                    self.can.send("asserv speed %d %d" %(self.speed, self.speed)) ##
 
     def process_event(self, event):
         if event.name == "captor":
@@ -91,6 +91,7 @@ class SpeedMission(Mission):
         elif event.name == "asserv" and event.type == "done":
             if self.state == "pausing":
                 self.state = "paused"
+                self.resume()
             elif self.state == "stopping":
                 self.state = "stopped"
                 self.can.send("asserv ticks request")

@@ -49,9 +49,9 @@ class ForwardMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.order > 0) \
                     or (self.free_way["back"] and self.order < 0)):
-#                self.state = "run"
-                self.state = "repos" #FIXME a enlever
-#                self.can.send("asserv dist %d" %self.remaining) # FIXME a enlever
+                self.state = "run" # FIXME mode non-fhomologation
+#                self.state = "repos" # FIXME mode homologation
+                self.can.send("asserv dist %d" %self.remaining) # FIXME mode non-homologation
         
     def process_event(self, event):
         if event.name == "captor":

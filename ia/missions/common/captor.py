@@ -112,7 +112,6 @@ class CaptorMission(Mission):
                 if    obs_x < self.robot.turret["right"]+6*hysteresis + self.largeur \
                   and obs_x > -self.robot.turret["left"]-6*hysteresis + self.largeur \
                   and obs_y < self.robot.turret["front"]+4*hysteresis + self.dist_y:
-                    print("dy", self.dist_y)
                     if hysteresis == 0:
                         self.logger.info("Laser STOP !")
                         self.front = True
