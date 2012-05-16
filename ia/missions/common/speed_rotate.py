@@ -5,6 +5,7 @@ Created on 5 mai 2012
 
 
 from events.event import Event
+from robots.robot import Robot
 
 from missions.mission import Mission
 class SpeedRotateMission(Mission):
@@ -39,17 +40,15 @@ class SpeedRotateMission(Mission):
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.state = "run"
-            for i in Robot.rangefinder.keys():
-                self.can.send("rangefinder %d threshold %d" \
-                        %(i, Robot.rangefinder[i]) / 100 * (self.left+self.right))
+            self.missions["threshold"].sensivity(100 * \
+                    abs(self.left+self.right))
             self.can.send("asserv speed %d %d" %(self.left, self.right))
              
     def change(self, speed):
         if self.state != "repos":
             self.speed = speed 
-            for i in Robot.rangefinder.keys():
-                self.can.send("rangefinder %d threshold %d" \
-                        %(i, Robot.rangefinder[i]) / 100 * (self.left+self.right))
+            self.missions["threshold"].sensivity(100 * \
+                    abs(self.left+self.right))
             if self.state == "run":
                 self.can.send("asserv speed %d %d" %(self.left, self.right))
 
@@ -75,8 +74,8 @@ class SpeedRotateMission(Mission):
     def resume(self):
         # FIXME il est peut-être possible de redémarrer sans attendre le asserv done
         if self.state == "paused":
-            if ((self.free_way["front"] and (self.left+self.right) > 0) \
-                    or (self.free_way["back"] and (self.left+self.right) < 0)):
+            if ((self.free_way["front"] and abs(self.left+self.right) > 0) \
+                    or (self.free_way["back"] and abs(self.left+self.right) < 0)):
                 self.state = "run"
 #                self.state = "repos" #FIXME a enlever
                 self.can.send("asserv speed %d %d" %(self.left, self.right))
@@ -85,8 +84,8 @@ class SpeedRotateMission(Mission):
         if event.name == "captor":
             self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
-                if ((event.pos == "front" and (self.left+self.right) > 0) \
-                        or (event.pos == "back" and (self.left+self.right) < 0)):
+                if ((event.pos == "front" and abs(self.left+self.right) > 0) \
+                        or (event.pos == "back" and abs(self.left+self.right) < 0)):
                     if event.state == "start":
                         self.resume()
                     else:
@@ -106,13 +105,9 @@ class SpeedRotateMission(Mission):
         if event.name == "asserv" and event.type == "ticks" and event.cmd == "answer":
             if self.state == "stopped":
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                            %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                            %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speedrotate", "aborted", self.callback, **{"value": event.value}))

@@ -33,9 +33,7 @@ class ForwardMission(Mission):
             self.callback = callback
             self.remaining = self.order
             self.state = "run"
-            for i in Robot.rangefinder.keys():
-                self.can.send("rangefinder %d threshold %d" \
-                        %(i, Robot.rangefinder[i]*1.5))
+            self.missions["threshold"].sensivity(1.5)
             self.can.send("asserv dist %d" % self.remaining)
 
     def pause(self):
@@ -73,9 +71,7 @@ class ForwardMission(Mission):
             if self.state != "repos":
                 # on a pu aller on voulait aller
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                               %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("forward", "done", self.callback))
         elif event.name == "asserv" and event.type == "int_dist":
             if self.state == "pausing":
@@ -86,8 +82,6 @@ class ForwardMission(Mission):
                 self.resume()
             elif self.state == "stopping":
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                           %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("forward", "aborted", self.callback))
                 

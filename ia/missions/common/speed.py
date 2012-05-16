@@ -7,6 +7,7 @@ Created on 5 mai 2012
 from events.event import Event
 
 from missions.mission import Mission
+from robots.robot import Robot
 class SpeedMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
@@ -39,10 +40,7 @@ class SpeedMission(Mission):
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
-            self.state = "run"
-            for i in Robot.rangefinder.keys():
-                self.can.send("rangefinder %d threshold %d" \
-                        %(i, Robot.rangefinder[i]) / 50 * self.speed)
+            self.missions["threshold"].sensivity(50 * abs(self.speed))
             if self.curt:
                 self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
             else:
@@ -109,13 +107,9 @@ class SpeedMission(Mission):
             if self.state == "stopped":
                 self.state = "repos"
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                            %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speed", "done", self.callback, **{"value": event.value}))
             elif self.state == "aborted":
                 self.state = "repos"
-                for i in Robot.rangefinder.keys():
-                    self.can.send("rangefinder %d threshold %d" \
-                            %(i, Robot.rangefinder[i]))
+                self.missions["threshold"].sensivity(1)
                 self.send_event(Event("speed", "aborted", self.callback, **{"value": event.value}))
