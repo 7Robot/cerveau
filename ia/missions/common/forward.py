@@ -54,8 +54,8 @@ class ForwardMission(Mission):
         if event.name == "captor":
             self.free_way[event.pos]  = event.state == "start"
             if self.state != "repos":
-                if ((event.pos == "front" and self.speed > 0) \
-                        or (event.pos == "back" and self.speed < 0)):
+                if ((event.pos == "front" and self.order > 0) \
+                        or (event.pos == "back" and self.order < 0)):
                     if event.state == "start":
                         self.resume()
                     else:

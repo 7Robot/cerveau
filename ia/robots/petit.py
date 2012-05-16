@@ -15,7 +15,7 @@ class PetitRobot:
         self.dimensions = { "left": 1290, "right": 1290,
                 "front": 1190, "back": 920 }
 
-        self.vrille = 0
+        self._vrille = 0
 
         # position *initial* du robot
         self.pos = Vertex(-12000, -7000)

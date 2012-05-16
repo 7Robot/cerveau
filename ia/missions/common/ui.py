@@ -59,7 +59,7 @@ class UIMission(Mission):
                         
                 elif event.type == "test":
                     if event.test == "forward":
-                        self.missions["move"].forward(self, 1000)
+                        self.missions["forward"].start(self, 1000)
                         self.ui.send("answer done")
                         
                         
