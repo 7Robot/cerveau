@@ -69,7 +69,7 @@ class SpeedMission(Mission):
         if self.state == "paused":
             if ((self.free_way["front"] and self.speed > 0) \
                     or (self.free_way["back"] and self.speed < 0)):
-                self.state == "run"
+                self.state = "run"
                 if self.curt:
                     self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
                 else:

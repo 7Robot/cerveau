@@ -24,7 +24,7 @@ class Positionin1Mission(Mission):
             if e.name == "bump" and e.state == "close" and e.pos == "back":
                 self.state += 1
                 self.create_timer(self.robot.pos_timer)
-            elif e.name == "bump" and e.state == "open" and e.pos == "leash":
+            elif e.name == "bump" and e.state == "open" and e.pos == "alim":
                 self.move.speed(-self.robot.pos_speed)
                     
         elif self.state == 3:
