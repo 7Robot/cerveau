@@ -9,6 +9,8 @@ class Robot:
     si on doit utiliser PetitRobot ou GrosRobot
     '''
     
+    _vrille = 0
+    
     @classmethod
     def copy_from(self, robot):
         '''inconvnient de cette mthode : c'est une copie  l'instant t
@@ -18,20 +20,18 @@ class Robot:
         for attr in robot.__dict__:
             if attr[0] != "_":
                 setattr(Robot, attr, robot.__dict__[attr])
-
-        # Access a vrille
+   
         if robot.side == "red":
-            Robot.vrille = -robot.__dict__['_vrille']
+            Robot._vrille = -robot.__dict__['_vrille']
         else:
-            Robot.vrille = robot.__dict__['_vrille']
+            Robot._vrille = robot.__dict__['_vrille']
+
+    
+    def vrille():
+        if Robot.side == "red":
+            return -Robot._vrille
+        else:
+            return Robot._vrille
         
-    #def _set_vrille(self, vrille):
-    #    Robot._vrille = vrille
+        
 
-    #def _get_vrille(self):
-    #    if Robot.side == "red":
-    #        return -Robot._vrille
-    #    else:
-    #        return Robot._vrille
-
-    #vrille = property(_get_vrille, _set_vrille)

@@ -38,7 +38,7 @@ class GrosRobot:
         self.can_port = 7777
         # socket interface graphique
         self.ui_ip = "gros"
-        self.ui_port = 7779
+        self.ui_port = 7778
         # socket inter-robot
         self.inter_ip = "gros"
         self.inter_port = 7780

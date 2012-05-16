@@ -35,7 +35,7 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 0.5
                 self.can.send("asserv off")
-                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + Robot.vrille })
+                self.odo.set(self, **{"y": 10000 - self.robot.dimensions["back"], "rot": 27000 + Robot.vrille() })
 
         elif self.state == 4:
             if e.name == "odo" and e.type == "done":
@@ -67,7 +67,7 @@ class Positioning2Mission(Mission):
             if e.name == "move" and e.type == "done":
                 self.state += 1
                 self.can.send("asserv off")
-                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": Robot.vrille})
+                self.odo.set(self, **{"x": self.robot.dimensions["back"] - 15000, "rot": Robot.vrille()})
 
         elif self.state == 9:
             if e.name == "odo" and e.type == "done":

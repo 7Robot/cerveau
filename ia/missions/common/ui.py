@@ -14,7 +14,6 @@ class UIMission(Mission):
     def process_event(self, event):
         if self.state == "repos":
             if event.name == "ui":
-                
                 if event.type == "calibrate":
                     if "calibrate_rangefinder" in self.missions:
                         self.missions["calibrate_rangefinder"].start(event.id)

@@ -19,6 +19,7 @@ class StartMission(Mission):
         elif self.state == 1:
             if event.name == "timer":
                 self.state += 1
+                self.ui.send("ia ready")
                 #self.odo.broadcast()
                 self.can.send("turret unmute")
                 self.can.send("ax 1 torque set 800")
@@ -35,7 +36,7 @@ class StartMission(Mission):
         elif self.state == 3:
             if event.name == "bump" and event.pos == "back" and event.state == "close":
                 self.state += 1
-                self.missions["positioning1"].start()
+                #self.missions["positioning"].start()
 
         # Fin de la premiere mission de positionnement
         elif self.state == 4:
