@@ -54,7 +54,7 @@ class Double_CheminMission(Mission):
                 
         elif self.state == 3:
             if e.name == "rotate" and e.type == "done":
-                print("roated done !!!!!!!!!")
+                print("rotated done !!!!!!!!!")
                 self.state += 1
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold 0" % i)
