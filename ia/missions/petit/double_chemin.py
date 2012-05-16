@@ -11,11 +11,13 @@ class Double_CheminMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 
-    def start(self, callback, dist):
+    def start(self, callback, dist, avoidance_dist, first_rot = -9000):
         self.missions["captor"].dist_y = 9999999
         self.missions["captor"].largeur = -6
         self.callback = callback
         self.dist     = dist
+        self.avoidance_dist = avoidance_dist
+        self.first_rot = first_rot
         self.state    +=1
         self.path     = "A"
         self.process_event(Event("start"))
@@ -38,10 +40,10 @@ class Double_CheminMission(Mission):
                 if self.path == "A":
                     self.path = "B"
                     self.went_B = True
-                    self.missions["rotate"].start(self, -9000)
+                    self.missions["rotate"].start(self, self.first_rot)
                 else:
                     self.path = "A"
-                    self.missions["rotate"].start(self,+9000)                  
+                    self.missions["rotate"].start(self,-self.first_rot)                  
                 # Go chemin B
                 
             elif e.name == "forward" and e.type == "done":
@@ -56,7 +58,7 @@ class Double_CheminMission(Mission):
                 self.state += 1
                 for i in [1, 2, 8]:
                     self.can.send("rangefinder %d threshold 0" % i)
-                self.missions["forward"].start(self, -4900)
+                self.missions["forward"].start(self, self.avoidance_dist)
                 # on se décale de 60 cm
                 
         elif self.state == 4:
@@ -64,9 +66,9 @@ class Double_CheminMission(Mission):
             if e.name == "forward" and e.type == "done":
                 self.state += 1
                 if self.path == "A":
-                    self.missions["rotate"].start(self, -9000)
+                    self.missions["rotate"].start(self, self.first_rot)
                 else:
-                    self.missions["rotate"].start(self,9000)
+                    self.missions["rotate"].start(self, -self.first_rot)
                     
         elif self.state == 5:
             if e.name == "rotate" and e.type == "done":
