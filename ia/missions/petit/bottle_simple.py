@@ -3,7 +3,7 @@
 from missions.mission import Mission
 from robots.robot import Robot
 
-class BottleMission(Mission):
+class BottleSimpleMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
 
@@ -62,8 +62,7 @@ class BottleMission(Mission):
         elif self.state == 7:
             if e.name == "rotate" and e.type == "done":
                 self.state += 1
-                # Avance de 142 cm
-                self.missions["double_chemin"].start(self, 14200, -4900, -9000)
+                self.missions["forward"].start(self, 14200)
                 
         elif self.state == 8:
             if e.name == "forward" and e.type == "done":
