@@ -40,15 +40,14 @@ class SpeedRotateMission(Mission):
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.state = "run"
-            self.missions["threshold"].sensivity(100 * \
-                    abs(self.left+self.right))
+            if self.left + self.right != 0:
+                self.missions["threshold"].sensivity(abs(self.left+self.right) / 100.0)
             self.can.send("asserv speed %d %d" %(self.left, self.right))
              
     def change(self, speed):
         if self.state != "repos":
             self.speed = speed 
-            self.missions["threshold"].sensivity(100 * \
-                    abs(self.left+self.right))
+            self.missions["threshold"].sensivity(abs(self.left+self.right) / 100)
             if self.state == "run":
                 self.can.send("asserv speed %d %d" %(self.left, self.right))
 

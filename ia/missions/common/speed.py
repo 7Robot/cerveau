@@ -35,12 +35,16 @@ class SpeedMission(Mission):
     # s'orienter dans la direction rot_target
     def start(self, speed, curt = False, callback_autoabort = None):
         if self.state == "repos":
+            self.state = "run"
             self.curt = curt
             self.speed = speed
             self.callback = callback_autoabort
             self.autoabort = callback_autoabort != None
             self.can.send("asserv ticks reset")
-            self.missions["threshold"].sensivity(50 * abs(self.speed))
+            if self.speed != 0:
+                sens = abs(self.speed) / 50
+                print("mission speed set sens ", sens, " (speed: %d)" %self.speed)
+                self.missions["threshold"].sensivity(sens)
             if self.curt:
                 self.can.send("asserv speed %d %d curt" %(self.speed, self.speed))
             else:
