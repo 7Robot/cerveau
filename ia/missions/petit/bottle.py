@@ -39,7 +39,7 @@ class BottleMission(Mission):
                 self.state += 0.5
                 for i in [1,2]: self.missions["threshold"].activate(i, False)
                 self.missions["speed"].start(50)
-                self.create_timer(10000)
+                self.create_timer(6000) # si on bump pas
                     
         elif self.state == 4:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
@@ -94,7 +94,7 @@ class BottleMission(Mission):
                 self.state += 1
                 for i in [1,2]: self.missions["threshold"].activate(i, False)
                 self.missions["speed"].start(50)
-                self.create_timer(10000)
+                self.create_timer(6000) # si on bump pas
 
                 
         elif self.state == 10:
