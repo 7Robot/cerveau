@@ -41,7 +41,8 @@ class Double_CheminMission(Mission):
                     # Moins de 4 tentatives
                     self.state += 1
                     self.tries += 1
-                    self.dist = self.missions["forward"].value 
+                    self.dist = self.missions["forward"].remaining 
+                    print("Remaining", self.missions["forward"].remaining)
                     if self.path == "A":
                         self.path = "B"
                         self.went_B = True
@@ -53,7 +54,7 @@ class Double_CheminMission(Mission):
                 else:
                     # trop de changements de trajectoire, on abandonne
                     self.state = "cancel"
-                    self.missions["forward"].start(self, self.missions["forward"].value)
+                    self.missions["forward"].start(self, self.missions["forward"].remaining)
                 
             elif e.name == "forward" and e.type == "done":
                 self.state = 100

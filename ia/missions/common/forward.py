@@ -89,5 +89,6 @@ class ForwardMission(Mission):
             elif self.state == "stopping":
                 self.state = "repos"
                 self.missions["threshold"].sensivity(1)
+                self.remaining -= event.value
                 self.send_event(Event("forward", "aborted", self.callback))
                 
