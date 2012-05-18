@@ -39,8 +39,11 @@ class IA:
         self.ui_sock  = socket.socket()
         self.inter  = socket.socket()
         
+        self.logger.debug("Trying to connect to the CAN")
         self.can_sock.connect((self.robot.can_ip, self.robot.can_port))
+        self.logger.debug("Trying to connect to the UI")
         self.ui_sock.connect((self.robot.ui_ip, self.robot.ui_port))
+        self.logger.debug("Trying to connect to the INTERCOMM")
         self.inter.connect((self.robot.inter_ip, self.robot.inter_port))
         
         self.can = Can(self.can_sock)
