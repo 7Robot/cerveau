@@ -23,7 +23,7 @@ class BottleMission(Mission):
             if e.name == "forward" and e.type == "done":
                 self.state += 1
                 if Robot.side == "violet":
-                    self.missions["rotate"].start(self, -9300) # -9200
+                    self.missions["rotate"].start(self, -9400) # -9200
                 else:
                     self.missions["rotate"].start(self, -8900)
                                     
