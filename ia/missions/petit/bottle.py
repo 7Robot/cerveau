@@ -43,7 +43,13 @@ class BottleMission(Mission):
                     
         elif self.state == 4:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
-                self.state += 1
+                self.state += 0.5
+                self.create_timer(500)
+                
+                
+        elif self.state == 4.5:
+            if e.name == "timer":
+                self.state += 0.5
                 self.missions["speed"].stop(self)
         
         elif self.state == 5:
@@ -90,7 +96,12 @@ class BottleMission(Mission):
                 
         elif self.state == 10:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
-                self.state += 1
+                self.state += 0.5
+                self.create_timer(500)
+        
+        elif self.state == 10.5:
+            if e.name == "timer":        
+                self.state += 0.5
                 self.missions["speed"].stop(self)
                 
         elif self.state == 11:
@@ -98,11 +109,11 @@ class BottleMission(Mission):
                 self.state += 1
                 for i in [1,2]: self.missions["threshold"].activate(i, True)
             
-            # Missions secondaires
-            if not(self.missions["double_chemin"].went_B):
-               print("Lingot milieu")
-               self.missions["lingot_milieu"].start()
-            else:
-               print("rase totem ")
-               self.missions["rase_totem"].start()
+                # Missions secondaires
+                if not(self.missions["double_chemin"].went_B):
+                   print("Lingot milieu")
+                   self.missions["lingot_milieu"].start()
+                else:
+                   print("rase totem ")
+                   self.missions["rase_totem"].start()
             
