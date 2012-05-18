@@ -97,4 +97,12 @@ class BottleMission(Mission):
             if e.name == "speed" and e.type == "done":
                 self.state += 1
                 for i in [1,2]: self.missions["threshold"].activate(i, True)
-     
+            
+            # Missions secondaires
+            if not(self.missions["double_chemin"].went_B):
+               print("Lingot milieu")
+               self.missions["lingot_milieu"].start()
+            else:
+               print("rase totem ")
+               self.missions["rase_totem"].start()
+            
