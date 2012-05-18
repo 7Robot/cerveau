@@ -56,8 +56,7 @@ class Double_CheminMission(Mission):
             if e.name == "rotate" and e.type == "done":
                 print("rotated done !!!!!!!!!")
                 self.state += 1
-                for i in [1, 2, 8]:
-                    self.can.send("rangefinder %d threshold 0" % i)
+                self.missions["threshold"].activate(8, False)
                 self.missions["forward"].start(self, self.avoidance_dist)
                 # on se décale de 60 cm
                 
@@ -73,9 +72,7 @@ class Double_CheminMission(Mission):
         elif self.state == 5:
             if e.name == "rotate" and e.type == "done":
                 self.state = 2
-                for i in [1, 2, 8]:
-                    self.can.send("rangefinder %d threshold %d"
-                            % (i, Robot.rangefinder[i]))
+                self.missions["threshold"].activate(8, True)
                 self.missions["forward"].start(self, self.dist, True)
         
                         
