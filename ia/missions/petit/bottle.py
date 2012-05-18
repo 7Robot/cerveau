@@ -70,16 +70,16 @@ class BottleMission(Mission):
             if e.name == "rotate" and e.type == "done":
                 self.state += 0.5
                 # Avance de 142 cm
-                self.missions["double_chemin"].start(self, 14400, -4900, -9000) # 14200
+#                self.missions["double_chemin"].start(self, 14400, -4900, -9000) # 14200, 14400
                 # J'ai mesuré 124cm avec un metre, tu aurais pas inversé le 2 et
                 # le 4 ?
-#                self.missions["forward"].start(self, 14400)
+                self.missions["forward"].start(self, 13400) # 14400
 
         elif self.state == 7.5:
-            if e.name == "double_chemin" and e.type == "done":
-#            if e.name == "forward" and e.type == "done":
+#            if e.name == "double_chemin" and e.type == "done":
+            if e.name == "forward" and e.type == "done":
                 self.state += 0.5
-                self.missions["forward"].start(self, -2000)
+                self.missions["forward"].start(self, -1000) # -2000
                 
         elif self.state == 8:
             if e.name == "forward" and e.type == "done":
