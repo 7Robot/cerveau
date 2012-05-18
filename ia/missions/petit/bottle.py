@@ -44,7 +44,7 @@ class BottleMission(Mission):
         elif self.state == 4:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
                 self.state += 0.5
-                self.create_timer(500)
+                self.create_timer(2000, timername="recalage")
                 
                 
         elif self.state == 4.5:
@@ -100,7 +100,7 @@ class BottleMission(Mission):
         elif self.state == 10:
             if (e.name == "bump" and e.state=="close") or e.name == "timer":
                 self.state += 0.5
-                self.create_timer(500)
+                self.create_timer(1000, timername="recalage")
         
         elif self.state == 10.5:
             if e.name == "timer":        
