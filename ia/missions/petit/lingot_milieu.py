@@ -30,7 +30,7 @@ class Lingot_MilieuMission(Mission):
         elif self.state == 3:
             if e.name == "forward" and e.type == "done":
                 self.state += 1
-                self.missions["rotate"].start(self, -4500)
+                self.missions["rotate"].start(self, -4700)
                 
         elif self.state == 4:
             if e.name == "rotate" and e.type == "done":
