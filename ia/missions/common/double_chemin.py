@@ -22,12 +22,14 @@ class Double_CheminMission(Mission):
         self.path     = "A"
         self.process_event(Event("start"))
         self.went_B = False
+        self.tries  = 0
         
         
     def process_event(self, e):
         if self.state  == 1:
             if e.name == "start":
                 self.state += 1
+                self.tries = 0
                 self.missions["forward"].start(self, self.dist, True)
                 
                 
@@ -35,16 +37,23 @@ class Double_CheminMission(Mission):
         elif self.state == 2:
             if e.name == "forward" and e.type == "aborted":
                 print("Received abort !!!!!")
-                self.state += 1
-                self.dist = self.missions["forward"].remaining 
-                if self.path == "A":
-                    self.path = "B"
-                    self.went_B = True
-                    self.missions["rotate"].start(self, self.first_rot)
+                if self.tries <4 :
+                    # Moins de 4 tentatives
+                    self.state += 1
+                    self.tries += 1
+                    self.dist = self.missions["forward"].value 
+                    if self.path == "A":
+                        self.path = "B"
+                        self.went_B = True
+                        self.missions["rotate"].start(self, self.first_rot)
+                    else:
+                        self.path = "A"
+                        self.missions["rotate"].start(self,-self.first_rot)                  
+                    # Go chemin B
                 else:
-                    self.path = "A"
-                    self.missions["rotate"].start(self,-self.first_rot)                  
-                # Go chemin B
+                    # trop de changements de trajectoire, on abandonne
+                    self.state = "cancel"
+                    self.missions["forward"].start(self, self.missions["forward"].value)
                 
             elif e.name == "forward" and e.type == "done":
                 self.state = 100
@@ -74,6 +83,14 @@ class Double_CheminMission(Mission):
                 self.state = 2
                 self.missions["threshold"].activate(8, True)
                 self.missions["forward"].start(self, self.dist, True)
+                
+        elif self.state == "cancel":
+            if e.name == "forward" and e.type == "done":
+                # copy/paste, not nice
+                self.state = 100
+                self.missions["captor"].dist_y  = 0
+                self.missions["captor"].largeur = 0
+                self.send_event(Event("double_chemin", "done", self.callback))
         
                         
         
