@@ -10,6 +10,9 @@ from robots.robot import Robot
 class Double_CheminMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
+        self.went_B = False
+        self.tries  = 0
+        self.path     = "A"
 
     def start(self, callback, dist, avoidance_dist, first_rot = -9000):
         self.missions["captor"].dist_y = 9999999
