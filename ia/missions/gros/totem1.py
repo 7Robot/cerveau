@@ -25,7 +25,10 @@ class Totem1Mission(Mission):
             if event.name == "move" and event.type == "done":
                 self.state += 1
                 #self.move.forward(self, 4700) # on avance vers le totem
-                self.move.reach_y(self, 2950)
+                if Robot.side == 'violet':
+                    self.move.reach_y(self, 2850) # NIM: c’était 2950
+                else:
+                    self.move.reach_y(self, 2750) # NIM: c’était 2950
 
         elif self.state == 3:
             if event.name == "move" and event.type == "done":
