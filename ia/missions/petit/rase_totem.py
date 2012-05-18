@@ -21,6 +21,7 @@ class Rase_totemMission(Mission):
             if e.name == "timer":
                 self.state += 0.5
                 self.create_timer(5000)
+                self.missions["threshold"].activate(8, False)
                 self.missions["speed"].start(-30)
                 
         elif self.state == 1:
@@ -37,6 +38,7 @@ class Rase_totemMission(Mission):
         elif self.state == 3:
             if e.name == "timer":
                 self.state += 1
+                self.missions["threshold"].activate(8, True)
                 self.missions["forward"].start(self, 800)
                 
         elif self.state == 4:
@@ -47,12 +49,12 @@ class Rase_totemMission(Mission):
         elif self.state == 5:
             if e.name == "rotate" and e.type == "done":
                 self.state += 1
-                self.missions["forward"].start(self, 8700)
+                self.missions["forward"].start(self, 8900) # 8700
                 
         elif self.state == 6:
             if e.name == "forward" and e.type == "done":
                 self.state += 1
-                self.missions["rotate"].start(self, -3300)
+                self.missions["rotate"].start(self, -3500) # -3300
                 
         elif self.state == 7:
             if e.name == "rotate" and e.type == "done":
