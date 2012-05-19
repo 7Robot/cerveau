@@ -62,7 +62,7 @@ class ForwardMission(Mission):
         
     def process_event(self, event):
         if event.name == "timer" and self.state == "run":
-            self.missions["threshold"].sensivity(1.5)
+            self.missions["threshold"].sensivity(1.3)
         elif event.name == "captor":
             if self.state != "repos":
                 if ((event.pos == "front" and self.remaining > 0) \

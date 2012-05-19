@@ -73,7 +73,10 @@ class StartMission(Mission):
         elif self.state == 7:
             if event.name == "totem" and event.type == "done":
                 self.state += 1
-                #self.missions["totem2"].start()
+                self.missions["totem2"].start()
+
+        elif self.state == 8:
+            if event.name == "totem" and event.type == "done":
                 self.can.send("reset")
             
             #self.missions["forward"].start(15000)
