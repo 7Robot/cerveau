@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: ascii -*-
 '''
 Created on 5 mai 2012
 
@@ -19,11 +19,11 @@ from missions.mission import Mission
 class CaptorMission(Mission):
     def __init__(self, robot, can, ui):
         super(self.__class__,self).__init__(robot, can, ui)
-        # boolean reprsentant la prsence d'obstacle  l'avant et  l'arrire
-        # au dmarrage, on considre qu'il n'y a pas d'obstacle
+        # boolean reprsentant la presence d'obstacle  l'avant et  l'arriere
+        # au demarrage, on considere qu'il n'y a pas d'obstacle
         self._front = False
         self._back = False
-        # boolean reprsentant la prsence d'obstacle en face d'un capteur
+        # boolean representant la presence d'obstacle en face d'un capteur
         self.captors = { 0: False, 1: False, 2: False, 8: False }
         self.dist_y = 0 # customisable
         self.largeur = 0
@@ -89,14 +89,20 @@ class CaptorMission(Mission):
         if event.name == "rangefinder" \
                 and event.type == "value":
             if event.id in [1, 2]:
-                if event.value <= self.missions["threshold"].threshold[event.id]:
+                if event.pos == "over" \
+                  and event.value >= self.missions["threshold"].threshold[event.id] \
+                 or event.pos == "under" \
+                  and event.value <= self.missions["threshold"].threshold[event.id]:
                     self.captors[event.id] = (event.pos == "under")
                     if not self.front and event.pos == "under":
                         self.front = True
                     elif self.front and event.pos == "over":
                         self.resume("front")
             elif event.id == 8:
-                if event.value <= self.missions["threshold"].threshold[event.id]:
+                if event.pos == "over" \
+                  and event.value >= self.missions["threshold"].threshold[event.id] \
+                 or event.pos == "under" \
+                  and event.value <= self.missions["threshold"].threshold[event.id]:
                     self.captors[event.id] = (event.pos == "under")
                     if not self.back and event.pos == "under":
                         self.back = True
