@@ -16,8 +16,10 @@
 #define DEFAULT_DEVICE "/dev/input/js0"
 #define DEFAULT_HOST "r2d2"
 #define DEFAULT_PORT "7773"
+#define DEFAULT_SENSITIVITY 1
 
 int left, right, angle;
+int sensi = 1; /* sensitivity */
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t cnd_mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
@@ -91,7 +93,7 @@ void update(int axisc, int * axis, int buttonc, char * button)
         for (i = 0; i < 4 ; i++) {
             b[i] = 0;
         }
-        update_pos(axis[0], axis[1], axis[2]);
+        update_pos(axis[0]*sensi, axis[1]*sensi, axis[2]*sensi);
     }
 }
 
@@ -159,16 +161,17 @@ void * sender(void * arg)
 int main (int argc, char **argv)
 {
     puts("");
-    puts("Usage: jstest [<device> [<host> [<port>]]]");
+    puts("Usage: jstest [<device> [<host> [<port> [<sensitivity>]]]]");
     puts("");
 
-    if (argc > 4) {
+    if (argc > 5) {
         return 1;
     }
 
     char * device = (argc>1)?argv[1]:DEFAULT_DEVICE;
-    char * host = (argc>2)?argv[2]:DEFAULT_HOST;
-    char * port = (argc>3)?argv[3]:DEFAULT_PORT;
+    char * host   = (argc>2)?argv[2]:DEFAULT_HOST;
+    char * port   = (argc>3)?argv[3]:DEFAULT_PORT;
+    sensi  = (argc>4)?atoi(argv[4]):DEFAULT_SENSITIVITY;
 
     if (can_open(host, port) < 0) {
         fprintf(stderr, "can_open failed\n");
