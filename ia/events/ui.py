@@ -65,7 +65,7 @@ class UIEvent(Event):
             if len(cmd) == 2:
                 self.test = cmd[1]
             
-        elif self.type not in ["positioning"]:
+        elif self.type not in ["positioning", "end"]:
             raise CmdError(" Unknown command %s" %cmd)
             
           

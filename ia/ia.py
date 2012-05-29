@@ -55,12 +55,16 @@ class IA:
         self.ui.dispatcher  = self.dispatcher
         self.inter.dispatcher  = self.dispatcher
         
-        self.dispatcher.start() # Mieux si dmarr avant can et ui
+        self.dispatcher.start() # Mieux si demarre avant can et ui
         self.can.start()
         self.ui.start()
         self.inter.start()
 
         self.logger.info("IA initialized")
+        
+        self.ui.join()
+        
+        self.logger.info("IA stopped")
 
 if __name__ == "__main__":
     

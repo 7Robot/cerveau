@@ -1,6 +1,6 @@
 # -*- coding: ascii -*-
 
-from threading import Thread
+from threading import Thread, Event
 from events.event import CmdError
 
 import logging
@@ -9,8 +9,9 @@ import socket
 class Comm(Thread):
     def __init__(self, socket):
         Thread.__init__(self)
-        self.logger = logging.getLogger("comm")
-        self.socket    = socket
+        self.running    = Event( )
+        self.logger     = logging.getLogger("comm")
+        self.socket     = socket
         self.dispatcher = None
         
     def cmd_to_event(self, cmd):
@@ -39,7 +40,7 @@ class Comm(Thread):
         if self.socket != None and self.dispatcher != None:
             self.bufsock   = self.socket.makefile(buffering=1,
                     errors='replace')
-            while True:
+            while not self.running.isSet():
                 try:
                     cmd = self.bufsock.readline()
                 except socket.timeout as message:
@@ -71,3 +72,8 @@ class Comm(Thread):
         except socket.error as message:
             self.logger.error ("Sender : socket error %s" % message)
             return "stop"
+        
+    def stop(self):
+        self.running.set( )
+        self.socket.shutdown(socket.SHUT_WR)
+        self.socket.close()

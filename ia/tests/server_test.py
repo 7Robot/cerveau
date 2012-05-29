@@ -33,7 +33,7 @@ class Server_test(threading.Thread):
                 if cmd == "":
                     keep_on = False
                 else:
-                    print ("Test server received \\t", cmd)
+                    print ("Test server received \t", cmd)
             except (socket.timeout,socket.error) as message:
                 print ("recv_cmd : socket error", message) #TODO: logger.fatal
                 keep_on = False

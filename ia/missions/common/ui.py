@@ -27,6 +27,14 @@ class UIMission(Mission):
                     else:
                         self.ui.send("exception mission %s not found" % (event.mission))
                         
+                elif event.type == "end":
+                    print("Stopping the ia")
+                    self.ui.send("stopping")
+                    self.ui.stop()
+                    self.can.stop()
+                    #self.inter.stop()
+                    # TODO: killer les autres threads
+                        
                 elif event.type == "init":
                     Robot.side = event.side
                     self.ui.send("answer done")
