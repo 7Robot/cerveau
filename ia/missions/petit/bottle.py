@@ -74,13 +74,15 @@ class BottleMission(Mission):
                 # J'ai mesuré 124cm avec un metre, tu aurais pas inversé le 2 et
                 # le 4 ?
                 if Robot.side == "violet":
-                    self.missions["forward"].start(self, 13000) # 14400
+                    self.missions["double_chemin"].start(self, 13500, -4900, -9000)
+#                    self.missions["forward"].start(self, 13000) # 14400
                 else:
-                    self.missions["forward"].start(self, 13650) # 14400
+                    self.missions["double_chemin"].start(self, 13500, -4900, -9000)
+#                    self.missions["forward"].start(self, 13650) # 14400
 
         elif self.state == 7.5:
-#            if e.name == "double_chemin" and e.type == "done":
-            if e.name == "forward" and e.type == "done":
+            if e.name == "double_chemin" and e.type == "done":
+#            if e.name == "forward" and e.type == "done":
                 self.state += 0.5
                 self.missions["forward"].start(self, -1000) # -2000
                 
