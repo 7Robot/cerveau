@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-'''
+u'''
 On charge ici toutes les classes de mission
 
 / ! \\ SI on change le nom de ce module actuellement appel "missions", 

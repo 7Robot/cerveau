@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 15 mai 2012
 '''
 
@@ -13,37 +13,37 @@ class Lingot_MilieuMission(Mission):
         
     def process_event(self, e):
         if self.state == 0:
-            if e.name == "start":
+            if e.name == u"start":
                 self.state += 1
-                self.missions["forward"].start(self, -5100)
+                self.missions[u"forward"].start(self, -5100)
         
         elif self.state == 1:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state += 1
-                self.missions["rotate"].start(self, -9000)
+                self.missions[u"rotate"].start(self, -9000)
                 
         elif self.state == 2:
-            if e.name == "rotate" and e.type == "done":
+            if e.name == u"rotate" and e.type == u"done":
                 self.state += 1
-                if Robot.side=="violet":
-                    self.missions["forward"].start(self, 10700)
+                if Robot.side==u"violet":
+                    self.missions[u"forward"].start(self, 10700)
                 else:
-                    self.missions["forward"].start(self, 10500)
+                    self.missions[u"forward"].start(self, 10500)
                 
         elif self.state == 3:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state += 1
-                self.missions["rotate"].start(self, -4700)
+                self.missions[u"rotate"].start(self, -4700)
                 
         elif self.state == 4:
-            if e.name == "rotate" and e.type == "done":
+            if e.name == u"rotate" and e.type == u"done":
                 self.state += 1
-                self.missions["forward"].start(self, 7500)
+                self.missions[u"forward"].start(self, 7500)
                 
         elif self.state == 5:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state += 1
-                self.missions["forward"].start(self, -12500)
+                self.missions[u"forward"].start(self, -12500)
                 
 #        elif self.state == 6:
 #            if e.name == "forward" and e.type == "done":

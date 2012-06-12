@@ -8,19 +8,19 @@ import sys
 import yappi
 from ia import IA
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
        
     if len(sys.argv) < 2:
-        print("Usage: %s <nom_robot>" %sys.argv[0])
+        print u"Usage: %s <nom_robot>" %sys.argv[0]
     
     yappi.start()
-    ia = IA(sys.argv[1], **{"can_ip" : "petit", 
-                        "ui_ip": "petit", 
-                        "inter_ip" : "petit"})
+    ia = IA(sys.argv[1], **{u"can_ip" : u"petit", 
+                        u"ui_ip": u"petit", 
+                        u"inter_ip" : u"petit"})
 
     # on attend que tous les threads se terminent
     
-    print("Stopping the profiler")
+    print u"Stopping the profiler"
     yappi.stop()
     
     yappi.print_stats()

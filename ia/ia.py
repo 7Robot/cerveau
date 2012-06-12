@@ -11,22 +11,23 @@ from comm.intercom import InterCom
 from comm.ui  import UI
 from dispatcher import Dispatcher
 from robots.robot import Robot
+from io import open
 
 
-class IA:
+class IA(object):
     def __init__(self, name, **kargs):
         
         # Initialisation du logger
-        self.logger = getLogger("ia")
-        f=open(name+".ini")
+        self.logger = getLogger(u"ia")
+        f=open(name+u".ini")
         fileConfig(f)
         f.close()
 
-        self.logger.info("Starting  %s  robot" % name)
-        assert(name in ["petit", "gros"])
+        self.logger.info(u"Starting  %s  robot" % name)
+        assert(name in [u"petit", u"gros"])
         
-        module = __import__("robots."+name)
-        self.robot = getattr(getattr(module, name), name.capitalize()+"Robot")()
+        module = __import__(u"robots."+name)
+        self.robot = getattr(getattr(module, name), name.capitalize()+u"Robot")()
         
         Robot.copy_from(self.robot)
         
@@ -39,11 +40,11 @@ class IA:
         self.ui_sock  = socket.socket()
         self.inter  = socket.socket()
         
-        self.logger.debug("Trying to connect to the CAN")
+        self.logger.debug(u"Trying to connect to the CAN")
         self.can_sock.connect((self.robot.can_ip, self.robot.can_port))
-        self.logger.debug("Trying to connect to the UI")
+        self.logger.debug(u"Trying to connect to the UI")
         self.ui_sock.connect((self.robot.ui_ip, self.robot.ui_port))
-        self.logger.debug("Trying to connect to the INTERCOMM")
+        self.logger.debug(u"Trying to connect to the INTERCOMM")
         self.inter.connect((self.robot.inter_ip, self.robot.inter_port))
         
         self.can = Can(self.can_sock)
@@ -60,19 +61,19 @@ class IA:
         self.ui.start()
         self.inter.start()
 
-        self.logger.info("IA initialized")
+        self.logger.info(u"IA initialized")
         
         self.ui.join()
         
-        self.logger.info("IA stopped")
+        self.logger.info(u"IA stopped")
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     
-    default = "petit"
+    default = u"petit"
     
     if len(sys.argv) < 2:
-        print("Usage: %s <nom_robot>" %sys.argv[0])
-        print("Run default robot '%s'" %default)
+        print u"Usage: %s <nom_robot>" %sys.argv[0]
+        print u"Run default robot '%s'" %default
     else:
         default = sys.argv[1]
     

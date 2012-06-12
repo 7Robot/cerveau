@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 14 mai 2012
 '''
 
@@ -12,15 +12,15 @@ class CalibrateRotationMission(Mission):
         
     def process_event(self, event):
         if self.state == 0:
-            if event.name == "start":
+            if event.name == u"start":
                 self.state += 1
-                self.can.send("asserv rot 9000")
+                self.can.send(u"asserv rot 9000")
                 
         if self.state == 1:
-            if event.name == "asserv" and event.type == "done":
+            if event.name == u"asserv" and event.type == u"done":
                 if self.rots < 7:
                     self.rots +=1
-                    self.can.send("asserv rot 9000")
+                    self.can.send(u"asserv rot 9000")
                 else:
                     self.state += 1
                 

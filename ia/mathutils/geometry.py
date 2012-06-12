@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 28 avr. 2012
 '''
 
+from __future__ import division
 from math import atan2
 from mathutils.types import Vertex, Vector, Segment
 
 
 def angle(v1, v2):
-    '''Retourne l'angle en radian entre v1 et v2'''
+    u'''Retourne l'angle en radian entre v1 et v2'''
     dv = v2 - v1
     angle = atan2(dv.y, dv.x)
     return angle
 
 def angle_normalize(angle):
-    '''Normalise un angle en centidegr'''
+    u'''Normalise un angle en centidegr'''
     if angle < -18000:
         return angle+36000
     elif angle > 18000:
@@ -26,15 +27,15 @@ def dot_product(v1,  v2):
     return v1.x*v2.x + v1.y*v2.y
     
 def det(v1,  v2):
-    '''Dterminant'''
+    u'''Dterminant'''
     return v1.x*v2.y-v1.y*v2.x
 
 def distance(v1, v2):
-    '''Distance euclidienne entre 2 points'''
+    u'''Distance euclidienne entre 2 points'''
     return (v2-v1).norm()
 
 def orientation(o, a, b):
-    ''' 1 si le vecteur ob est  gauche de oa, 0 si aligns, -1 sinon
+    u''' 1 si le vecteur ob est  gauche de oa, 0 si aligns, -1 sinon
     @param o,a,b : Vector
     @return : un entier sign \in {-1,0,1}
     '''
@@ -49,7 +50,7 @@ def orientation(o, a, b):
         return -1
     
 def inSector(ab, ad, at):
-    ''' Indique si le vecteur at est dans le secteur dfinit par (ab, ad)
+    u''' Indique si le vecteur at est dans le secteur dfinit par (ab, ad)
     @param ab, ad, at: Vector
     @return: Boolean 
     '''
@@ -62,7 +63,7 @@ def inSector(ab, ad, at):
 
 
 def segment_intersection(seg1, seg2):
-    '''Retourne le point d'intersection de 2 segments'''
+    u'''Retourne le point d'intersection de 2 segments'''
     if isinstance(seg1,Segment) and isinstance(seg2,Segment):
         seg1, seg2 = seg1.to_eq(), seg2.to_eq() 
     det = seg1.ax * (-seg2.ay) + seg1.ay * seg2.ax
@@ -77,7 +78,7 @@ def segment_intersection(seg1, seg2):
         return None
     
 def is_segment_intersection(seg1, seg2):
-    '''Renvoie True si seg1 et seg2 ont un point d'intersection
+    u'''Renvoie True si seg1 et seg2 ont un point d'intersection
     mais ne calcule pas ce moint d'intersection (plus coteux)'''
     a, b, c, t = seg1.vert1, seg1.vert2, seg2.vert1, seg2.vert2
     if (orientation(a,t,c)>=0):
@@ -86,7 +87,7 @@ def is_segment_intersection(seg1, seg2):
         return (orientation(a, b, c) != orientation(a, b, t)) and (orientation(b, a, t) <= 0) and (orientation(b, c, t) <= 0)
     
 def distance2_vertex_segment(vert, seg):
-    ''' Retourne la distance AU CARR entre vert et seg
+    u''' Retourne la distance AU CARR entre vert et seg
     Segment [a,b], vert=v'''
     av = Vector()
     bv = Vector()

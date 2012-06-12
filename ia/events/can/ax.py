@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 5 mai 2012
 '''
 
@@ -11,7 +11,7 @@ class AxEvent(Event):
         super(self.__class__,self).__init__()
         self.id = cmd[1]
         if len(cmd) < 4:
-            raise CmdError("%s takes 4 or 5 arguments" % cmd[0])
+            raise CmdError(u"%s takes 4 or 5 arguments" % cmd[0])
         else:
             self.type = cmd[2]
             self.cmd = cmd[3]
@@ -19,9 +19,9 @@ class AxEvent(Event):
             # ax 1 angle request
             # ax 1 angle answer 22
             # ax 1 angle set 45 (-90  90)
-            if self.type == "answer" or self.type == "set":
+            if self.type == u"answer" or self.type == u"set":
                 if len(cmd) == 4:
                     self.value = self.parse_int(cmd[3])
                 else:
-                    raise CmdError(" ax <id> <angle/torque> <answer/set> "
-                            +"must be followed by an integer")
+                    raise CmdError(u" ax <id> <angle/torque> <answer/set> "
+                            +u"must be followed by an integer")

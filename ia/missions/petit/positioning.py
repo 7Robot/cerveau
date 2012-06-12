@@ -11,75 +11,75 @@ class PositioningMission(Mission):
     def start(self):
         if self.state == -1:
             self.create_timer(500)
-            self.missions["threshold"].activate(1, False)
-            self.missions["threshold"].activate(2, False)
-            self.missions["threshold"].activate(8, False)
+            self.missions[u"threshold"].activate(1, False)
+            self.missions[u"threshold"].activate(2, False)
+            self.missions[u"threshold"].activate(8, False)
             self.state += 1
 
     def process_event(self, e):
         if self.state == 0:
-            if e.name == "timer":
+            if e.name == u"timer":
                 self.state = 2
-                self.missions["speed"].start( -20)
+                self.missions[u"speed"].start( -20)
         elif self.state == 2:
-            if e.name == "bump" and e.state == "close":
+            if e.name == u"bump" and e.state == u"close":
                 self.state += 1
                 self.create_timer(700)
-            elif e.name == "bump" and e.pos == "alim" \
-                    and e.state == "close":
-                self.missions["speed"].start(-20)
+            elif e.name == u"bump" and e.pos == u"alim" \
+                    and e.state == u"close":
+                self.missions[u"speed"].start(-20)
                     
         elif self.state == 3:
-            if e.name == "timer":
+            if e.name == u"timer":
                 self.state += 1
-                self.missions["speed"].stop(self)
+                self.missions[u"speed"].stop(self)
 
         elif self.state == 4:
-            if e.name == "speed" and e.type == "done":
+            if e.name == u"speed" and e.type == u"done":
                 self.state += 1
-                self.missions["forward"].start(self, 1800)
+                self.missions[u"forward"].start(self, 1800)
                     
         elif self.state == 5:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state += 1
-                self.missions["rotate"].start(self, 9000)
+                self.missions[u"rotate"].start(self, 9000)
                     
         elif self.state == 6:
-            if e.name == "rotate" and e.type == "done":
+            if e.name == u"rotate" and e.type == u"done":
                 self.state += 1
-                self.missions["speed"].start(-20)
+                self.missions[u"speed"].start(-20)
 
         elif self.state == 7:
-            if e.name == "bump" and e.state == "close":
+            if e.name == u"bump" and e.state == u"close":
                 self.state += 0.5
                 self.create_timer(700)
 
         elif self.state == 7.5:
-            if e.name == "timer":
+            if e.name == u"timer":
                 self.state += 0.5
-                self.missions["speed"].stop(self)
+                self.missions[u"speed"].stop(self)
                     
         elif self.state == 8:
-            if e.name == "speed" and e.type == "done":
+            if e.name == u"speed" and e.type == u"done":
                 self.state += 2
-                self.missions["forward"].start(self, 6000)
+                self.missions[u"forward"].start(self, 6000)
 
         elif self.state == 10:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state += 1
-                self.logger.info("Petit en attente de positionnement de Gros")
+                self.logger.info(u"Petit en attente de positionnement de Gros")
 
         elif self.state == 11:
-            if (e.name == "robot" and e.type == "ready") \
-                    or (e.name == "bump" and e.state == "close"):
+            if (e.name == u"robot" and e.type == u"ready") \
+                    or (e.name == u"bump" and e.state == u"close"):
                 self.state += 1
-                self.missions["forward"].start(self, -3100)
+                self.missions[u"forward"].start(self, -3100)
 
         elif self.state == 12:
-            if e.name == "forward" and e.type == "done":
+            if e.name == u"forward" and e.type == u"done":
                 self.state = 0
-                self.missions["threshold"].activate(1, True)
-                self.missions["threshold"].activate(2, True)
-                self.missions["threshold"].activate(8, True)
-                self.logger.info("Petit en position !")
-                self.send_event(Event("positioning", "done"))
+                self.missions[u"threshold"].activate(1, True)
+                self.missions[u"threshold"].activate(2, True)
+                self.missions[u"threshold"].activate(8, True)
+                self.logger.info(u"Petit en position !")
+                self.send_event(Event(u"positioning", u"done"))

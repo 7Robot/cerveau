@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 28 avr. 2012
 '''
 
 import math
 
 class Vertex(object):
-    '''Point 2D
+    u'''Point 2D
     Attention, suite a un calcul on peut avoir des flottants !'''
      
     def __init__(self, x=0, y=0):
@@ -45,7 +45,7 @@ class Vertex(object):
         return v!=None and (self.x==v.x) and (self.y==v.y)
         
     def __str__(self):
-        return "Vertex: x=%.1f, y=%.1f" % (self.x, self.y)
+        return u"Vertex: x=%.1f, y=%.1f" % (self.x, self.y)
     
 class Vector(Vertex):        
     def __init__(self, x=0, y=0):
@@ -53,12 +53,12 @@ class Vector(Vertex):
 
         
     def vert2vert(self, v1, v2):
-        '''Create a vector going from v1 to v2'''
+        u'''Create a vector going from v1 to v2'''
         self.x = v2.x-v1.x
         self.y = v2.y-v1.y
     
     def normalize(self):
-        '''||v|| = 1'''
+        u'''||v|| = 1'''
         n = self.norm()
         if n != 0:
             self.x/=n
@@ -89,11 +89,11 @@ class Vector(Vertex):
     
     
     def __str__(self):
-        return "Vector: x=%.1f, y=%.1f" % (self.x, self.y)
+        return u"Vector: x=%.1f, y=%.1f" % (self.x, self.y)
         
         
         
-class Segment:
+class Segment(object):
     def __init__(self, vert1, vert2):
         self.vert1 = vert1
         self.vert2 = vert2
@@ -119,12 +119,12 @@ class Segment:
         self.vert2.translate(dx, dy)
         
     def __str__(self):
-        return "Segment: v1: (x=%.1f, y=%.1f), v2: (x=%.1f, y=%.1f)" \
+        return u"Segment: v1: (x=%.1f, y=%.1f), v2: (x=%.1f, y=%.1f)" \
               % (self.vert1.x, self.vert1.y, self.vert2.x, self.vert2.y)
         
     
-class SegmentEq:
-    '''Representation paramterique d'un segment
+class SegmentEq(object):
+    u'''Representation paramterique d'un segment
     x(t) = ax * t + bx
     y(t) = ay * t + by
     t \in [0..1]
@@ -136,6 +136,6 @@ class SegmentEq:
         self.by = by
         
     def __str__(self):
-        return "SegmentEq: ax=%.1f, bx=%.1f, ay=%.1f, by=%.1f" \
+        return u"SegmentEq: ax=%.1f, bx=%.1f, ay=%.1f, by=%.1f" \
               % (self.ax, self.bx, self.ay, self.by)
 

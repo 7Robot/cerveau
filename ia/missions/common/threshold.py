@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 5 mai 2012
 '''
 
@@ -18,13 +18,13 @@ class ThresholdMission(Mission):
         self._sensivity = sensivity
         for key in self.threshold:
             if self.threshold[key] != 0:
-                self.can.send("rangefinder %d threshold %d"
+                self.can.send(u"rangefinder %d threshold %d"
                         %(key, Robot.rangefinder[key]*sensivity))
 
     def activate(self, id, status):
         if status:
             self.threshold[id] = Robot.rangefinder[id]*self._sensivity
-            self.can.send("rangefinder %d threshold %d" %(id, self.threshold[id]))
+            self.can.send(u"rangefinder %d threshold %d" %(id, self.threshold[id]))
         else:
             self.threshold[id] = 0
-            self.can.send("rangefinder %d threshold %d" %(id, 0))
+            self.can.send(u"rangefinder %d threshold %d" %(id, 0))

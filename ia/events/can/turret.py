@@ -2,6 +2,7 @@
 
 from events.event import Event
 from events.event import CmdError
+from itertools import imap
 
 class TurretEvent(Event):
     def __init__(self, cmd):
@@ -10,22 +11,22 @@ class TurretEvent(Event):
         self.angle  = []
         self.dist   = []
 
-        if self.type == "answer":
+        if self.type == u"answer":
             if len(cmd) < 11:
-                values  = list(map(self.parse_int,cmd[2:])) 
-                for i in range(len(values)):
+                values  = list(imap(self.parse_int,cmd[2:])) 
+                for i in xrange(len(values)):
                     if i%2 == 0:
                         self.dist.append(values[i])
                     else:
                         self.angle.append(values[i])
             else:
-                raise CmdError(" turret answer  must be followed by "
-                        +" a maximum of height integers")
+                raise CmdError(u" turret answer  must be followed by "
+                        +u" a maximum of height integers")
         
-        elif self.type in ["request", "mute", "unmute", "on", "off"]:
+        elif self.type in [u"request", u"mute", u"unmute", u"on", u"off"]:
             if len(cmd) != 2:
-                raise CmdError(" %s %s  takes no argument"
+                raise CmdError(u" %s %s  takes no argument"
                          %(cmd[0], cmd[1]))
         else:
-            raise CmdError(" %s  can\'t be followed by  %s "
+            raise CmdError(u" %s  can\'t be followed by  %s "
                     %(cmd[0], cmd[1]))

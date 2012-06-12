@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 5 mai 2012
 
 from http://hg.python.org/cpython/file/eda0ae0d2c68/Lib/logging/handlers.py
@@ -10,7 +10,7 @@ import logging, socket, struct, time
 
 
 class SocketStringHandler(logging.Handler):
-    """
+    u"""
     A handler class which writes logging records, in string format, to
     a streaming socket. The socket is kept open across logging calls.
     If the peer resets it, an attempt is made to reconnect on the next call.
@@ -20,7 +20,7 @@ class SocketStringHandler(logging.Handler):
     """
 
     def __init__(self, host, port):
-        """
+        u"""
         Initializes the handler with a specific host address and port.
 
         The attribute 'closeOnError' is set to 1 - which means that if
@@ -41,18 +41,18 @@ class SocketStringHandler(logging.Handler):
         self.retryFactor = 2.0
 
     def makeSocket(self, timeout=1):
-        """
+        u"""
         A factory method which allows subclasses to define the precise
         type of socket they want.
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if hasattr(s, 'settimeout'):
+        if hasattr(s, u'settimeout'):
             s.settimeout(timeout)
         s.connect((self.host, self.port))
         return s
 
     def createSocket(self):
-        """
+        u"""
         Try to create a socket, using an exponential backoff with
         a max retry time. Thanks to Robert Olson for the original patch
         (SF #815911) which has been slightly refactored.
@@ -80,7 +80,7 @@ class SocketStringHandler(logging.Handler):
                 self.retryTime = now + self.retryPeriod
 
     def send(self, s):
-        """
+        u"""
         Send a pickled string to the socket.
 
         This function allows for partial sends which can happen when the
@@ -93,7 +93,7 @@ class SocketStringHandler(logging.Handler):
         #but are still unable to connect.
         if self.sock:
             try:
-                if hasattr(self.sock, "sendall"):
+                if hasattr(self.sock, u"sendall"):
                     self.sock.sendall(s)
                 else:
                     sentsofar = 0
@@ -108,7 +108,7 @@ class SocketStringHandler(logging.Handler):
 
 
     def handleError(self, record):
-        """
+        u"""
         Handle an error during logging.
 
         An error has occurred during logging. Most likely cause -
@@ -122,7 +122,7 @@ class SocketStringHandler(logging.Handler):
             logging.Handler.handleError(self, record)
 
     def emit(self, record):
-        """
+        u"""
         Emit a record.
 
         If there is an error with the socket, silently drop the packet.
@@ -130,14 +130,14 @@ class SocketStringHandler(logging.Handler):
         socket.
         """
         try:
-            self.send(bytes(self.format(record)+"\n", "utf-8"))
+            self.send(str(self.format(record)+"\n").encode("utf-8"))
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
             self.handleError(record)
 
     def close(self):
-        """
+        u"""
         Closes the socket.
         """
         self.acquire()

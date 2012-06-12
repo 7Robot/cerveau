@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-'''
+u'''
 Created on 27 avr. 2012
 '''
 
@@ -13,15 +13,15 @@ class StartMission(Mission):
     def process_event(self, event):
         if self.state == 0:
             self.state +=1
-            self.can.send("reset")
+            self.can.send(u"reset")
             self.create_timer(3000)
 
         elif self.state == 1:
-            if event.name == "timer":
+            if event.name == u"timer":
                 self.state += 0.5
-                self.can.send("turret on")
-                self.can.send("turret unmute")
-                self.ui.send("ia ready")
+                self.can.send(u"turret on")
+                self.can.send(u"turret unmute")
+                self.ui.send(u"ia ready")
                 
 #                self.missions["positioning"].start()
 #                self.missions["bottle"].start()
@@ -33,24 +33,24 @@ class StartMission(Mission):
 #                self.odo.set(self, **{"x": 0, "y": 0, "rot": 90})
 #
         elif self.state == 1.5:
-            if event.name == "ui" and event.type == "start":
+            if event.name == u"ui" and event.type == u"start":
                 self.state += 0.5
-                self.missions["positioning"].start()
+                self.missions[u"positioning"].start()
 
         elif self.state == 2:
-            if event.name == "positioning" and event.type == "done":
+            if event.name == u"positioning" and event.type == u"done":
                 for i in [1, 2, 8]:
-                    self.can.send("rangefinder %d threshold %d"
+                    self.can.send(u"rangefinder %d threshold %d"
                             % (i, Robot.rangefinder[i]))
                 self.state += 1
                 
         elif self.state == 3:
-            if event.name == "bump" and event.state == "open" \
-                    and event.pos == "leash":
+            if event.name == u"bump" and event.state == u"open" \
+                    and event.pos == u"leash":
                 self.state += 1
-                self.logger.info("Beggining of the match !")
-                self.missions["match"].start()
-                self.missions["bottle"].start()
+                self.logger.info(u"Beggining of the match !")
+                self.missions[u"match"].start()
+                self.missions[u"bottle"].start()
                 
                 
 ##                self.missions["positioning"].start()

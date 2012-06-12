@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+u'''
 Created on 16 mai 2012
 '''
 
@@ -13,10 +13,10 @@ import logging
 
 
 class InterCom(Comm):
-    '''Intercom'''
+    u'''Intercom'''
     def __init__(self, socket):
         super(self.__class__, self).__init__(socket)
-        self.logger = logging.getLogger("intercom")
+        self.logger = logging.getLogger(u"intercom")
         self.queued_sender = Queued_sender(self.socket)
         self.queued_sender.start()
               

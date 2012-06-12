@@ -9,9 +9,9 @@ class BumpEvent(Event):
         if len(cmd) == 3:
             self.pos = cmd[1].lower()
             self.state = cmd[2]
-            if self.state not in [ "open", "close" ]:
-                raise CmdError(" bump  must be followed by an id, then "
-                        + " open  or  close ")
+            if self.state not in [ u"open", u"close" ]:
+                raise CmdError(u" bump  must be followed by an id, then "
+                        + u" open  or  close ")
         else:
-            raise CmdError(" bump  must be followed by an id, then "
-                   + " open  or  close ")
+            raise CmdError(u" bump  must be followed by an id, then "
+                   + u" open  or  close ")
